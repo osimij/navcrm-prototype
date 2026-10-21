@@ -4,6 +4,7 @@ import { useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/cn'
 import { seeded } from '@/lib/random'
 
@@ -73,17 +74,12 @@ export function ChannelChain({ enabled, className }: { enabled: ChannelId[]; cla
       {CHANNELS.map((c, i) => {
         const on = enabled.includes(c.id)
         return (
-          <span key={c.id} className="inline-flex items-center gap-1">
+          <span key={c.id} className="inline-flex shrink-0 items-center gap-1">
             {i > 0 && <span className={cn('text-xs', on ? 'text-faint' : 'text-disabled')}>→</span>}
-            <span
-              className={cn(
-                'inline-flex h-[22px] items-center gap-1 rounded-full px-1.5 text-xs font-medium',
-                on ? 'bg-fill text-fg' : 'text-disabled',
-              )}
-            >
+            <Badge className={cn('gap-1 px-1.5', on ? 'text-fg' : 'text-disabled')}>
               <Icon icon={c.icon} size={12} />
               {c.label}
-            </span>
+            </Badge>
           </span>
         )
       })}

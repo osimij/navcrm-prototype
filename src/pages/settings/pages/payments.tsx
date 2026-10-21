@@ -151,6 +151,7 @@ export default function PaymentsSettings() {
                   <TD align="right">
                     <span onClick={(e) => e.stopPropagation()} className="inline-flex">
                       <Switch
+                        aria-label={`${m.name} payments`}
                         checked={m.active}
                         onChange={(on) => {
                           setMethods((list) => list.map((x) => (x.id === m.id ? { ...x, active: on } : x)))
@@ -180,10 +181,10 @@ export default function PaymentsSettings() {
           />
         </SettingsRow>
         <SettingsRow label="Sell items that aren’t in stock" description="Stock goes below zero and shows up in Inventory for a recount.">
-          <Switch checked={v.allowNegative} onChange={(x) => form.set('allowNegative', x)} />
+          <Switch aria-label="Sell items that aren’t in stock" checked={v.allowNegative} onChange={(x) => form.set('allowNegative', x)} />
         </SettingsRow>
         <SettingsRow label="Sell only during an open shift" description="Keeps cash in the drawer matching the shift report.">
-          <Switch checked={v.shiftOnly} onChange={(x) => form.set('shiftOnly', x)} />
+          <Switch aria-label="Sell only during an open shift" checked={v.shiftOnly} onChange={(x) => form.set('shiftOnly', x)} />
         </SettingsRow>
         <SettingsRow label="Suggested tip" description="Pre-selected when a client adds a tip.">
           <Select

@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
+import { StatCard } from '@/components/ui/stat-card'
 import { Button, IconButton } from '@/components/ui/button'
 import { DatePicker } from '@/components/ui/date-picker'
 import { DetailRow, Modal, Sheet } from '@/components/ui/dialog'
@@ -516,18 +517,9 @@ export function VisitSheet() {
               <Icon icon={I.chevronRight} size={16} className="text-faint" />
             </button>
             <div className="mt-3 grid grid-cols-3 gap-2">
-              <div className="rounded-xl bg-fill px-3 py-2.5">
-                <div className="text-xs text-muted">Spent</div>
-                <Money value={client.totalSpent} className="text-base text-fg" />
-              </div>
-              <div className="rounded-xl bg-fill px-3 py-2.5">
-                <div className="text-xs text-muted">Bonuses</div>
-                <Money value={client.bonuses} currency={false} className="text-base text-fg" />
-              </div>
-              <div className={cn('rounded-xl px-3 py-2.5', client.debt > 0 ? 'bg-negative-soft' : 'bg-fill')}>
-                <div className={cn('text-xs', client.debt > 0 ? 'text-negative' : 'text-muted')}>Debt</div>
-                <Money value={client.debt} className={cn('text-base', client.debt > 0 ? 'text-negative' : 'text-fg')} />
-              </div>
+              <StatCard size="sm" className="rounded-xl bg-fill px-3 py-2.5 ring-0" valueClassName="text-base" label="Spent" value={<Money value={client.totalSpent} />} />
+              <StatCard size="sm" className="rounded-xl bg-fill px-3 py-2.5 ring-0" valueClassName="text-base" label="Bonuses" value={<Money value={client.bonuses} currency={false} />} />
+              <StatCard size="sm" className={cn('rounded-xl px-3 py-2.5 ring-0', client.debt > 0 ? 'bg-negative-soft' : 'bg-fill')} valueClassName={cn('text-base', client.debt > 0 && 'text-negative')} label="Debt" value={<Money value={client.debt} />} />
             </div>
             {client.note && (
               <p className="mt-3 flex gap-2 rounded-xl bg-warning-soft px-3 py-2.5 text-sm text-fg">

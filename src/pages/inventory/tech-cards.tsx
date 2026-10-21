@@ -3,6 +3,7 @@ import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
 import { Button, IconButton } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { StatCard } from '@/components/ui/stat-card'
 import { Sheet } from '@/components/ui/dialog'
 import { Input, SearchInput } from '@/components/ui/input'
 import { EmptyState, Money } from '@/components/ui/misc'
@@ -231,24 +232,9 @@ function TechCardSheet({ service, onClose }: { service?: Service; onClose: () =>
           </div>
 
           <div className="grid grid-cols-3 gap-3">
-            <div className="rounded-xl bg-fill p-3.5">
-              <div className="text-sm text-muted">Consumables</div>
-              <div className="mt-1 text-lg text-fg">
-                <Money value={Math.round(total * 100) / 100} decimals />
-              </div>
-            </div>
-            <div className="rounded-xl bg-fill p-3.5">
-              <div className="text-sm text-muted">Service price</div>
-              <div className="mt-1 text-lg text-fg">
-                <Money value={s.price} />
-              </div>
-            </div>
-            <div className="rounded-xl bg-fill p-3.5">
-              <div className="text-sm text-muted">Left after</div>
-              <div className="mt-1 text-lg text-fg">
-                <Money value={Math.round((s.price - total) * 100) / 100} decimals />
-              </div>
-            </div>
+            <StatCard size="sm" className="rounded-xl bg-fill p-3 ring-0" valueClassName="text-lg" label="Consumables" value={<Money value={Math.round(total * 100) / 100} decimals />} />
+            <StatCard size="sm" className="rounded-xl bg-fill p-3 ring-0" valueClassName="text-lg" label="Service price" value={<Money value={s.price} />} />
+            <StatCard size="sm" className="rounded-xl bg-fill p-3 ring-0" valueClassName="text-lg" label="Left after" value={<Money value={Math.round((s.price - total) * 100) / 100} decimals />} />
           </div>
         </div>
       )}

@@ -527,9 +527,9 @@ export default function StaffSettings() {
                   {services
                     .filter((s) => s.staffIds.includes(current.id))
                     .map((s) => (
-                      <span key={s.id} className="rounded-full bg-fill px-2.5 py-1 text-sm text-fg">
+                      <Badge key={s.id}>
                         {s.name}
-                      </span>
+                      </Badge>
                     ))}
                 </div>
               </div>

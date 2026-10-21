@@ -125,7 +125,7 @@ export default function LoadReport() {
       {data.idle.v < avgLoad / 100 - 0.15 && (
         <div className="mb-5 flex flex-wrap items-center gap-3 rounded-2xl bg-accent-soft px-5 py-4">
           <span className="grid size-9 shrink-0 place-items-center rounded-full bg-surface text-accent-fg">
-            <Icon icon={I.sparkles} size={18} />
+            <Icon icon={I.assistant} size={18} />
           </span>
           <p className="min-w-0 flex-1 text-base text-fg">
             {dayLong((data.idle.w + 1) % 7)} {idleFrom}–{idleFrom + 2}: {Math.round((1 - data.idle.v) * 100)}% of chairs are empty.{' '}

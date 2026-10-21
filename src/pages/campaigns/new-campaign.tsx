@@ -390,7 +390,7 @@ export function NewCampaign() {
                           <span className="block text-sm text-muted">{ch.note}</span>
                         </span>
                         <span className="text-sm text-muted tabular">{channels[ch.id] ? plural(route.counts[ch.id], 'client') : 'Off'}</span>
-                        <Switch checked={channels[ch.id]} onChange={(v) => setChannels({ ...channels, [ch.id]: v })} />
+                        <Switch aria-label={`${ch.name} campaign messages`} checked={channels[ch.id]} onChange={(v) => setChannels({ ...channels, [ch.id]: v })} />
                       </div>
                     </li>
                   ))}

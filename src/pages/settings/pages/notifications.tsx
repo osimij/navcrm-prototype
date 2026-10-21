@@ -119,7 +119,7 @@ function ScenarioSheet({
                 <Icon icon={c.icon} size={18} className="text-muted" />
                 <span className="flex-1 text-base text-fg">{c.label}</span>
                 <span className="text-sm text-muted">{c.cost ? `${c.cost.toFixed(2)} TJS` : 'Free'}</span>
-                <Switch checked={d.channels.includes(c.id)} onChange={(on) => toggleChannel(c.id, on)} />
+                <Switch aria-label={`${c.label} for this message`} checked={d.channels.includes(c.id)} onChange={(on) => toggleChannel(c.id, on)} />
               </div>
             ))}
           </div>
@@ -143,11 +143,16 @@ function ScenariosTab({ list, onToggle, onOpen }: { list: Scenario[]; onToggle: 
                     role="button"
                     tabIndex={0}
                     onClick={() => onOpen(s)}
-                    onKeyDown={(e) => e.key === 'Enter' && onOpen(s)}
+                    onKeyDown={(e) => {
+                      if (e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+                        e.preventDefault()
+                        onOpen(s)
+                      }
+                    }}
                     className="-mx-3 flex cursor-pointer items-center gap-4 rounded-xl px-3 py-3.5 hover:bg-fill/60"
                   >
                     <span onClick={(e) => e.stopPropagation()} className="inline-flex">
-                      <Switch checked={s.on} onChange={(on) => onToggle(s.id, on)} />
+                      <Switch aria-label={`${s.name}: ${s.timing}`} checked={s.on} onChange={(on) => onToggle(s.id, on)} />
                     </span>
                     <span className="min-w-0 flex-1">
                       <span className={cn('block text-base', s.on ? 'text-fg' : 'text-muted')}>{s.name}</span>
@@ -243,7 +248,7 @@ function ChannelsTab() {
           >
             <div className="flex items-center justify-between gap-4">
               <span className="text-sm text-muted">{c.cost ? `${c.cost.toFixed(2)} TJS per message, from your balance` : 'Free'}</span>
-              <Switch checked={v[c.id]} onChange={(on) => form.set(c.id, on)} />
+              <Switch aria-label={`${c.label} notifications`} checked={v[c.id]} onChange={(on) => form.set(c.id, on)} />
             </div>
           </SettingsRow>
         ))}
@@ -253,7 +258,7 @@ function ChannelsTab() {
       </SettingsSection>
       <SettingsSection title="Quiet hours" description="Messages scheduled for this time wait until the morning. Codes and staff alerts still go out.">
         <SettingsRow label="Don’t message clients at night">
-          <Switch checked={v.quiet} onChange={(on) => form.set('quiet', on)} />
+          <Switch aria-label="Don’t message clients at night" checked={v.quiet} onChange={(on) => form.set('quiet', on)} />
         </SettingsRow>
         <SettingsRow label="Quiet time">
           <div className={cn('flex max-w-xs items-center gap-2', !v.quiet && 'pointer-events-none opacity-45')}>

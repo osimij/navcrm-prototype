@@ -97,7 +97,7 @@ function ReviewCard({ review }: { review: Review }) {
         <div className="mt-4 flex flex-col gap-3">
           <Textarea autoFocus value={text} onChange={(e) => setText(e.target.value)} placeholder="Write a reply…" className="min-h-24" />
           <div className="flex flex-wrap items-center gap-2">
-            <Button size="sm" variant="ghost" icon={I.sparkles} onClick={() => setText(suggestReply(review))}>
+            <Button size="sm" variant="ghost" icon={I.assistant} onClick={() => setText(suggestReply(review))}>
               Suggest a reply
             </Button>
             <span className="flex-1" />

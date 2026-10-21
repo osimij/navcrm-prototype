@@ -139,6 +139,7 @@ except initials.
 - **People in tables:** names and supporting text, without profile avatars. Avatar stacks show names in tables; profile views and pickers retain avatars.
 - **Badges and label chips:** transparent background, regular-weight colored text and a matching outline at 15% opacity, without a status dot. This is the shared style across pages, tables, and record details.
 - **Stat cards:** shared `StatCard` keeps the label at the top and groups the value with its subtitle at the bottom. Standard cards use compact padding and a minimum height of 36 spacing units; small summaries use the same structure without a minimum height. Cards grow when text wraps, and keep their links, filters, charts, and actions.
+- **Supporting cards and controls:** actions align at the bottom of matching cards. Cards and form controls can shrink in narrow grids; tables scroll within their cards. Standalone switches have descriptive accessible names. Assistant cues use the chat icon consistently.
 - **Sheet:** right panel inset 8px from the edges, eyebrow + title, actions, details as label/value rows.
 - **Settings:** label and description on the left, value on the right, "Edit ›";
   a save bar appears only when something changed.

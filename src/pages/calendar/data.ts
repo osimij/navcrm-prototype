@@ -45,7 +45,7 @@ export const ROOMS: Room[] = [
   { id: 'r2', name: 'Chair 2', staffId: null, icon: I.chair },
   { id: 'r3', name: 'Nail desk', staffId: 's2', icon: I.droplet },
   { id: 'r4', name: 'Cosmetology room', staffId: 's3', icon: I.stethoscope },
-  { id: 'r5', name: 'Brow & lash station', staffId: 's4', icon: I.sparkles },
+  { id: 'r5', name: 'Brow & lash station', staffId: 's4', icon: I.view },
   { id: 'r6', name: 'Barber chair', staffId: 's5', icon: I.scissors },
   { id: 'r7', name: 'Massage room', staffId: 's6', icon: I.chair },
 ]

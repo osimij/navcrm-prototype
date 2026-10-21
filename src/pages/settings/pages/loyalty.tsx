@@ -176,7 +176,7 @@ export default function LoyaltySettings() {
     >
       <SettingsSection title="Bonus program">
         <SettingsRow label="Bonus points" description="Clients earn points on paid receipts and spend them like money. 1 point = 1 TJS.">
-          <Switch checked={v.enabled} onChange={(x) => form.set('enabled', x)} />
+          <Switch aria-label="Bonus points" checked={v.enabled} onChange={(x) => form.set('enabled', x)} />
         </SettingsRow>
         <div className={cn('transition-opacity duration-200', off && 'pointer-events-none opacity-45')}>
           <SettingsRow label="Earn rate" description="Share of the paid amount returned as points.">

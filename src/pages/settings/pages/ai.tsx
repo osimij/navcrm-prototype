@@ -64,7 +64,7 @@ function GeneralTab() {
     <>
       <SettingsSection title="Assistant">
         <SettingsRow label="Answer clients automatically" description="It replies in the Inbox. Staff see every message and can take over any time.">
-          <Switch checked={v.enabled} onChange={(x) => form.set('enabled', x)} />
+          <Switch aria-label="Answer clients automatically" checked={v.enabled} onChange={(x) => form.set('enabled', x)} />
         </SettingsRow>
       </SettingsSection>
       <div className={cn('transition-opacity duration-200', off && 'pointer-events-none opacity-45')}>

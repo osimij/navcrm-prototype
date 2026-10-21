@@ -81,7 +81,7 @@ function Bubble({ m, last, channelLabel }: { m: Message; last: boolean; channelL
     return (
       <div ref={m.fresh ? enter : undefined} className="my-2 flex justify-center">
         <span className="inline-flex max-w-[80%] items-center gap-1.5 rounded-full bg-fill px-3 py-1 text-center text-xs text-muted">
-          {m.text?.startsWith('Assistant') && <Icon icon={I.sparkles} size={12} className="text-accent-fg" />}
+          {m.text?.startsWith('Assistant') && <Icon icon={I.assistant} size={12} className="text-accent-fg" />}
           {m.text}
         </span>
       </div>
@@ -138,7 +138,7 @@ function Bubble({ m, last, channelLabel }: { m: Message; last: boolean; channelL
       </div>
       {last && (
         <span className="mt-1 flex items-center gap-1 px-1 text-[11px] text-faint">
-          {ai && <Icon icon={I.sparkles} size={11} className="text-accent-fg" />}
+          {ai && <Icon icon={I.assistant} size={11} className="text-accent-fg" />}
           {author && <span>{author} ·</span>}
           {formatTime(m.at)}
           {!mine && <span>· {channelLabel}</span>}
@@ -196,7 +196,7 @@ function Composer({ conv }: { conv: Conversation }) {
     <div className="shrink-0 px-4 pb-4">
       {conv.ai && (
         <div className="mb-2 flex items-center gap-2 rounded-xl bg-accent-soft px-3 py-2 text-sm text-fg">
-          <Icon icon={I.sparkles} size={15} className="text-accent-fg" />
+          <Icon icon={I.assistant} size={15} className="text-accent-fg" />
           The assistant is answering this chat. Send a message to take over.
         </div>
       )}

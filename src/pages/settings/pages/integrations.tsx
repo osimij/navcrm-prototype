@@ -183,14 +183,14 @@ export default function IntegrationsSettings() {
       <div className="grid gap-3 sm:grid-cols-2">
         {list.map((p) => (
           <div key={p.id} className="flex flex-col rounded-2xl bg-surface p-5 ring-1 ring-border">
-            <div className="flex items-start gap-3">
+            <div className="mb-5 flex items-start gap-3">
               <ProviderMark name={p.name} tone={p.connected ? 'accent' : 'neutral'} />
               <div className="min-w-0 flex-1">
                 <div className="text-base font-medium text-fg">{p.name}</div>
                 <p className="mt-0.5 text-sm text-muted">{p.description}</p>
               </div>
             </div>
-            <div className="mt-5 flex items-center justify-between">
+            <div className="mt-auto flex flex-wrap items-center justify-between gap-2">
               {p.connected ? (
                 <Badge tone="positive">
                   Connected

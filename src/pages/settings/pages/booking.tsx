@@ -109,7 +109,7 @@ function Prepayment() {
     <>
       <SettingsSection title="Prepayment" description="Cuts no-shows. Clients pay with Alif, DC Wallet or Korti Milli right on the booking page.">
         <SettingsRow label="Ask for prepayment">
-          <Switch checked={draft.on} onChange={(on) => patch({ on })} />
+          <Switch aria-label="Ask for prepayment" checked={draft.on} onChange={(on) => patch({ on })} />
         </SettingsRow>
         {draft.on && (
           <>

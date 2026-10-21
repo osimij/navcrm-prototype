@@ -30,5 +30,4 @@ branches, then reports missing catalog entries in
 `/tmp/navcrm-missing-translations.json`. Run `npm run test:i18n` for rendering,
 interpolation, context, search, formatting and source-transform checks.
 
-Pereval is self-hosted in WOFF2 with optical sizing and the weight/width axes
-preserved. Its typography overrides live separately in `styles/typography.css`.
+The interface uses the shared Inter variable font defined in `styles/index.css`.

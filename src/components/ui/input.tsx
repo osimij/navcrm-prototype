@@ -5,7 +5,7 @@ import { I, Icon } from '../icons'
 
 /** Shared look for every text-like control, so inputs, selects and pickers match. */
 export const fieldBase =
-  'w-full rounded-[10px] bg-fill text-base text-fg outline-none ring-1 ring-inset ring-transparent transition-[background-color,box-shadow] duration-150 ' +
+  'min-w-0 w-full rounded-[10px] bg-fill text-base text-fg outline-none ring-1 ring-inset ring-transparent transition-[background-color,box-shadow] duration-150 ' +
   'hover:ring-border-strong focus:bg-surface focus:ring-accent focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--accent)_14%,transparent)] ' +
   'disabled:opacity-60 aria-[invalid=true]:ring-negative'
 
@@ -21,7 +21,7 @@ export function Input({ icon, suffix, size = 'md', className, inputClassName, ..
   const h = size === 'lg' ? 'h-11 text-md' : 'h-9'
   if (!icon && !suffix) return <input className={cn(fieldBase, h, 'px-3', className, inputClassName)} {...props} />
   return (
-    <div className={cn('relative flex items-center', className)}>
+    <div className={cn('relative flex min-w-0 items-center', className)}>
       {icon && <Icon icon={icon} size={16} className="pointer-events-none absolute left-3 text-faint" />}
       <input className={cn(fieldBase, h, icon ? 'pl-9' : 'pl-3', suffix ? 'pr-12' : 'pr-3', inputClassName)} {...props} />
       {suffix && <div className="absolute right-3 flex items-center text-sm text-faint">{suffix}</div>}
@@ -85,7 +85,7 @@ export function SearchInput({
   autoFocus?: boolean
 }) {
   return (
-    <div className={cn('relative flex items-center', className)}>
+    <div className={cn('relative flex min-w-0 items-center', className)}>
       <Icon icon={I.search} size={16} className="pointer-events-none absolute left-3 text-faint" />
       <input
         value={value}

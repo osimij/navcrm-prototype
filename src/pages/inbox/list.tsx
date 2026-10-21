@@ -103,7 +103,7 @@ export function ConversationList({ activeId, className }: { activeId?: string; c
                       </span>
                     ) : c.ai ? (
                       <span className="flex items-center gap-1 text-xs font-medium text-accent-fg" title="The assistant is answering">
-                        <Icon icon={I.sparkles} size={13} />
+                        <Icon icon={I.assistant} size={13} />
                         AI
                       </span>
                     ) : assignee ? (

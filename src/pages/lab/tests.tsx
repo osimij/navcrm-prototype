@@ -268,6 +268,7 @@ export function Tests() {
                     <TD align="right">
                       <span className="inline-flex" onClick={(e) => e.stopPropagation()}>
                         <Switch
+                          aria-label={`Available for orders: ${t.name}`}
                           checked={t.active}
                           onChange={(v) => {
                             saveTest({ ...t, active: v })

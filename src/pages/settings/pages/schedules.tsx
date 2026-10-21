@@ -104,7 +104,7 @@ export default function SchedulesSettings() {
           {hours.draft[branch].map((d, i) => (
             <li key={i} className="flex flex-wrap items-center gap-x-5 gap-y-2 border-b border-border py-3 last:border-b-0">
               <span className="w-28 text-base text-fg">{WEEKDAYS[i]}</span>
-              <Switch checked={d.open} onChange={(open) => setDay(i, { open })} />
+              <Switch aria-label={`${WEEKDAYS[i]} opening hours`} checked={d.open} onChange={(open) => setDay(i, { open })} />
               {d.open ? (
                 <span className="flex items-center gap-2">
                   <Select value={d.from} onChange={(from) => setDay(i, { from })} options={timeOptions(6, 14)} className="w-28" />

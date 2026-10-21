@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import { Sparkline } from '@/components/charts/bar-chart'
 import { I, Icon } from '@/components/icons'
 import { Card, CardHeader, SectionTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/controls'
 import { Delta, Meter, Money, pctChange } from '@/components/ui/misc'
 import { Page, PageHeader } from '@/components/ui/page'
@@ -46,6 +47,7 @@ function TelegramDigest({ today, debt, debtors }: { today: number; debt: number;
         description="The few things worth knowing, every evening"
         action={
           <Switch
+            aria-label="Daily summary in Telegram"
             checked={on}
             onChange={(v) => {
               setOn(v)
@@ -164,9 +166,9 @@ export default function ReportsHub() {
           </p>
           <div className="mt-auto flex flex-wrap gap-1.5 pt-5">
             {['Revenue by master', 'Bookings by source', 'Payment methods by week'].map((s) => (
-              <span key={s} className="rounded-full bg-fill px-2.5 py-1 text-xs text-muted">
+              <Badge key={s}>
                 {s}
-              </span>
+              </Badge>
             ))}
           </div>
         </Link>

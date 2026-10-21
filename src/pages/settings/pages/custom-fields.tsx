@@ -130,7 +130,7 @@ export default function CustomFieldsSettings() {
                   <TD muted>{TYPE_LABEL[f.type]}</TD>
                   <TD>{f.required ? <Icon icon={I.check} size={16} className="text-fg" /> : <span className="text-faint">—</span>}</TD>
                   <TD>
-                    <Switch checked={f.inList} onChange={(v) => update(f.id, { inList: v })} />
+                    <Switch aria-label={`Show ${f.name} in lists`} checked={f.inList} onChange={(v) => update(f.id, { inList: v })} />
                   </TD>
                   <TD align="right">
                     <Menu align="end" trigger={<IconButton icon={I.more} label="Field actions" size="sm" tooltip={false} />}>

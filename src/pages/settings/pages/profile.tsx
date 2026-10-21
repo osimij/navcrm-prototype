@@ -90,6 +90,7 @@ export default function ProfileSettings() {
         </SettingsRow>
         <SettingsRow label="Two-step sign-in" description="After the password, we send a code to your Telegram when you sign in on a new device.">
           <Switch
+            aria-label="Two-step sign-in"
             checked={twoStep}
             onChange={(on) => {
               setTwoStep(on)

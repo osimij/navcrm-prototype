@@ -180,9 +180,9 @@ export function Divider({ className }: { className?: string }) {
 /** Small key/value pair used in stat rows. */
 export function KeyValue({ label, value, className }: { label: ReactNode; value: ReactNode; className?: string }) {
   return (
-    <div className={cn('min-w-0', className)}>
+    <div className={cn('flex min-w-0 flex-col justify-between gap-2', className)}>
       <div className="text-sm text-muted">{label}</div>
-      <div className="mt-1 text-xl font-normal text-fg tabular">{value}</div>
+      <div className="text-xl font-normal text-fg tabular">{value}</div>
     </div>
   )
 }

@@ -64,7 +64,7 @@ export default function CatalogSettings() {
             ) : (
               <Badge>Hidden</Badge>
             )}
-            <Switch checked={v.published} onChange={(x) => form.set('published', x)} />
+            <Switch aria-label="Show in the catalog" checked={v.published} onChange={(x) => form.set('published', x)} />
           </div>
         </SettingsRow>
         <SettingsRow label="Show">

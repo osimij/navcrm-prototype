@@ -51,7 +51,7 @@ export function Schemes() {
               </div>
               {!sc.active && <Badge>Inactive</Badge>}
             </div>
-            <ul className="mt-4 flex flex-col gap-1.5">
+            <ul className="mt-4 mb-5 flex flex-col gap-1.5">
               {sc.rules.map((r) => (
                 <li key={r.id} className="flex items-center gap-2.5 text-base text-fg">
                   <span className="size-1.5 shrink-0 rounded-full bg-faint" />
@@ -59,14 +59,14 @@ export function Schemes() {
                 </li>
               ))}
             </ul>
-            <div className="mt-5 flex items-center gap-3 border-t border-border pt-4 text-sm text-muted">
+            <div className="mt-auto flex w-full flex-wrap items-center gap-3 border-t border-border pt-4 text-sm text-muted">
               {people.length ? (
                 <>
                   <AvatarStack names={people.map((p) => ({ name: p.name, color: p.color }))} max={4} />
                   <span className="truncate">{people.map((p) => p.name.split(' ')[0]).join(', ')}</span>
                 </>
               ) : (
-                <span>Nobody on this scheme</span>
+                <span className="inline-flex min-h-6 items-center">Nobody on this scheme</span>
               )}
               <span className="ml-auto shrink-0">{sc.period === 'Month' ? 'Monthly' : sc.period === 'Shift' ? 'Per shift' : sc.period}</span>
             </div>

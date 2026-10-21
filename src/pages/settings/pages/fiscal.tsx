@@ -141,7 +141,7 @@ export default function FiscalSettings() {
                   <TD muted>{formatDayTime(q.at)}</TD>
                   <TD muted>{q.branch}</TD>
                   <TD>
-                    <Badge tone={STATUS[q.status].tone} dot>
+                    <Badge tone={STATUS[q.status].tone}>
                       {STATUS[q.status].label}
                     </Badge>
                     {q.status === 'error' && <span className="mt-1 block text-xs text-muted">No tax rate on “Gift certificate”</span>}

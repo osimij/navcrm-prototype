@@ -47,13 +47,13 @@ export function SetupCard() {
                   navigate(s.to)
                 }}
                 className={cn(
-                  'press flex h-full w-full flex-col items-start gap-3 rounded-xl p-3.5 text-left',
+                  'press flex h-full w-full flex-col items-start justify-between gap-3 rounded-xl p-3.5 text-left',
                   isNext ? 'bg-accent-soft' : 'bg-fill hover:bg-fill-hover',
                 )}
               >
                 <span
                   className={cn(
-                    'grid size-6 place-items-center rounded-full text-xs font-medium',
+                    'grid size-6 shrink-0 place-items-center rounded-full text-xs font-medium',
                     isDone ? 'bg-positive text-white' : isNext ? 'bg-accent text-on-accent' : 'bg-surface text-muted ring-1 ring-border',
                   )}
                 >

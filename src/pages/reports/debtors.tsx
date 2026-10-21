@@ -6,6 +6,7 @@ import { I } from '@/components/icons'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardHeader } from '@/components/ui/card'
+import { StatCard } from '@/components/ui/stat-card'
 import { EmptyState, Figure, Meter, Money } from '@/components/ui/misc'
 import { Segmented } from '@/components/ui/tabs'
 import { Table, TD, TH, THead, TR } from '@/components/ui/table'
@@ -68,28 +69,18 @@ export default function DebtorsReport() {
       }
     >
       <div className="mb-5 grid gap-4 lg:grid-cols-4">
-        <Card className="p-5">
-          <div className="text-base text-muted">Owed to you</div>
-          <div className="mt-3 flex items-baseline gap-1.5">
-            <Figure value={total} money className="text-3xl font-normal text-fg" />
-            <span className="text-sm text-faint">TJS</span>
-          </div>
-          <div className="mt-1.5 text-sm text-muted">{plural(debtors.length, 'client')}</div>
-        </Card>
+        <StatCard label="Owed to you" value={<Figure value={total} money />} suffix="TJS" sub={plural(debtors.length, 'client')} />
         {BUCKETS.map((b) => {
           const items = debtors.filter((d) => b.test(d.age))
           const sum = items.reduce((m, d) => m + d.c.debt, 0)
           return (
-            <Card key={b.id} className="p-5">
-              <div className="flex items-center justify-between text-base text-muted">
-                {b.label}
-                <span className="text-sm text-faint">{plural(items.length, 'client')}</span>
-              </div>
-              <div className={cn('mt-3 text-3xl font-normal', b.tone === 'negative' && sum ? 'text-negative' : 'text-fg')}>
-                <Money value={sum} currency={false} />
-              </div>
-              <Meter value={sum} max={total || 1} tone={b.tone} className="mt-3 h-1" />
-            </Card>
+            <StatCard
+              key={b.id}
+              label={b.label}
+              value={<Money value={sum} currency={false} />}
+              valueClassName={cn(b.tone === 'negative' && sum ? 'text-negative' : 'text-fg')}
+              sub={<>{plural(items.length, 'client')}<Meter value={sum} max={total || 1} tone={b.tone} className="mt-2 h-1" /></>}
+            />
           )
         })}
       </div>

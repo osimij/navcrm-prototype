@@ -22,7 +22,7 @@ function Thinking() {
 function AssistantMark() {
   return (
     <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent-soft text-accent-fg">
-      <Icon icon={I.sparkles} size={16} />
+      <Icon icon={I.assistant} size={16} />
     </span>
   )
 }
@@ -45,7 +45,7 @@ function Blocks({ blocks, ask }: { blocks: Block[]; ask: (q: string) => void }) 
                   <thead>
                     <tr>
                       {b.columns.map((c, j) => (
-                        <th key={j} className={cn('h-9 px-3.5 text-xs font-medium whitespace-nowrap text-faint', c.align === 'right' ? 'text-right' : 'text-left')}>
+                        <th key={j} className={cn('px-3.5 text-xs font-medium whitespace-nowrap text-faint', c.align === 'right' ? 'text-right' : 'text-left')}>
                           {c.label}
                         </th>
                       ))}
@@ -253,9 +253,6 @@ function AssistantView() {
             </div>
           ) : (
             <div className="mx-auto flex min-h-full max-w-[640px] flex-col justify-center px-6 py-10">
-              <span className="mb-5 grid size-12 place-items-center rounded-2xl bg-accent-soft text-accent-fg">
-                <Icon icon={I.sparkles} size={22} />
-              </span>
               <h2 className="text-2xl font-normal text-fg">Ask about your business</h2>
               <p className="mt-1.5 text-base text-muted">Revenue, visits, clients, staff load and stock, answered in plain words with the numbers behind them.</p>
               <div className="mt-7 grid gap-2 sm:grid-cols-2">

@@ -279,7 +279,7 @@ export default function LoyaltySettings() {
                     </TD>
                     <TD muted>{formatDate(p.until)}</TD>
                     <TD>
-                      <Badge tone={status.t} dot>
+                      <Badge tone={status.t}>
                         {status.l}
                       </Badge>
                     </TD>

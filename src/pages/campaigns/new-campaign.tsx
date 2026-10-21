@@ -6,6 +6,7 @@ import { ClientPicker } from '@/components/client-picker'
 import { I, Icon } from '@/components/icons'
 import { Button, IconButton } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { StatCard } from '@/components/ui/stat-card'
 import { Switch } from '@/components/ui/controls'
 import { DatePicker } from '@/components/ui/date-picker'
 import { DetailRow } from '@/components/ui/dialog'
@@ -283,15 +284,13 @@ export function NewCampaign() {
                 </Field>
               )}
 
-              <div className="rounded-xl bg-fill p-4">
-                <div className="text-sm text-muted">Will receive the message</div>
-                <div className="mt-1 text-3xl font-normal text-fg tabular">{formatNumber(recipients.length)}</div>
-                <ul className="mt-3 flex flex-col gap-1 text-sm text-muted">
+              <StatCard size="sm" className="rounded-xl bg-fill ring-0" valueClassName="text-3xl" label="Will receive the message" value={formatNumber(recipients.length)} sub={
+                <ul className="flex flex-col gap-1">
                   <li>{plural(matched.length, 'client')} match</li>
                   {noConsent.length > 0 && <li className="tabular">−{noConsent.length} without marketing consent</li>}
                   {recent.length > 0 && <li className="tabular">−{recent.length} messaged in the last 7 days. We never message anyone twice a week.</li>}
                 </ul>
-              </div>
+              } />
               <Link to="/clients/segments/new" className="-mt-1 self-start text-sm font-medium text-accent-fg hover:underline underline-offset-4">
                 Create a new segment
               </Link>

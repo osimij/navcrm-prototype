@@ -201,7 +201,7 @@ function HooksTab() {
                     </span>
                   </TD>
                   <TD>
-                    <Badge tone={h.ok ? 'positive' : 'negative'} dot>
+                    <Badge tone={h.ok ? 'positive' : 'negative'}>
                       {h.ok ? formatRelative(h.last) : 'Failing'}
                     </Badge>
                   </TD>

@@ -192,7 +192,7 @@ export default function IntegrationsSettings() {
             </div>
             <div className="mt-5 flex items-center justify-between">
               {p.connected ? (
-                <Badge tone="positive" dot>
+                <Badge tone="positive">
                   Connected
                 </Badge>
               ) : p.kind === 'builtin' ? (

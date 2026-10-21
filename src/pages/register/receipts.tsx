@@ -177,7 +177,7 @@ export function ReceiptSheet({ receiptId, onClose }: { receiptId: string | null;
       >
         <div className="px-5 pt-5 pb-4">
           <div className="flex items-center gap-2">
-            <Badge tone={meta.tone} dot>
+            <Badge tone={meta.tone}>
               {meta.label}
             </Badge>
             <span className="text-sm text-muted">{formatDayTime(last.at)}</span>

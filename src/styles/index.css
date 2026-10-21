@@ -2,6 +2,7 @@
 @import '@fontsource-variable/inter/opsz.css';
 
 @custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+@custom-variant in-table (:where(table) &);
 
 /* ─────────────────────────────────────────────────────────────
    Design tokens. Every color in the app comes from here.
@@ -233,6 +234,12 @@
   }
   h1, h2, h3, h4 {
     font-weight: 500;
+  }
+  /* Match the balanced Clients header spacing, including custom tables. */
+  thead th {
+    height: calc(var(--spacing) * 13);
+    padding-block: calc(var(--spacing) * 3);
+    vertical-align: middle;
   }
   * {
     scrollbar-width: thin;

@@ -1,10 +1,10 @@
+import { StatCard } from '@/components/ui/stat-card'
 import type { IconSvgElement } from '@hugeicons/react'
 import { useMemo } from 'react'
 import { toast } from 'sonner'
 import { ArrowDataTransferHorizontalIcon, Layers01Icon, ShoppingCart01Icon } from '@hugeicons/core-free-icons'
 import { I, Icon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { Money } from '@/components/ui/misc'
 import { formatNumber } from '@/lib/format'
 import { docTotal, isLow } from './data'
@@ -26,24 +26,20 @@ function ReportCard({
   file: string
 }) {
   return (
-    <Card className="flex flex-col p-5">
-      <div className="flex items-start gap-3">
-        <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-fill text-muted">
-          <Icon icon={icon} size={18} />
+    <StatCard
+      label={
+        <span className="flex items-start gap-3">
+          <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-fill text-muted"><Icon icon={icon} size={18} /></span>
+          <span className="min-w-0">
+            <span className="block text-base font-medium text-fg">{title}</span>
+            <span className="mt-0.5 block text-sm text-muted">{description}</span>
+          </span>
         </span>
-        <div className="min-w-0">
-          <h3 className="text-base font-medium text-fg">{title}</h3>
-          <p className="mt-0.5 text-sm text-muted">{description}</p>
-        </div>
-      </div>
-      <div className="mt-5 text-3xl font-normal text-fg">{figure}</div>
-      <div className="mt-1 text-sm text-muted">{detail}</div>
-      <div className="mt-5 flex">
-        <Button size="sm" icon={I.download} onClick={() => toast.success(`${file}.xlsx is downloading`)}>
-          Download Excel
-        </Button>
-      </div>
-    </Card>
+      }
+      value={figure}
+      sub={detail}
+      footer={<Button size="sm" icon={I.download} onClick={() => toast.success(`${file}.xlsx is downloading`)}>Download Excel</Button>}
+    />
   )
 }
 

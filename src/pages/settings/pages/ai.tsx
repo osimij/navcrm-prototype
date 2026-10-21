@@ -204,7 +204,7 @@ function KnowledgeTab() {
               <span className="block text-base text-fg">{title as string}</span>
               <span className="block text-sm text-muted">{sub as string}</span>
             </span>
-            <Badge tone="positive" dot>
+            <Badge tone="positive">
               Synced
             </Badge>
           </div>
@@ -424,7 +424,7 @@ function LogTab() {
               </TD>
               <TD muted>{x.summary}</TD>
               <TD>
-                <Badge tone={OUTCOME[x.outcome].tone} dot>
+                <Badge tone={OUTCOME[x.outcome].tone}>
                   {OUTCOME[x.outcome].label}
                 </Badge>
               </TD>

@@ -1,3 +1,4 @@
+import { StatCard } from '@/components/ui/stat-card'
 import type { IconSvgElement } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
@@ -177,7 +178,7 @@ function UpNext() {
                     {serviceNames(a)} · {s.name.split(' ')[0]}
                   </span>
                 </span>
-                {live ? <Badge tone={meta.tone} dot>{meta.label}</Badge> : <Avatar name={s.name} color={s.color} size="sm" />}
+                {live ? <Badge tone={meta.tone}>{meta.label}</Badge> : <Avatar name={s.name} color={s.color} size="sm" />}
               </button>
             </li>
           )
@@ -208,17 +209,7 @@ function Kpi({
   money?: boolean
 }) {
   return (
-    <Link to={to} className="press group relative block rounded-2xl bg-surface p-5 ring-1 ring-border hover:bg-fill/50">
-      <div className="flex items-center justify-between">
-        <span className="text-base text-muted">{label}</span>
-        <Icon icon={I.arrowUpRight} size={16} className="text-faint transition-colors group-hover:text-fg" />
-      </div>
-      <div className="mt-3 flex items-baseline gap-1.5">
-        <Figure value={value} money={money} className="text-3xl font-normal text-fg" />
-        {suffix && <span className="text-sm text-faint">{suffix}</span>}
-      </div>
-      <div className="mt-1.5 text-sm text-muted">{sub}</div>
-    </Link>
+    <StatCard label={label} value={<Figure value={value} money={money} />} suffix={suffix} sub={sub} to={to} />
   )
 }
 

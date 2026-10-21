@@ -138,7 +138,7 @@ export function Orders() {
                         {whereLabel(o.where)}
                       </TD>
                       <TD>
-                        <Badge tone={meta.tone} dot>
+                        <Badge tone={meta.tone}>
                           {meta.label}
                         </Badge>
                       </TD>

@@ -5,11 +5,11 @@ import type { LabelColor } from '@/data/business'
 export type Tone = 'neutral' | 'accent' | 'positive' | 'warning' | 'negative'
 
 const tones: Record<Tone, string> = {
-  neutral: 'bg-fill text-muted',
-  accent: 'bg-accent-soft text-accent-fg',
-  positive: 'bg-positive-soft text-positive',
-  warning: 'bg-warning-soft text-warning',
-  negative: 'bg-negative-soft text-negative',
+  neutral: 'text-muted',
+  accent: 'text-accent-fg',
+  positive: 'text-positive',
+  warning: 'text-warning',
+  negative: 'text-negative',
 }
 
 const dots: Record<Tone, string> = {
@@ -22,24 +22,21 @@ const dots: Record<Tone, string> = {
 
 export function Badge({
   tone = 'neutral',
-  dot,
   children,
   className,
 }: {
   tone?: Tone
-  dot?: boolean
   children: ReactNode
   className?: string
 }) {
   return (
     <span
       className={cn(
-        'inline-flex h-[22px] shrink-0 items-center gap-1.5 rounded-full px-2 text-xs font-medium whitespace-nowrap',
+        'inline-flex h-[22px] shrink-0 items-center gap-1.5 rounded-full border border-current/15 bg-transparent px-2 text-xs font-normal whitespace-nowrap',
         tones[tone],
         className,
       )}
     >
-      {dot && <span className={cn('size-1.5 rounded-full', dots[tone])} />}
       {children}
     </span>
   )
@@ -54,9 +51,8 @@ export function LabelChip({ color, children, className }: { color: LabelColor; c
   return (
     <span
       style={{ ['--label' as string]: `var(--c-${color})` }}
-      className={cn('label-soft inline-flex h-[22px] items-center gap-1.5 rounded-full px-2 text-xs font-medium text-fg', className)}
+      className={cn('inline-flex h-[22px] items-center rounded-full border border-current/15 bg-transparent px-2 text-xs font-normal text-[color:var(--label)]', className)}
     >
-      <span className="size-1.5 rounded-full bg-[var(--label)]" />
       {children}
     </span>
   )

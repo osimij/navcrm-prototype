@@ -44,7 +44,7 @@ export function TH({
   return (
     <th
       className={cn(
-        'h-9 border-b border-border px-3 text-left text-xs font-medium whitespace-nowrap text-faint first:pl-5 last:pr-5',
+        'border-b border-border px-3 text-left text-xs font-medium whitespace-nowrap text-faint first:pl-5 last:pr-5',
         align === 'right' && 'text-right',
         align === 'center' && 'text-center',
         className,

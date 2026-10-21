@@ -331,7 +331,7 @@ function LogTab() {
                     </span>
                   </TD>
                   <TD>
-                    <Badge tone={LOG_STATUS[x.status].tone} dot>
+                    <Badge tone={LOG_STATUS[x.status].tone}>
                       {LOG_STATUS[x.status].label}
                     </Badge>
                   </TD>

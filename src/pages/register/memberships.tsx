@@ -86,7 +86,7 @@ function MembershipSheet({ id, onClose }: { id: string | null; onClose: () => vo
       }
     >
       <div className="px-5 pt-5 pb-3">
-        <Badge tone={STATUS[last.status].tone} dot>
+        <Badge tone={STATUS[last.status].tone}>
           {STATUS[last.status].label}
         </Badge>
         <div className="mt-4 flex items-baseline gap-2">

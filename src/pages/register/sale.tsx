@@ -92,6 +92,7 @@ function ClientCard() {
       <CardHeader
         title="Client"
         description={client ? undefined : 'Optional for a quick product sale'}
+        descriptionInline
         action={
           client && !locked ? (
             <Button size="sm" variant="ghost" onClick={() => setCart({ clientId: null, useBonuses: false })}>
@@ -268,7 +269,7 @@ function ReceiptCard({ onAdd }: { onAdd: (k: ItemKind) => void }) {
 
   return (
     <>
-      <Card>
+      <Card className="pb-5">
         <CardHeader
           title="Receipt"
           description={count ? `${count} item${count === 1 ? '' : 's'}` : undefined}
@@ -289,13 +290,13 @@ function ReceiptCard({ onAdd }: { onAdd: (k: ItemKind) => void }) {
           }
         />
         {cart.lines.length ? (
-          <ul className="pb-1">
+          <ul>
             {cart.lines.map((l) => (
               <LineRow key={l.id} line={l} locked={locked} />
             ))}
           </ul>
         ) : (
-          <div className="mx-5 mb-5 flex items-center gap-3 rounded-xl border border-dashed border-border-strong px-4 py-5 text-base text-muted">
+          <div className="mx-5 flex items-center gap-3 rounded-xl border border-dashed border-border-strong px-4 py-5 text-base text-muted">
             <Icon icon={I.receipt} size={20} className="text-faint" />
             Add a service or product below, or scan a barcode.
           </div>
@@ -651,7 +652,7 @@ function TotalCard() {
           </button>
         )}
       </div>
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid grid-cols-2 gap-2.5">
         {shownMethods.map((id) => (
           <MethodChip key={id} id={id} selected={cart.method === id} onClick={() => setCart({ method: id, received: '' })} />
         ))}

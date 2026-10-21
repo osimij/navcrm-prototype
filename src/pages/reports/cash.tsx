@@ -196,7 +196,7 @@ export default function CashReport() {
                 </TD>
                 <TD align="right">
                   {s.open ? (
-                    <Badge tone="accent" dot>
+                    <Badge tone="accent">
                       Open
                     </Badge>
                   ) : s.diff === 0 ? (

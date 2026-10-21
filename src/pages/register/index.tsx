@@ -26,12 +26,12 @@ function RegisterLayout() {
         title="Register"
         meta={
           shift.open ? (
-            <Badge tone="positive" dot>
+            <Badge tone="positive">
               Shift open since {shift.openedAt}
             </Badge>
           ) : (
             <span className="flex items-center gap-2">
-              <Badge dot>Shift closed</Badge>
+              <Badge>Shift closed</Badge>
               <Button size="sm" variant="secondary" onClick={() => navigate('/pos/shift')}>
                 Open shift
               </Button>

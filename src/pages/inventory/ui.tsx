@@ -1,3 +1,4 @@
+import { StatCard } from '@/components/ui/stat-card'
 import { Command } from 'cmdk'
 import { useMemo, useState } from 'react'
 import { I, Icon } from '@/components/icons'
@@ -140,20 +141,6 @@ export function StatTile({
   active?: boolean
 }) {
   return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cn(
-        'press group block rounded-2xl bg-surface p-5 text-left ring-1 hover:bg-fill/50',
-        active ? 'ring-fg' : 'ring-border',
-      )}
-    >
-      <div className="flex items-center justify-between">
-        <span className="text-base text-muted">{label}</span>
-        <Icon icon={I.arrowUpRight} size={16} className="text-faint transition-colors group-hover:text-fg" />
-      </div>
-      <div className="mt-3 text-3xl font-normal text-fg">{children}</div>
-      <div className="mt-1.5 text-sm text-muted">{sub}</div>
-    </button>
+    <StatCard label={label} value={children} sub={sub} onClick={onClick} active={active} />
   )
 }

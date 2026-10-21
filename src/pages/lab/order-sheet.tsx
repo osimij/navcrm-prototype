@@ -279,7 +279,7 @@ export function OrderSheet() {
           {client && <ClientRow client={client} />}
           <div className="flex items-center gap-2">
             {isOverdue(order) && <Badge tone="negative">Overdue</Badge>}
-            <Badge tone={ORDER_STATUS[order.status].tone} dot>
+            <Badge tone={ORDER_STATUS[order.status].tone}>
               {ORDER_STATUS[order.status].label}
             </Badge>
           </div>
@@ -304,11 +304,11 @@ export function OrderSheet() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="border-b border-border text-xs text-faint">
-                    <th className="py-2 pr-3 pl-4 font-medium">Indicator</th>
-                    <th className="py-2 pr-3 font-medium">Value</th>
-                    <th className="py-2 pr-3 font-medium">Unit</th>
-                    <th className="py-2 pr-3 font-medium">Reference</th>
-                    <th className="py-2 pr-4" />
+                    <th className="pr-3 pl-4 font-medium">Indicator</th>
+                    <th className="pr-3 font-medium">Value</th>
+                    <th className="pr-3 font-medium">Unit</th>
+                    <th className="pr-3 font-medium">Reference</th>
+                    <th className="pr-4" />
                   </tr>
                 </thead>
                 <tbody className="[&_td:first-child]:pl-4 [&_td:last-child]:pr-4">

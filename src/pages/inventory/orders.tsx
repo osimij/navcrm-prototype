@@ -150,7 +150,7 @@ export function OrdersTab() {
                   <Money value={orderTotal(o)} />
                 </TD>
                 <TD>
-                  <Badge tone={STATUS[o.status].tone} dot>
+                  <Badge tone={STATUS[o.status].tone}>
                     {STATUS[o.status].label}
                   </Badge>
                 </TD>
@@ -206,7 +206,7 @@ function OrderSheet({ id, onClose }: { id: string | null; onClose: () => void })
         <div className="flex flex-col gap-6 px-5 py-5">
           <div className="divide-y divide-border">
             <DetailRow label="Status">
-              <Badge tone={STATUS[o.status].tone} dot>
+              <Badge tone={STATUS[o.status].tone}>
                 {STATUS[o.status].label}
               </Badge>
             </DetailRow>

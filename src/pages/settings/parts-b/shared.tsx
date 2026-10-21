@@ -1,3 +1,4 @@
+import { StatCard } from '@/components/ui/stat-card'
 import type { IconSvgElement } from '@hugeicons/react'
 import { useState, type ReactNode } from 'react'
 import { toast } from 'sonner'
@@ -143,11 +144,7 @@ export function QrPreview({ seed = 7, size = 132, className }: { seed?: number; 
 /** Small stat used across settings summaries. */
 export function MiniStat({ label, value, hint }: { label: ReactNode; value: ReactNode; hint?: ReactNode }) {
   return (
-    <div className="rounded-xl bg-fill px-4 py-3.5">
-      <div className="text-sm text-muted">{label}</div>
-      <div className="mt-1 text-xl text-fg tabular">{value}</div>
-      {hint && <div className="mt-0.5 text-xs text-faint">{hint}</div>}
-    </div>
+    <StatCard label={label} value={value} sub={hint} size="sm" className="rounded-xl bg-fill ring-0" />
   )
 }
 

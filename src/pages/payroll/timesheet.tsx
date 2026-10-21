@@ -180,12 +180,12 @@ export function Timesheet() {
           <table className="w-full border-separate border-spacing-0 text-sm">
             <thead>
               <tr>
-                <th className="sticky left-0 z-10 h-12 min-w-56 border-b border-border bg-surface pl-5 text-left text-xs font-medium text-faint">Staff member</th>
+                <th className="sticky left-0 z-10 min-w-56 border-b border-border bg-surface pl-5 text-left text-xs font-medium text-faint">Staff member</th>
                 {DAYS.map((d) => (
                   <th
                     key={d}
                     className={cn(
-                      'h-12 min-w-9 border-b border-border px-0.5 text-center text-xs font-medium',
+                      'min-w-9 border-b border-border px-0.5 text-center text-xs font-medium',
                       isWeekend(d) ? 'bg-fill/60 text-faint' : 'text-muted',
                     )}
                   >
@@ -195,7 +195,7 @@ export function Timesheet() {
                     </span>
                   </th>
                 ))}
-                <th className="sticky right-0 z-10 h-12 min-w-20 border-b border-l border-border bg-surface pr-5 text-right text-xs font-medium text-faint">Hours</th>
+                <th className="sticky right-0 z-10 min-w-20 border-b border-l border-border bg-surface pr-5 text-right text-xs font-medium text-faint">Hours</th>
               </tr>
             </thead>
             <tbody>

@@ -141,11 +141,11 @@ export default function SchedulesSettings() {
           <table className="w-full min-w-[760px] border-separate border-spacing-0 text-base">
             <thead>
               <tr>
-                <th className="h-11 border-b border-border px-4 text-left text-xs font-medium text-faint">Staff</th>
+                <th className="border-b border-border px-4 text-left text-xs font-medium text-faint">Staff</th>
                 {days.map((d) => (
                   <th
                     key={d.toISOString()}
-                    className={cn('h-11 border-b border-border px-1 text-center text-xs font-medium', isSameDay(d, TODAY) ? 'text-accent-fg' : 'text-faint')}
+                    className={cn('border-b border-border px-1 text-center text-xs font-medium', isSameDay(d, TODAY) ? 'text-accent-fg' : 'text-faint')}
                   >
                     {dayShort(d.getDay())} {d.getDate()}
                   </th>

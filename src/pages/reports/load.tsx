@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { I, Icon } from '@/components/icons'
+import { StatCard } from '@/components/ui/stat-card'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -117,20 +118,8 @@ export default function LoadReport() {
       <KpiRow>
         <Kpi label="Average load" value={avgLoad} suffix="%" sub="Across all working hours" />
         <Kpi label="Idle hours" value={Math.round((data.totalAvail - data.totalBooked) / 60)} suffix="h" sub="Paid working time with no bookings" />
-        <Card className="p-5">
-          <div className="text-base text-muted">Busiest time</div>
-          <div className="mt-3 text-3xl font-normal text-fg tabular">
-            {WEEK[data.busiest.w]} {hh(data.busiest.h)}
-          </div>
-          <div className="mt-1.5 text-sm text-muted">{Math.round(data.busiest.v * 100)}% booked</div>
-        </Card>
-        <Card className="p-5">
-          <div className="text-base text-muted">Quietest time</div>
-          <div className="mt-3 text-3xl font-normal text-fg tabular">
-            {WEEK[data.quietest.w]} {hh(data.quietest.h)}
-          </div>
-          <div className="mt-1.5 text-sm text-muted">{Math.round(data.quietest.v * 100)}% booked</div>
-        </Card>
+        <StatCard label="Busiest time" value={`${WEEK[data.busiest.w]} ${hh(data.busiest.h)}`} sub={`${Math.round(data.busiest.v * 100)}% booked`} />
+        <StatCard label="Quietest time" value={`${WEEK[data.quietest.w]} ${hh(data.quietest.h)}`} sub={`${Math.round(data.quietest.v * 100)}% booked`} />
       </KpiRow>
 
       {data.idle.v < avgLoad / 100 - 0.15 && (

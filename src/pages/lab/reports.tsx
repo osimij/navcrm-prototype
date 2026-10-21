@@ -1,3 +1,4 @@
+import { StatCard } from '@/components/ui/stat-card'
 import { useMemo, useState } from 'react'
 import { BarChart } from '@/components/charts/bar-chart'
 import { Card, CardHeader } from '@/components/ui/card'
@@ -27,14 +28,7 @@ function Stat({
   decimals?: number
 }) {
   return (
-    <div className="rounded-2xl bg-surface p-5 ring-1 ring-border">
-      <div className="text-base text-muted">{label}</div>
-      <div className="mt-3 flex items-baseline gap-1.5">
-        <Figure value={value} money={money} format={{ maximumFractionDigits: decimals }} className="text-3xl font-normal text-fg" />
-        {suffix && <span className="text-sm text-faint">{suffix}</span>}
-      </div>
-      <div className="mt-1.5 text-sm text-muted">{sub}</div>
-    </div>
+    <StatCard label={label} value={<Figure value={value} money={money} format={{ maximumFractionDigits: decimals }} />} suffix={suffix} sub={sub} />
   )
 }
 

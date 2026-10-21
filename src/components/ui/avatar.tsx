@@ -22,6 +22,7 @@ function colorFor(name: string): LabelColor {
 /**
  * Initials avatar. Staff pass their calendar color so the same person reads the
  * same everywhere; clients get a stable color from their name.
+ * Tables use text identities instead, including when an avatar is in a shared row.
  */
 export function Avatar({
   name,
@@ -41,7 +42,7 @@ export function Avatar({
     <span
       style={{ ['--label' as string]: `var(--c-${c})` }}
       className={cn(
-        'label-soft relative inline-grid shrink-0 place-items-center rounded-full font-semibold text-[color-mix(in_oklab,var(--label)_70%,var(--fg))] select-none',
+        'label-soft relative inline-grid shrink-0 place-items-center rounded-full font-semibold text-[color-mix(in_oklab,var(--label)_70%,var(--fg))] select-none in-table:hidden',
         sizes[size],
         className,
       )}
@@ -57,15 +58,20 @@ export function AvatarStack({ names, max = 3, size = 'sm' }: { names: { name: st
   const shown = names.slice(0, max)
   const rest = names.length - shown.length
   return (
-    <span className="flex -space-x-1.5">
-      {shown.map((n, i) => (
-        <Avatar key={i} name={n.name} color={n.color} size={size} className="ring-2 ring-surface" />
-      ))}
-      {rest > 0 && (
-        <span className={cn('inline-grid place-items-center rounded-full bg-fill font-medium text-muted ring-2 ring-surface', sizes[size])}>
-          +{rest}
-        </span>
-      )}
-    </span>
+    <>
+      <span className="flex -space-x-1.5 in-table:hidden">
+        {shown.map((n, i) => (
+          <Avatar key={i} name={n.name} color={n.color} size={size} className="ring-2 ring-surface" />
+        ))}
+        {rest > 0 && (
+          <span className={cn('inline-grid place-items-center rounded-full bg-fill font-medium text-muted ring-2 ring-surface', sizes[size])}>
+            +{rest}
+          </span>
+        )}
+      </span>
+      <span className="hidden max-w-56 truncate text-sm text-muted in-table:block" title={names.map((n) => n.name).join(', ')}>
+        {shown.map((n) => n.name).join(', ')}{rest > 0 && ` +${rest}`}
+      </span>
+    </>
   )
 }

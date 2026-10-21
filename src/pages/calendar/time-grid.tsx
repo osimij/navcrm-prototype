@@ -1,6 +1,7 @@
 import { useEffect, useLayoutEffect, useMemo, useRef, useState, type PointerEvent, type ReactNode } from 'react'
 import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
+import { Badge } from '@/components/ui/badge'
 import { BLOCK_LABEL, isVisit, serviceNames, type Appointment, type CalendarEntry } from '@/data/appointments'
 import type { LabelColor } from '@/data/business'
 import { serviceById } from '@/data/services'
@@ -450,10 +451,10 @@ function EntryBlock({
           {compact && <span className="ml-1.5 font-normal text-muted tabular">{formatTime(a.start)}</span>}
         </span>
         {a.status === 'arrived' && (
-          <span className="shrink-0 rounded-full bg-warning-soft px-1.5 text-[11px] leading-[18px] font-medium text-warning">Arrived</span>
+          <Badge tone="warning" className="h-5 px-1.5 text-2xs">Arrived</Badge>
         )}
         {a.status === 'no_show' && (
-          <span className="shrink-0 rounded-full bg-negative-soft px-1.5 text-[11px] leading-[18px] font-medium text-negative">No-show</span>
+          <Badge tone="negative" className="h-5 px-1.5 text-2xs">No-show</Badge>
         )}
         {a.status === 'in_progress' && <span className="size-1.5 shrink-0 rounded-full bg-[var(--label)]" />}
         {done && <Icon icon={I.check} size={14} strokeWidth={2.2} className="shrink-0 text-positive" />}

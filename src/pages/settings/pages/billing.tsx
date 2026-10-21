@@ -308,7 +308,7 @@ export default function BillingSettings() {
                   <TD>{inv.what}</TD>
                   <TD muted>{inv.method}</TD>
                   <TD>
-                    <Badge tone="positive" dot>
+                    <Badge tone="positive">
                       Paid
                     </Badge>
                   </TD>

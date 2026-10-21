@@ -50,9 +50,6 @@ function NameCell({ m }: { m: Member }) {
   if (m.status === 'invited') {
     return (
       <span className="flex items-center gap-3">
-        <span className="grid size-8 shrink-0 place-items-center rounded-full border border-dashed border-border-strong text-faint">
-          <Icon icon={I.user} size={15} />
-        </span>
         <span className="min-w-0">
           <span className="block text-fg">Invited {m.position.toLowerCase()}</span>
           <span className="block text-sm text-muted">Hasn’t joined yet · invited {formatRelative(m.hired)}</span>
@@ -377,7 +374,7 @@ export default function StaffSettings() {
                           Resend invite
                         </Button>
                       ) : (
-                        <Badge tone={STATUS[m.status].tone} dot>
+                        <Badge tone={STATUS[m.status].tone}>
                           {STATUS[m.status].label}
                         </Badge>
                       )}
@@ -402,14 +399,7 @@ export default function StaffSettings() {
                 <TR key={pos}>
                   <TD>{pos}</TD>
                   <TD>
-                    <span className="flex items-center gap-2">
-                      <span className="flex -space-x-1.5">
-                        {list.slice(0, 3).map((m) => (
-                          <Avatar key={m.id} name={m.name || '?'} color={m.color} size="sm" className="ring-2 ring-surface" />
-                        ))}
-                      </span>
-                      <span className="text-sm text-muted tabular">{list.length}</span>
-                    </span>
+                    <span className="text-sm text-muted tabular">{list.length}</span>
                   </TD>
                   <TD muted>{list[0].role}</TD>
                   <TD muted>
@@ -493,7 +483,7 @@ export default function StaffSettings() {
               <div>
                 <div className="text-lg text-fg">{current.name || `Invited ${current.position.toLowerCase()}`}</div>
                 <div className="text-sm text-muted">{current.position}</div>
-                <Badge tone={STATUS[current.status].tone} dot className="mt-2">
+                <Badge tone={STATUS[current.status].tone} className="mt-2">
                   {STATUS[current.status].label}
                 </Badge>
               </div>

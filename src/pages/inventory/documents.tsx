@@ -85,7 +85,7 @@ export function DocumentsTab() {
                       <Money value={docTotal(d)} />
                     </TD>
                     <TD>
-                      <Badge tone={DOC_STATUS[d.status].tone} dot>
+                      <Badge tone={DOC_STATUS[d.status].tone}>
                         {DOC_STATUS[d.status].label}
                       </Badge>
                     </TD>
@@ -161,7 +161,7 @@ function DocumentSheet({ id, onClose }: { id: string | null; onClose: () => void
       {d && (
         <div className="flex flex-col gap-6 px-5 py-5">
           <div className="flex items-center gap-3">
-            <Badge tone={DOC_STATUS[d.status].tone} dot>
+            <Badge tone={DOC_STATUS[d.status].tone}>
               {DOC_STATUS[d.status].label}
             </Badge>
             <span className="text-sm text-muted">{DOC_TYPE[d.type].description}</span>

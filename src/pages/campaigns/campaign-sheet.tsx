@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
 import { Badge } from '@/components/ui/badge'
+import { StatCard } from '@/components/ui/stat-card'
 import { Button } from '@/components/ui/button'
 import { DetailRow, Sheet } from '@/components/ui/dialog'
 import { Meter, Money } from '@/components/ui/misc'
@@ -82,7 +83,7 @@ export function CampaignSheet({ campaign, onClose }: { campaign: Campaign | null
       {c && (
         <div className="flex flex-col gap-6 p-5">
           <div className="flex flex-wrap items-center gap-2 text-sm text-muted">
-            <Badge tone={STATUS_TONE[c.status]} dot>
+            <Badge tone={STATUS_TONE[c.status]}>
               {STATUS_LABEL[c.status]}
             </Badge>
             <span>{c.audienceLabel}</span>
@@ -98,28 +99,18 @@ export function CampaignSheet({ campaign, onClose }: { campaign: Campaign | null
           )}
 
           {notSent ? (
-            <div className="rounded-2xl bg-fill p-4">
-              <div className="text-sm text-muted">{c.status === 'scheduled' ? 'Goes out' : c.status === 'sending' ? 'Going out now' : 'Not sent yet'}</div>
-              <div className="mt-1 text-xl text-fg">
-                {c.status === 'scheduled' && c.date ? formatDayTime(c.date) : c.status === 'sending' ? `${formatNumber(c.recipients)} clients` : `${formatNumber(c.recipients)} clients ready`}
-              </div>
-              {c.status === 'sending' && <div className="mt-1 text-sm text-muted">Results appear as clients book. We count returns for 14 days.</div>}
-            </div>
+            <StatCard
+              size="sm"
+              className="bg-fill ring-0"
+              label={c.status === 'scheduled' ? 'Goes out' : c.status === 'sending' ? 'Going out now' : 'Not sent yet'}
+              value={c.status === 'scheduled' && c.date ? formatDayTime(c.date) : c.status === 'sending' ? `${formatNumber(c.recipients)} clients` : `${formatNumber(c.recipients)} clients ready`}
+              sub={c.status === 'sending' ? 'Results appear as clients book. We count returns for 14 days.' : undefined}
+            />
           ) : (
             <>
               <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-2xl bg-fill p-4">
-                  <div className="text-sm text-muted">Revenue from returning clients</div>
-                  <div className="mt-1 text-2xl text-fg">
-                    <Money value={c.revenue} />
-                  </div>
-                </div>
-                <div className="rounded-2xl bg-fill p-4">
-                  <div className="text-sm text-muted">Spent on messages</div>
-                  <div className="mt-1 text-2xl text-fg">
-                    <Money value={c.cost} decimals />
-                  </div>
-                </div>
+                <StatCard size="sm" className="bg-fill ring-0" label="Revenue from returning clients" value={<Money value={c.revenue} />} />
+                <StatCard size="sm" className="bg-fill ring-0" label="Spent on messages" value={<Money value={c.cost} decimals />} />
               </div>
 
               <section>

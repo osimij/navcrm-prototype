@@ -9,6 +9,7 @@ import { Chip, Switch } from '@/components/ui/controls'
 import { DatePicker } from '@/components/ui/date-picker'
 import { Field, Input } from '@/components/ui/input'
 import { Figure } from '@/components/ui/misc'
+import { StatCard } from '@/components/ui/stat-card'
 import { Page, PageHeader } from '@/components/ui/page'
 import { Select } from '@/components/ui/select'
 import { Segmented } from '@/components/ui/tabs'
@@ -228,12 +229,13 @@ export function NewSegment() {
         </div>
 
         <Card className="sticky top-6 p-5">
-          <div className="text-base text-muted">Matching clients</div>
-          <div className="mt-1 flex items-baseline gap-2">
-            <Figure value={matches.length} className="text-5xl font-normal text-fg" />
-            <span className="text-sm text-faint">of {formatNumber(active.length)}</span>
-          </div>
-          {noConsent > 0 && <p className="mt-2 text-sm text-muted">{formatNumber(noConsent)} haven’t agreed to promotions; campaigns will skip them.</p>}
+          <StatCard
+            className="min-h-28 rounded-none bg-transparent p-0 ring-0"
+            label="Matching clients"
+            value={<Figure value={matches.length} />}
+            suffix={`of ${formatNumber(active.length)}`}
+            sub={noConsent > 0 ? `${formatNumber(noConsent)} haven’t agreed to promotions; campaigns will skip them.` : undefined}
+          />
 
           <div className="mt-4 min-h-[188px] border-t border-border pt-3">
             {matches.length ? (

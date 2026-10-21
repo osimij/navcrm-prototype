@@ -130,7 +130,7 @@ export const I = {
   lab: TestTube01Icon,
   campaigns: Megaphone01Icon,
   channels: InstagramIcon,
-  assistant: SparklesIcon,
+  assistant: Message01Icon,
   reports: Analytics01Icon,
   payroll: Wallet02Icon,
   sublease: Chair01Icon,

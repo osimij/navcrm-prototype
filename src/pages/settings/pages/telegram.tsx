@@ -121,7 +121,7 @@ export default function TelegramSettings() {
             <div className="flex items-center justify-between gap-3">
               <span className="flex items-center gap-2">
                 <span className="text-base text-fg">@zarina_k</span>
-                <Badge tone="positive" dot>
+                <Badge tone="positive">
                   Connected
                 </Badge>
               </span>

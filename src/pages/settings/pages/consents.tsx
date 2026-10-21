@@ -195,11 +195,11 @@ export default function ConsentsSettings() {
                   <TD muted>v{c.version}</TD>
                   <TD>
                     {c.reviewed ? (
-                      <Badge tone="positive" dot>
+                      <Badge tone="positive">
                         Reviewed by a lawyer
                       </Badge>
                     ) : (
-                      <Badge tone="warning" dot>
+                      <Badge tone="warning">
                         Not reviewed yet
                       </Badge>
                     )}

@@ -100,7 +100,7 @@ export default function BranchesSettings() {
                   </TD>
                   <TD align="right">{count}</TD>
                   <TD>
-                    <Badge tone="positive" dot>
+                    <Badge tone="positive">
                       Active
                     </Badge>
                   </TD>

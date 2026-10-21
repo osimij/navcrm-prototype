@@ -162,7 +162,7 @@ export function Platforms() {
                     </span>
                   )}
                 </span>
-                <Badge tone={tone} dot>
+                <Badge tone={tone}>
                   {p.id === 'after_visit' ? 'On' : STATUS_LABEL[p.status]}
                 </Badge>
               </div>

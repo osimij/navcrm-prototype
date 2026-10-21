@@ -106,7 +106,7 @@ export function Partners() {
                 )}
               </div>
               <div className="mt-4">
-                <Badge tone={s.tone} dot>
+                <Badge tone={s.tone}>
                   {s.label}
                 </Badge>
               </div>

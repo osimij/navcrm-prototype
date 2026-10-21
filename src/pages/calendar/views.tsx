@@ -200,7 +200,7 @@ export function ListView({ date }: { date: Date }) {
                       </span>
                     </TD>
                     <TD>
-                      <Badge tone={meta.tone} dot>
+                      <Badge tone={meta.tone}>
                         {meta.label}
                       </Badge>
                     </TD>

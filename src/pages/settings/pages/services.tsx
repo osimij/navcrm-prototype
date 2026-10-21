@@ -266,6 +266,7 @@ export default function ServicesSettings() {
                     <span onClick={(e) => e.stopPropagation()}>
                       <Switch
                         checked={s.online}
+                        aria-label={`Online booking for ${s.names.en}`}
                         onChange={(online) => {
                           setList((l) => l.map((x) => (x.id === s.id ? { ...x, online } : x)))
                           toast(online ? `${s.names.en} is bookable online` : `${s.names.en} hidden from online booking`)

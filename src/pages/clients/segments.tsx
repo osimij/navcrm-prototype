@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import { ClientRow } from '@/components/client-picker'
+import { StatCard } from '@/components/ui/stat-card'
 import { I, Icon } from '@/components/icons'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -156,11 +157,7 @@ export function Segments() {
       >
         {open && (
           <div className="flex flex-col gap-6 p-5">
-            <div>
-              <div className="text-sm text-muted">Matching clients</div>
-              <div className="mt-1 text-4xl font-normal text-fg tabular">{formatNumber(counts[open.id])}</div>
-              <div className="mt-1 text-sm text-faint">Counted today at {COUNTED_AT}. Updates every night.</div>
-            </div>
+            <StatCard size="sm" className="rounded-none bg-transparent p-0 ring-0" label="Matching clients" value={formatNumber(counts[open.id])} sub={`Counted today at ${COUNTED_AT}. Updates every night.`} />
             <div>
               <div className="mb-2 text-sm font-medium text-muted">Conditions</div>
               <ul className="flex flex-col gap-1.5">

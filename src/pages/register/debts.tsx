@@ -7,7 +7,8 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Switch } from '@/components/ui/controls'
-import { EmptyState, KeyValue, Money } from '@/components/ui/misc'
+import { EmptyState, Money } from '@/components/ui/misc'
+import { StatCard } from '@/components/ui/stat-card'
 import { Toolbar } from '@/components/ui/page'
 import { TD, TH, THead, TR, Table } from '@/components/ui/table'
 import { formatDate, formatPhone, plural } from '@/lib/format'
@@ -41,9 +42,9 @@ export function Debts() {
   return (
     <>
       <Card className="mb-5 grid grid-cols-3 divide-x divide-border">
-        <KeyValue className="px-5 py-4" label="Clients owe" value={<Money value={total} />} />
-        <KeyValue className="px-5 py-4" label="Overdue" value={<Money value={overdue} className={overdue ? 'text-negative' : ''} />} />
-        <KeyValue className="px-5 py-4" label="Clients with debt" value={rows.length} />
+        <StatCard size="sm" className="rounded-none bg-transparent ring-0" label="Clients owe" value={<Money value={total} />} />
+        <StatCard size="sm" className="rounded-none bg-transparent ring-0" label="Overdue" value={<Money value={overdue} className={overdue ? 'text-negative' : ''} />} />
+        <StatCard size="sm" className="rounded-none bg-transparent ring-0" label="Clients with debt" value={rows.length} />
       </Card>
 
       <Toolbar>

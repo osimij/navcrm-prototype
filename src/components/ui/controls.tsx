@@ -53,20 +53,24 @@ export function Switch({
   label,
   description,
   className,
+  'aria-label': ariaLabel,
 }: {
   checked: boolean
   onChange: (v: boolean) => void
   label?: ReactNode
   description?: ReactNode
   className?: string
+  'aria-label'?: string
 }) {
+  // Fixed pixel dimensions need 16px of travel: 38 - 18 - (2 * 2).
   const sw = (
     <S.Root
       checked={checked}
       onCheckedChange={onChange}
-      className="relative inline-flex h-[22px] w-[38px] shrink-0 items-center rounded-full bg-fill-active p-[2px] transition-colors duration-200 ease-[ease] data-[checked]:bg-accent"
+      aria-label={ariaLabel}
+      className="relative inline-flex h-[22px] w-[38px] shrink-0 items-center rounded-full bg-fill-active p-[2px] align-middle transition-colors duration-150 ease-[ease] data-[checked]:bg-accent motion-reduce:transition-none"
     >
-      <S.Thumb className="size-[18px] rounded-full bg-white shadow-[0_1px_3px_rgb(0_0_0/0.2)] transition-transform duration-200 ease-[var(--ease-out)] data-[checked]:translate-x-4" />
+      <S.Thumb className="block size-[18px] shrink-0 rounded-full bg-white shadow-[0_1px_3px_rgb(0_0_0/0.2)] transition-transform duration-150 ease-[var(--ease-out)] data-[checked]:translate-x-[16px] motion-reduce:transition-none" />
     </S.Root>
   )
   if (!label) return sw

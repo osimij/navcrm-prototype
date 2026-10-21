@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { I } from '@/components/icons'
 import { Avatar } from '@/components/ui/avatar'
+import { StatCard } from '@/components/ui/stat-card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
@@ -300,18 +301,8 @@ function TenantSheet({ tenant, open, onClose, offset }: { tenant: Tenant | null;
           </div>
         </div>
         <div className="grid grid-cols-2 gap-3 px-5 pt-5">
-          <div className={cn('rounded-xl p-4', b.owes > 0 ? 'bg-negative-soft' : 'bg-fill')}>
-            <div className="text-sm text-muted">Rent balance</div>
-            <div className="mt-1 text-xl">
-              <BalanceCell owes={b.owes} />
-            </div>
-          </div>
-          <div className="rounded-xl bg-fill p-4">
-            <div className="text-sm text-muted">Holding for them</div>
-            <div className="mt-1 text-xl text-fg">
-              <Money value={Math.max(0, b.held)} />
-            </div>
-          </div>
+          <StatCard size="sm" label="Rent balance" value={<BalanceCell owes={b.owes} />} className={cn('rounded-xl ring-0', b.owes > 0 ? 'bg-negative-soft' : 'bg-fill')} />
+          <StatCard size="sm" label="Holding for them" value={<Money value={Math.max(0, b.held)} />} className="rounded-xl bg-fill ring-0" />
         </div>
         <div className="px-5 pt-4">
           <DetailRow label="Place">{tenant.place ?? 'No fixed place'}</DetailRow>

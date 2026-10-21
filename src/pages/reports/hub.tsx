@@ -1,3 +1,4 @@
+import { StatCard } from '@/components/ui/stat-card'
 import { useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { toast } from 'sonner'
@@ -32,19 +33,7 @@ function ReportCard({
   spark?: number[]
 }) {
   return (
-    <Link to={to} className="press group flex flex-col rounded-2xl bg-surface p-5 ring-1 ring-border hover:bg-fill/50">
-      <div className="flex items-center justify-between">
-        <span className="text-base text-muted">{title}</span>
-        <Icon icon={I.arrowUpRight} size={16} className="text-faint transition-colors group-hover:text-fg" />
-      </div>
-      <div className="mt-3 flex items-end justify-between gap-4">
-        <div className="min-w-0">
-          <div className="text-2xl font-normal text-fg tabular">{value}</div>
-          {caption && <div className="mt-1 text-sm text-muted">{caption}</div>}
-        </div>
-        {spark && spark.length > 1 && <Sparkline values={spark} className="mb-1 shrink-0 text-faint group-hover:text-muted" />}
-      </div>
-    </Link>
+    <StatCard label={title} value={value} sub={caption} to={to} valueClassName="text-2xl" aside={spark && spark.length > 1 ? <Sparkline values={spark} className="mb-1 shrink-0 text-faint group-hover:text-muted" /> : undefined} />
   )
 }
 

@@ -3,6 +3,7 @@ import { I } from '@/components/icons'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
+import { StatCard } from '@/components/ui/stat-card'
 import { Chip } from '@/components/ui/controls'
 import { EmptyState, Money } from '@/components/ui/misc'
 import { Toolbar } from '@/components/ui/page'
@@ -33,26 +34,10 @@ export function CampaignList() {
 
   return (
     <>
-      <Card className="mb-6 grid gap-6 p-5 sm:grid-cols-3">
-        <div>
-          <div className="text-sm text-muted">Came back after a campaign</div>
-          <div className="mt-1 text-3xl font-normal text-fg tabular">{formatNumber(back)}</div>
-          <div className="mt-1 text-sm text-faint">clients, last 90 days</div>
-        </div>
-        <div>
-          <div className="text-sm text-muted">Revenue from their visits</div>
-          <div className="mt-1 text-3xl font-normal text-fg">
-            <Money value={revenue} />
-          </div>
-          <div className="mt-1 text-sm text-faint">within 14 days of the message</div>
-        </div>
-        <div>
-          <div className="text-sm text-muted">Spent on messages</div>
-          <div className="mt-1 text-3xl font-normal text-fg">
-            <Money value={cost} decimals />
-          </div>
-          <div className="mt-1 text-sm text-faint">Telegram and push are free</div>
-        </div>
+      <Card className="mb-6 grid gap-4 sm:grid-cols-3">
+        <StatCard label="Came back after a campaign" value={formatNumber(back)} sub="clients, last 90 days" className="bg-transparent ring-0" />
+        <StatCard label="Revenue from their visits" value={<Money value={revenue} />} sub="within 14 days of the message" className="bg-transparent ring-0" />
+        <StatCard label="Spent on messages" value={<Money value={cost} decimals />} sub="Telegram and push are free" className="bg-transparent ring-0" />
       </Card>
 
       <Toolbar>
@@ -89,7 +74,7 @@ export function CampaignList() {
                       <ChannelIcons channels={c.channels} />
                     </TD>
                     <TD>
-                      <Badge tone={STATUS_TONE[c.status]} dot>
+                      <Badge tone={STATUS_TONE[c.status]}>
                         {STATUS_LABEL[c.status]}
                       </Badge>
                     </TD>

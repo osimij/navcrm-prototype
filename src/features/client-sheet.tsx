@@ -1,3 +1,4 @@
+import { StatCard } from '@/components/ui/stat-card'
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
@@ -26,10 +27,7 @@ type Tab = 'overview' | 'visits' | 'payments' | 'notes'
 
 function Stat({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="min-w-0 rounded-xl bg-fill px-3.5 py-3">
-      <div className="text-sm text-muted">{label}</div>
-      <div className="mt-1 truncate text-lg text-fg tabular">{children}</div>
-    </div>
+    <StatCard label={label} value={children} size="sm" className="rounded-xl bg-fill px-3.5 ring-0" valueClassName="truncate text-lg" />
   )
 }
 

@@ -1,10 +1,10 @@
+import { StatCard } from '@/components/ui/stat-card'
 import { useMemo, useState, type ReactNode } from 'react'
 import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
 import { Avatar } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { Card } from '@/components/ui/card'
 import { MiniCalendar } from '@/components/ui/date-picker'
 import { Menu, MenuItem } from '@/components/ui/menu'
 import { Figure } from '@/components/ui/misc'
@@ -183,19 +183,7 @@ export function Kpi({
   decimals?: number
 }) {
   return (
-    <Card className="p-5">
-      <div className="text-base text-muted">{label}</div>
-      <div className="mt-3 flex items-baseline gap-1.5">
-        <Figure
-          value={value}
-          money={money}
-          format={decimals ? { minimumFractionDigits: decimals, maximumFractionDigits: decimals } : undefined}
-          className="text-3xl font-normal text-fg"
-        />
-        {suffix && <span className="text-sm text-faint">{suffix}</span>}
-      </div>
-      {sub && <div className="mt-1.5 text-sm text-muted">{sub}</div>}
-    </Card>
+    <StatCard label={label} value={<Figure value={value} money={money} format={decimals ? { minimumFractionDigits: decimals, maximumFractionDigits: decimals } : undefined} />} suffix={suffix} sub={sub} />
   )
 }
 

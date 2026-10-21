@@ -57,11 +57,11 @@ export default function CatalogSettings() {
         <SettingsRow label="Show in the catalog" description="Changes to the description and photos are checked within a day.">
           <div className="flex items-center justify-between gap-3">
             {v.published ? (
-              <Badge tone="positive" dot>
+              <Badge tone="positive">
                 Published
               </Badge>
             ) : (
-              <Badge dot>Hidden</Badge>
+              <Badge>Hidden</Badge>
             )}
             <Switch checked={v.published} onChange={(x) => form.set('published', x)} />
           </div>

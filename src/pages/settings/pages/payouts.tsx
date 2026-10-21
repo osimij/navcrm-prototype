@@ -39,11 +39,11 @@ export default function PayoutsSettings() {
       <SettingsSection title="Status">
         <SettingsRow label="Online prepayment" description="Prepayment rules (who pays and how much) are set in Online booking.">
           {submitted ? (
-            <Badge tone="warning" dot>
+            <Badge tone="warning">
               Verifying account
             </Badge>
           ) : (
-            <Badge dot>Off</Badge>
+            <Badge>Off</Badge>
           )}
           <p className="mt-2 text-sm text-muted">
             {submitted

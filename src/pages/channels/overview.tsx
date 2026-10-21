@@ -1,3 +1,4 @@
+import { StatCard } from '@/components/ui/stat-card'
 import type { ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router'
 import { I, Icon } from '@/components/icons'
@@ -11,17 +12,7 @@ import { useChannelStats } from './stats'
 
 function Kpi({ label, value, suffix, sub, to }: { label: string; value: number; suffix?: string; sub: ReactNode; to: string }) {
   return (
-    <Link to={to} className="press group block rounded-2xl bg-surface p-5 ring-1 ring-border hover:bg-fill/50">
-      <div className="flex items-center justify-between gap-2">
-        <span className="text-base text-muted">{label}</span>
-        <Icon icon={I.arrowUpRight} size={16} className="shrink-0 text-faint transition-colors group-hover:text-fg" />
-      </div>
-      <div className="mt-3 flex items-baseline gap-1">
-        <Figure value={value} className="text-3xl font-normal text-fg" />
-        {suffix && <span className="text-base text-faint">{suffix}</span>}
-      </div>
-      <div className="mt-1.5 text-sm text-muted">{sub}</div>
-    </Link>
+    <StatCard label={label} value={<Figure value={value} />} suffix={suffix} sub={sub} to={to} />
   )
 }
 

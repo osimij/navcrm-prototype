@@ -95,7 +95,7 @@ export function Printer() {
           <Row label="Status">
             {state === 'connected' ? (
               <div className="flex items-center gap-2">
-                <Badge tone="positive" dot>
+                <Badge tone="positive">
                   Connected
                 </Badge>
                 <span className="text-base text-muted">Xprinter XP-58IIH</span>
@@ -104,7 +104,7 @@ export function Printer() {
                 </Button>
               </div>
             ) : (
-              <Badge dot>{state === 'connecting' ? 'Looking for printers…' : 'Not connected'}</Badge>
+              <Badge>{state === 'connecting' ? 'Looking for printers…' : 'Not connected'}</Badge>
             )}
           </Row>
           <Row label="Paper width" description="Check the roll in your printer. Most compact printers use 58 mm.">

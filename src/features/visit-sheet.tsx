@@ -433,7 +433,7 @@ export function VisitSheet() {
         <div className="flex flex-col">
           <section className="px-5 pt-5 pb-5">
             <div className="flex items-center gap-2">
-              <Badge tone={meta.tone} dot>
+              <Badge tone={meta.tone}>
                 {meta.label}
               </Badge>
               {visit.recurring && (

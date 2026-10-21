@@ -1,3 +1,4 @@
+import { StatCard } from '@/components/ui/stat-card'
 import type { ReactNode } from 'react'
 import { I, Icon } from '@/components/icons'
 import { Avatar } from '@/components/ui/avatar'
@@ -28,18 +29,7 @@ export function StatTile({
   className?: string
 }) {
   return (
-    <div className={cn('rounded-2xl bg-surface p-5 ring-1 ring-border', className)}>
-      <div className="text-base text-muted">{label}</div>
-      <div className="mt-3 flex items-baseline gap-1.5">
-        <Figure
-          value={value}
-          money={money}
-          className={cn('text-3xl font-normal', tone === 'negative' && value > 0 ? 'text-negative' : tone === 'positive' ? 'text-positive' : 'text-fg')}
-        />
-        <span className="text-sm text-faint">{suffix ?? (money ? CURRENCY : '')}</span>
-      </div>
-      {sub && <div className="mt-1.5 text-sm text-muted">{sub}</div>}
-    </div>
+    <StatCard label={label} value={<Figure value={value} money={money} />} suffix={suffix ?? (money ? CURRENCY : undefined)} sub={sub} className={className} valueClassName={tone === 'negative' && value > 0 ? 'text-negative' : tone === 'positive' ? 'text-positive' : undefined} />
   )
 }
 
@@ -65,7 +55,7 @@ export function PeriodBadge({ status }: { status: PeriodStatus }) {
       </Badge>
     )
   return (
-    <Badge tone={status === 'calculated' ? 'accent' : 'neutral'} dot>
+    <Badge tone={status === 'calculated' ? 'accent' : 'neutral'}>
       {STATUS_LABEL[status]}
     </Badge>
   )

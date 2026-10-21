@@ -1,0 +1,71 @@
+import type { ReactNode } from 'react'
+import { cn } from '@/lib/cn'
+import { initials } from '@/lib/format'
+import type { LabelColor } from '@/data/business'
+
+const sizes = {
+  xs: 'size-5 text-[9px]',
+  sm: 'size-6 text-[10px]',
+  md: 'size-8 text-xs',
+  lg: 'size-10 text-sm',
+  xl: 'size-14 text-lg',
+}
+
+const PALETTE: LabelColor[] = ['indigo', 'sky', 'teal', 'green', 'amber', 'orange', 'rose', 'violet']
+
+function colorFor(name: string): LabelColor {
+  let h = 0
+  for (let i = 0; i < name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0
+  return PALETTE[h % PALETTE.length]
+}
+
+/**
+ * Initials avatar. Staff pass their calendar color so the same person reads the
+ * same everywhere; clients get a stable color from their name.
+ */
+export function Avatar({
+  name,
+  color,
+  size = 'md',
+  className,
+  children,
+}: {
+  name: string
+  color?: LabelColor
+  size?: keyof typeof sizes
+  className?: string
+  children?: ReactNode
+}) {
+  const c = color ?? colorFor(name || '?')
+  return (
+    <span
+      style={{ ['--label' as string]: `var(--c-${c})` }}
+      className={cn(
+        'label-soft relative inline-grid shrink-0 place-items-center rounded-full font-semibold text-[color-mix(in_oklab,var(--label)_70%,var(--fg))] select-none',
+        sizes[size],
+        className,
+      )}
+      aria-hidden
+    >
+      {name ? initials(name) : '?'}
+      {children}
+    </span>
+  )
+}
+
+export function AvatarStack({ names, max = 3, size = 'sm' }: { names: { name: string; color?: LabelColor }[]; max?: number; size?: keyof typeof sizes }) {
+  const shown = names.slice(0, max)
+  const rest = names.length - shown.length
+  return (
+    <span className="flex -space-x-1.5">
+      {shown.map((n, i) => (
+        <Avatar key={i} name={n.name} color={n.color} size={size} className="ring-2 ring-surface" />
+      ))}
+      {rest > 0 && (
+        <span className={cn('inline-grid place-items-center rounded-full bg-fill font-medium text-muted ring-2 ring-surface', sizes[size])}>
+          +{rest}
+        </span>
+      )}
+    </span>
+  )
+}

@@ -1,0 +1,425 @@
+@import 'tailwindcss';
+@import '@fontsource-variable/inter/opsz.css';
+
+@custom-variant dark (&:where([data-theme='dark'], [data-theme='dark'] *));
+
+/* ─────────────────────────────────────────────────────────────
+   Design tokens. Every color in the app comes from here.
+   Names are semantic so they map 1:1 to Figma variables.
+   ───────────────────────────────────────────────────────────── */
+:root {
+  color-scheme: light;
+
+  --bg: #ffffff;
+  --bg-sidebar: #fafafb;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --fill: #f4f4f6;
+  --fill-hover: #ededf0;
+  --fill-active: #e6e6ea;
+  --border: #eaeaee;
+  --border-strong: #d9d9df;
+
+  --fg: #0b0b10;
+  --muted: #5e5e68;
+  --faint: #787883;
+  --disabled: #aeaeb6;
+
+  --accent: #0011ff;
+  --accent-hover: #000ee0;
+  --accent-fg: #0011ff;
+  --accent-soft: #eef0ff;
+  --on-accent: #ffffff;
+
+  --positive: #0f8a4f;
+  --positive-soft: #e8f6ee;
+  --negative: #d92d20;
+  --negative-soft: #fdeeec;
+  --warning: #b25e09;
+  --warning-soft: #fdf3e5;
+
+  --backdrop: rgb(12 12 22 / 0.28);
+  --shadow-xs: 0 1px 2px rgb(16 16 24 / 0.04);
+  --shadow-sm: 0 1px 2px rgb(16 16 24 / 0.05), 0 1px 1px rgb(16 16 24 / 0.03);
+  --shadow-popover: 0 0 0 1px var(--border), 0 12px 32px -6px rgb(16 16 24 / 0.14), 0 2px 6px rgb(16 16 24 / 0.05);
+  --shadow-modal: 0 0 0 1px rgb(16 16 24 / 0.04), 0 24px 64px -12px rgb(16 16 24 / 0.24);
+
+  /* Calendar / staff label colors. Soft fills are mixed per theme below. */
+  --c-indigo: #5b6cff;
+  --c-sky: #1f95e0;
+  --c-teal: #0f9f95;
+  --c-green: #3a9d55;
+  --c-amber: #d99a00;
+  --c-orange: #ec7330;
+  --c-rose: #e2457a;
+  --c-violet: #9457e0;
+  --c-slate: #77818f;
+  --label-mix: 13%;
+
+  /* Motion (from Emil Kowalski's design engineering guidelines) */
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --bg: #0f0f12;
+  --bg-sidebar: #0b0b0e;
+  --surface: #16161a;
+  --surface-raised: #1c1c21;
+  --fill: #1e1e23;
+  --fill-hover: #26262c;
+  --fill-active: #2d2d34;
+  --border: #25252b;
+  --border-strong: #34343c;
+
+  --fg: #f3f3f5;
+  --muted: #a2a2ac;
+  --faint: #7c7c87;
+  --disabled: #55555e;
+
+  --accent: #4f5dff;
+  --accent-hover: #6370ff;
+  --accent-fg: #808bff;
+  --accent-soft: rgb(79 93 255 / 0.16);
+  --on-accent: #ffffff;
+
+  --positive: #3ccb7f;
+  --positive-soft: rgb(60 203 127 / 0.12);
+  --negative: #ff6b5e;
+  --negative-soft: rgb(255 107 94 / 0.13);
+  --warning: #f5a524;
+  --warning-soft: rgb(245 165 36 / 0.13);
+
+  --backdrop: rgb(0 0 0 / 0.56);
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.35);
+  --shadow-popover: 0 0 0 1px var(--border-strong), 0 16px 40px -8px rgb(0 0 0 / 0.6);
+  --shadow-modal: 0 0 0 1px var(--border-strong), 0 32px 80px -16px rgb(0 0 0 / 0.7);
+
+  --label-mix: 22%;
+}
+
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --text-*: initial;
+  --text-2xs: 11px;
+  --text-2xs--line-height: 14px;
+  --text-xs: 12px;
+  --text-xs--line-height: 16px;
+  --text-sm: 13px;
+  --text-sm--line-height: 18px;
+  --text-base: 14px;
+  --text-base--line-height: 20px;
+  --text-md: 15px;
+  --text-md--line-height: 22px;
+  --text-lg: 16px;
+  --text-lg--line-height: 24px;
+  --text-xl: 20px;
+  --text-xl--line-height: 28px;
+  --text-xl--letter-spacing: -0.01em;
+  --text-2xl: 24px;
+  --text-2xl--line-height: 32px;
+  --text-2xl--letter-spacing: -0.015em;
+  --text-3xl: 28px;
+  --text-3xl--line-height: 36px;
+  --text-3xl--letter-spacing: -0.015em;
+  --text-4xl: 36px;
+  --text-4xl--line-height: 44px;
+  --text-4xl--letter-spacing: -0.015em;
+  --text-5xl: 48px;
+  --text-5xl--line-height: 52px;
+  --text-5xl--letter-spacing: -0.015em;
+  --text-6xl: 64px;
+  --text-6xl--line-height: 68px;
+  --text-6xl--letter-spacing: -0.015em;
+
+  --radius-xs: 6px;
+  --radius-sm: 8px;
+  --radius-md: 10px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-2xl: 20px;
+  --radius-3xl: 24px;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-sidebar: var(--bg-sidebar);
+  --color-surface: var(--surface);
+  --color-raised: var(--surface-raised);
+  --color-fill: var(--fill);
+  --color-fill-hover: var(--fill-hover);
+  --color-fill-active: var(--fill-active);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-faint: var(--faint);
+  --color-disabled: var(--disabled);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-accent-fg: var(--accent-fg);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-positive: var(--positive);
+  --color-positive-soft: var(--positive-soft);
+  --color-negative: var(--negative);
+  --color-negative-soft: var(--negative-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-backdrop: var(--backdrop);
+
+  --shadow-xs: var(--shadow-xs);
+  --shadow-sm: var(--shadow-sm);
+  --shadow-popover: var(--shadow-popover);
+  --shadow-modal: var(--shadow-modal);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Base
+   ───────────────────────────────────────────────────────────── */
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    font-optical-sizing: auto;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 0;
+    color: var(--fg);
+    background: var(--bg);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    min-height: 100dvh;
+    background: var(--bg);
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--accent) 22%, transparent);
+  }
+  button,
+  [role='button'],
+  a,
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
+  button:disabled,
+  [data-disabled] {
+    cursor: default;
+  }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  input::placeholder,
+  textarea::placeholder {
+    color: var(--faint);
+  }
+  h1, h2, h3, h4 {
+    font-weight: 500;
+  }
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-strong) transparent;
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Motion primitives. Exact curves and durations per Emil's rules:
+   ease-out for enter/exit, under 300ms for UI, transform + opacity only.
+   ───────────────────────────────────────────────────────────── */
+@layer components {
+  /* Anything pressable: instant tactile feedback. */
+  .press {
+    transition:
+      transform 160ms var(--ease-out),
+      background-color 150ms ease,
+      color 150ms ease,
+      box-shadow 150ms ease;
+  }
+  .press:active:not(:disabled):not([data-disabled]) {
+    transform: scale(0.97);
+  }
+
+  /* Popover / menu / select: scale out of the trigger. */
+  .popup {
+    transform-origin: var(--transform-origin);
+    transition:
+      opacity 180ms var(--ease-out),
+      transform 180ms var(--ease-out);
+  }
+  .popup[data-starting-style],
+  .popup[data-ending-style] {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  .popup[data-ending-style] {
+    transition-duration: 120ms;
+  }
+
+  /* Tooltip: faster, and instant once one is already open. */
+  .tooltip {
+    transform-origin: var(--transform-origin);
+    transition:
+      opacity 125ms var(--ease-out),
+      transform 125ms var(--ease-out);
+  }
+  .tooltip[data-starting-style],
+  .tooltip[data-ending-style] {
+    opacity: 0;
+    transform: scale(0.97);
+  }
+  .tooltip[data-instant] {
+    transition-duration: 0ms;
+  }
+
+  /* Modal: centered, so it scales from center. */
+  .modal {
+    transition:
+      opacity 220ms var(--ease-out),
+      transform 220ms var(--ease-out);
+  }
+  .modal[data-starting-style],
+  .modal[data-ending-style] {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  .modal[data-ending-style] {
+    transition-duration: 150ms;
+  }
+
+  .backdrop {
+    transition: opacity 220ms var(--ease-out);
+  }
+  .backdrop[data-starting-style],
+  .backdrop[data-ending-style] {
+    opacity: 0;
+  }
+
+  /* Right-hand sheet: iOS-like drawer curve in, quicker out. */
+  .sheet {
+    transition: transform 420ms var(--ease-drawer);
+  }
+  .sheet[data-starting-style],
+  .sheet[data-ending-style] {
+    transform: translateX(calc(100% + 16px));
+  }
+  .sheet[data-ending-style] {
+    transition: transform 240ms var(--ease-out);
+  }
+
+  /* One-time entrance for content groups that appear occasionally. */
+  .rise {
+    animation: rise 320ms var(--ease-out) both;
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
+  }
+
+  /* Sign-up steps: rare, first-time moments, so a small slide is earned. */
+  @keyframes step-in {
+    from {
+      opacity: 0;
+      transform: translateX(12px);
+    }
+  }
+
+  @keyframes draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+
+  /* A new dataset fades in instead of snapping (period switch on a chart). */
+  .chart-fade {
+    animation: fade-in 200ms ease-out both;
+  }
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+  }
+
+  /* Time blocks (breaks, training) in the calendar. */
+  .hatch {
+    background-image: repeating-linear-gradient(
+      -45deg,
+      color-mix(in oklab, var(--fg) 5%, transparent) 0 1px,
+      transparent 1px 7px
+    );
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Big money and KPI figures. */
+  .figure {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: 'tnum', 'cv01';
+  }
+
+  .label-soft {
+    background: color-mix(in oklab, var(--label) var(--label-mix), var(--surface));
+  }
+}
+
+/* Theme switches swap every color at once; transitions would make it smear. */
+.theme-switching,
+.theme-switching * {
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .press:active:not(:disabled) {
+    transform: none;
+  }
+  .popup,
+  .tooltip,
+  .modal {
+    transition-property: opacity;
+  }
+  .popup[data-starting-style],
+  .popup[data-ending-style],
+  .tooltip[data-starting-style],
+  .tooltip[data-ending-style],
+  .modal[data-starting-style],
+  .modal[data-ending-style] {
+    transform: none;
+  }
+  .sheet {
+    transition: opacity 200ms ease;
+  }
+  .sheet[data-starting-style],
+  .sheet[data-ending-style] {
+    transform: none;
+    opacity: 0;
+  }
+  .rise {
+    animation: fade 200ms ease both;
+  }
+  @keyframes fade {
+    from {
+      opacity: 0;
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import { text as translate } from '@/i18n'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { I } from '@/components/icons'
@@ -107,7 +108,7 @@ export default function PaymentsSettings() {
     allowNegative: false,
     shiftOnly: true,
     tip: '10',
-    footer: 'Thank you for visiting Sitora Beauty! Book again: navcrm.tj/book/sitora',
+    footer: translate('Thank you for visiting Sitora Beauty! Book again: navcrm.tj/book/sitora'),
   })
   const [methods, setMethods] = useState(INITIAL)
   const [editing, setEditing] = useState<Method | 'new' | null>(null)

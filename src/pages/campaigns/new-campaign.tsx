@@ -1,5 +1,6 @@
 import { ImageAdd01Icon } from '@hugeicons/core-free-icons'
 import { useMemo, useRef, useState } from 'react'
+import { text as translate } from '@/i18n'
 import { Link, useNavigate, useSearchParams } from 'react-router'
 import { toast } from 'sonner'
 import { ClientPicker } from '@/components/client-picker'
@@ -100,9 +101,9 @@ export function NewCampaign() {
 
   const [step, setStep] = useState(init.step)
   const [reached, setReached] = useState(init.step)
-  const [name, setName] = useState(init.name)
+  const [name, setName] = useState(() => translate(init.name))
   const [audience, setAudience] = useState<Audience>(init.audience)
-  const [message, setMessage] = useState(init.message)
+  const [message, setMessage] = useState(() => translate(init.message))
   const [promo, setPromo] = useState(init.promo)
   const [image, setImage] = useState(false)
   const [channels, setChannels] = useState(init.channels)
@@ -248,8 +249,8 @@ export function NewCampaign() {
                     onChange={(segmentId) => {
                       setAudience({ ...audience, segmentId })
                       // Follow the segment until the owner writes their own name or text.
-                      if (message === TEMPLATES[audience.segmentId]) setMessage(TEMPLATES[segmentId])
-                      if (name === segmentById[audience.segmentId].name) setName(segmentById[segmentId].name)
+                      if (message === translate(TEMPLATES[audience.segmentId])) setMessage(translate(TEMPLATES[segmentId]))
+                      if (name === translate(segmentById[audience.segmentId].name)) setName(translate(segmentById[segmentId].name))
                     }}
                     options={SEGMENTS.map((s) => ({
                       value: s.id,

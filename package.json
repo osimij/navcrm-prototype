@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "typecheck": "tsc -b --noEmit"
+    "typecheck": "tsc -b --noEmit",
+    "check:i18n": "node scripts/i18n-catalog.mjs --check",
+    "test:i18n": "node --test scripts/i18n.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

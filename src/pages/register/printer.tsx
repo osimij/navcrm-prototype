@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { text as translate } from '@/i18n'
 import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
 import { Badge } from '@/components/ui/badge'
@@ -62,7 +63,7 @@ export function Printer() {
   const [paper, setPaper] = useState<'58' | '80'>('58')
   const [via, setVia] = useState<'bluetooth' | 'usb'>('bluetooth')
   const [state, setState] = useState<'idle' | 'connecting' | 'connected'>('idle')
-  const [footer, setFooter] = useState('Thank you! Book your next visit:\nnavcrm.tj/book/sitora')
+  const [footer, setFooter] = useState(() => translate('Thank you! Book your next visit:\nnavcrm.tj/book/sitora'))
 
   function connect() {
     setState('connecting')

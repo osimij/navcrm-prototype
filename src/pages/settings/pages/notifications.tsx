@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import { text as translate } from '@/i18n'
 import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
 import { Badge } from '@/components/ui/badge'
@@ -48,7 +49,7 @@ function ScenarioSheet({
   const [prev, setPrev] = useState<Scenario | null>(null)
   if (scenario !== prev) {
     setPrev(scenario)
-    if (scenario) setDraft(scenario)
+    if (scenario) setDraft({ ...scenario, text: translate(scenario.text) })
   }
   const d = draft
   const toggleChannel = (id: ChannelId, on: boolean) =>

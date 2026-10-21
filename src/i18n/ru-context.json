@@ -1,0 +1,60 @@
+{
+  "src/pages/home/home.tsx": {
+    "Order": "Заказать"
+  },
+  "src/features/client-sheet.tsx": {
+    "Name": "Имя"
+  },
+  "src/features/new-client-modal.tsx": {
+    "Name": "Имя"
+  },
+  "src/pages/clients/list.tsx": {
+    "Name": "Имя"
+  },
+  "src/pages/settings/pages/profile.tsx": {
+    "Name": "Имя"
+  },
+  "src/pages/settings/pages/staff.tsx": {
+    "Name": "Имя"
+  },
+  "src/pages/payroll/assignments.tsx": {
+    "Name": "Имя"
+  },
+  "src/pages/inventory/": {
+    "Receipt": "Поступление",
+    "Value": "Стоимость",
+    "{0} from {1}": "{0}, поставщик: {1}"
+  },
+  "src/pages/lab/": {
+    "Low": "Ниже нормы",
+    "Normal": "В норме",
+    "Negative": "Отрицательный",
+    "Positive": "Положительный",
+    "English": "Английский"
+  },
+  "src/pages/tasks/": {
+    "Completed": "Выполненные",
+    "Open": "Открытые"
+  },
+  "src/pages/inbox/list.tsx": {
+    "Open": "Открытые"
+  },
+  "src/pages/campaigns/": {
+    "Free": "Бесплатно"
+  },
+  "src/pages/settings/pages/notifications.tsx": {
+    "Free": "Бесплатно"
+  },
+  "src/pages/settings/pages/billing.tsx": {
+    "Free": "Бесплатный"
+  },
+  "src/pages/reports/revenue.tsx": {
+    "Name": "Наименование"
+  },
+  "src/pages/inventory/products.tsx": {
+    "English": "Английский"
+  },
+  "src/auth/sign-up.tsx": {
+    "Privacy policy": "Политику конфиденциальности"
+  }
+}

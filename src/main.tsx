@@ -6,11 +6,15 @@ import { App } from './App'
 import { TooltipProvider } from './components/ui/tooltip'
 import { usePrefs } from './lib/store'
 import './styles/index.css'
+import './styles/typography.css'
+import { useLanguage } from './i18n/language'
 
 function Toasts() {
+  const language = useLanguage()
   const theme = usePrefs((s) => s.theme)
   return (
     <Toaster
+      containerAriaLabel={language === 'ru' ? 'Уведомления' : 'Notifications'}
       theme={theme}
       position="bottom-center"
       gap={8}

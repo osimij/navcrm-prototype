@@ -1,3 +1,4 @@
+import { getLanguage } from '@/i18n/language'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
@@ -25,7 +26,7 @@ export default function CatalogSettings() {
     descRu: 'Салон красоты в центре Душанбе: волосы, ногти, брови и косметология. Онлайн-запись круглосуточно.',
     descEn: 'Beauty salon in central Dushanbe: hair, nails, brows and cosmetology. Book online any time.',
   })
-  const [lang, setLang] = useState<Lang>('en')
+  const [lang, setLang] = useState<Lang>(getLanguage)
   const v = form.value
   const descKey = lang === 'tg' ? 'descTg' : lang === 'ru' ? 'descRu' : 'descEn'
   const full = v.categories.length >= 5

@@ -3,6 +3,7 @@ import type { ReactNode } from 'react'
 import { cn } from '@/lib/cn'
 import { I, Icon } from '../icons'
 import { fieldBase } from './input'
+import { node } from '@/i18n'
 
 export type Option<V extends string = string> = { value: V; label: ReactNode; hint?: ReactNode; icon?: ReactNode }
 
@@ -31,7 +32,7 @@ export function Select<V extends string>({
   disabled?: boolean
   prefix?: ReactNode
 }) {
-  const items = options.map((o) => ({ value: o.value, label: o.label }))
+  const items = options.map((o) => ({ value: o.value, label: node(o.label) }))
   return (
     <S.Root items={items} value={value} onValueChange={(v) => v != null && onChange(v as V)} disabled={disabled}>
       <S.Trigger

@@ -13,6 +13,7 @@ import { cn } from '@/lib/cn'
 import { useOverlays } from '@/lib/overlays'
 import { usePrefs, type ThemePref } from '@/lib/store'
 import { unreadCount } from './notifications'
+import { useLanguage, setLanguage, type Language } from '@/i18n/language'
 
 /**
  * NavCRM works offline and syncs later, so people need to trust that their data
@@ -76,7 +77,6 @@ function SyncStatus() {
 }
 
 const LANGS = [
-  { value: 'tg', label: 'Тоҷикӣ' },
   { value: 'ru', label: 'Русский' },
   { value: 'en', label: 'English' },
 ] as const
@@ -87,7 +87,7 @@ function ProfileMenu() {
   const signOut = usePrefs((s) => s.signOut)
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
-  const [lang, setLang] = useState<'tg' | 'ru' | 'en'>('en')
+  const lang = useLanguage()
 
   const go = (to: string) => {
     setOpen(false)
@@ -153,10 +153,7 @@ function ProfileMenu() {
             size="sm"
             value={lang}
             fill
-            onChange={(l) => {
-              setLang(l)
-              if (l !== 'en') toast('Translations aren’t part of this prototype yet', { description: 'The product ships in Tajik, Russian and English.' })
-            }}
+            onChange={(l: Language) => setLanguage(l)}
             items={LANGS.map((l) => ({ value: l.value, label: l.label }))}
           />
         </div>

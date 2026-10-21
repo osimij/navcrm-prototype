@@ -1,6 +1,7 @@
 import type { IconSvgElement } from '@hugeicons/react'
 import type { ReactNode } from 'react'
 import { toast } from 'sonner'
+import { text as translate } from '@/i18n'
 import type { Bar } from '@/components/charts/bar-chart'
 import { I } from '@/components/icons'
 import { Money } from '@/components/ui/misc'
@@ -284,8 +285,8 @@ function whyRevenue(ctx: Ctx): Block[] {
 function post(q: string, ctx: Ctx): Block[] {
   const lower = q.toLowerCase()
   const svc =
-    services.find((s) => s.name.toLowerCase().split(/[\s&+’']+/).some((w) => w.length > 3 && lower.includes(w))) ??
-    (lower.includes('peel') ? serviceById.v12 : serviceById.v9)
+    services.find((s) => `${s.name} ${translate(s.name)}`.toLowerCase().split(/[\s&+’']+/).some((w) => w.length > 3 && lower.includes(w))) ??
+    (/peel|пилинг/.test(lower) ? serviceById.v12 : serviceById.v9)
   const master = staffById[svc.staffIds[0]].name.split(' ')[0]
   const hook: Record<string, string> = {
     v9: 'Natural curl and shine for 6–8 weeks. No extensions, no daily curling.',
@@ -294,7 +295,7 @@ function post(q: string, ctx: Ctx): Block[] {
     v3: 'Rich, even color that lasts. We match your shade exactly.',
   }
   const line = hook[svc.id] ?? `Our ${svc.name.toLowerCase()} takes ${formatDuration(svc.duration)} and you’ll leave glowing.`
-  const short = /short/.test(lower)
+  const short = /short|коротк|кратк/.test(lower)
   const text = short
     ? `${svc.name} with ${master}, ${formatMoney(svc.price)} ✨ ${line.split('.')[0]}.\nBook: ${business.bookingLink}`
     : `${svc.name} at ${business.name} ✨\n\n${line}\n\n${formatMoney(svc.price)} · with ${master}\nRudaki Ave 72, Dushanbe\n\nBook in two taps: ${business.bookingLink}`
@@ -312,7 +313,7 @@ function post(q: string, ctx: Ctx): Block[] {
           icon: I.copy,
           primary: true,
           run: () => {
-            navigator.clipboard?.writeText(text).catch(() => {})
+            navigator.clipboard?.writeText(translate(text)).catch(() => {})
             toast.success('Post copied')
           },
         },
@@ -372,7 +373,7 @@ function topClients(ctx: Ctx): Block[] {
 }
 
 function popularServices(q: string, ctx: Ctx): Block[] {
-  const saturday = /saturday/i.test(q)
+  const saturday = /saturday|суббот/i.test(q)
   const list = completedBetween(ctx.entries, -59, 0).filter((a) => !saturday || a.start.getDay() === 6)
   const map = new Map<string, { n: number; r: number }>()
   for (const a of list)
@@ -408,15 +409,15 @@ function popularServices(q: string, ctx: Ctx): Block[] {
 /** Keyword routing for free text. Order matters: the most specific intents first. */
 export function answer(question: string, ctx: Ctx): Block[] {
   const q = question.toLowerCase()
-  if (/post|instagram|caption|write/.test(q)) return post(question, ctx)
-  if (/shampoo|stock|left in|inventory|product|run out/.test(q)) return shampoo(ctx)
-  if (/60|hasn|haven|lost|come back|returned|visited/.test(q)) return lost(ctx)
-  if (/free|idle|empty slot|gap|load|who.*busy/.test(q)) return freeTime(ctx)
-  if (/why|change|drop|fell|grew|reason/.test(q)) return whyRevenue(ctx)
-  if (/week|compare/.test(q)) return compareWeek(ctx)
-  if (/top|best client|vip|loyal|spend the most/.test(q)) return topClients(ctx)
-  if (/service|sell|popular|saturday/.test(q)) return popularServices(question, ctx)
-  if (/today|revenue|earn|money|made|forecast/.test(q)) return today(ctx)
+  if (/post|instagram|caption|write|пост|инстаграм|подпис|напиш/.test(q)) return post(question, ctx)
+  if (/shampoo|stock|left in|inventory|product|run out|шампун|остат|склад|товар|заканч/.test(q)) return shampoo(ctx)
+  if (/60|hasn|haven|lost|come back|returned|visited|перестал|потерян|вернут|не приход|не был/.test(q)) return lost(ctx)
+  if (/free|idle|empty slot|gap|load|who.*busy|свободн|просто|окн[ао]|загруз|кто.*занят/.test(q)) return freeTime(ctx)
+  if (/why|change|drop|fell|grew|reason|почему|измен|упал|вырос|причин/.test(q)) return whyRevenue(ctx)
+  if (/week|compare|недел|сравн/.test(q)) return compareWeek(ctx)
+  if (/top|best client|vip|loyal|spend the most|лучш.*клиент|десятк|топ|постоян|больше.*потрат/.test(q)) return topClients(ctx)
+  if (/service|sell|popular|saturday|услуг|прода|популяр|суббот/.test(q)) return popularServices(question, ctx)
+  if (/today|revenue|earn|money|made|forecast|сегодня|выруч|заработ|деньг|прогноз/.test(q)) return today(ctx)
   return [
     {
       type: 'text',

@@ -1,3 +1,4 @@
+import { getLanguage, text as translate } from '@/i18n'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { toast } from 'sonner'
 import { ClientPicker } from '@/components/client-picker'
@@ -48,13 +49,13 @@ function GeneralTab() {
     greetTg: GREETINGS.tg,
     greetRu: GREETINGS.ru,
     greetEn: GREETINGS.en,
-    rules: 'Offer the earliest free time first. For coloring, suggest a free consultation if the client hasn’t visited in 6 months.',
-    forbidden: 'Medical diagnoses. Other salons’ prices. Discounts that aren’t in Promo codes.',
-    prepay: PREPAY,
-    late: LATE,
+    rules: translate('Offer the earliest free time first. For coloring, suggest a free consultation if the client hasn’t visited in 6 months.'),
+    forbidden: translate('Medical diagnoses. Other salons’ prices. Discounts that aren’t in Promo codes.'),
+    prepay: translate(PREPAY),
+    late: translate(LATE),
     limit: 'charge' as 'charge' | 'pause',
   })
-  const [lang, setLang] = useState<Lang>('en')
+  const [lang, setLang] = useState<Lang>(getLanguage)
   const v = form.value
   const greetKey = lang === 'tg' ? 'greetTg' : lang === 'ru' ? 'greetRu' : 'greetEn'
   const off = !v.enabled

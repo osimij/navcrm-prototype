@@ -1,6 +1,7 @@
 import { seeded } from '@/lib/random'
 import { NOW, TODAY, addDays, addMinutes } from '@/lib/time'
 import { formatNumber } from '@/lib/format'
+import { getLanguage } from '@/i18n/language'
 
 export type Category = 'Hair care' | 'Hair color' | 'Nails' | 'Brows & lashes' | 'Skin care' | 'Disposables' | 'Massage'
 export const CATEGORIES: Category[] = ['Hair care', 'Hair color', 'Nails', 'Brows & lashes', 'Skin care', 'Disposables', 'Massage']
@@ -147,6 +148,10 @@ const UNIT_LABEL: Record<string, [string, string]> = {
 }
 
 export function formatQty(qty: number, unit: string) {
+  if (getLanguage() === 'ru') {
+    const units: Record<string, string> = { pcs: 'шт.', ml: 'мл', l: 'л', g: 'г', kg: 'кг', pack: 'уп.', pair: 'пар.', use: 'примен.' }
+    return `${new Intl.NumberFormat('ru-RU', { maximumFractionDigits: 2 }).format(qty)} ${units[unit] ?? unit}`
+  }
   const n = Number.isInteger(qty) ? formatNumber(qty) : qty < 10 ? String(Math.round(qty * 100) / 100) : formatNumber(qty, 1)
   const [one, many] = UNIT_LABEL[unit] ?? [unit, unit]
   return `${n} ${qty === 1 ? one : many}`

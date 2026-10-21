@@ -1,4 +1,5 @@
 import { formatDate } from '@/lib/format'
+import { text as localize } from '@/i18n'
 import { TODAY, addDays } from '@/lib/time'
 import type { ChannelId } from './shared'
 
@@ -83,5 +84,5 @@ const SAMPLE: Record<string, string> = {
 }
 
 export function fillSample(text: string) {
-  return text.replace(/\{[a-z_]+\}/g, (m) => SAMPLE[m] ?? m)
+  return localize(text).replace(/\{[a-z_]+\}/g, (m) => m === '{date}' ? formatDate(addDays(TODAY, 1), { weekday: true }) : localize(SAMPLE[m] ?? m))
 }

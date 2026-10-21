@@ -5,6 +5,7 @@ import { cn } from '@/lib/cn'
 import { CURRENCY, formatMoney } from '@/lib/format'
 import { usePrefs } from '@/lib/store'
 import { I, Icon } from '../icons'
+import { getLocale } from '@/i18n/language'
 
 export function Kbd({ children, className }: { children: ReactNode; className?: string }) {
   return (
@@ -76,7 +77,7 @@ export function Figure({
     <NumberFlow
       value={value}
       format={format ?? { maximumFractionDigits: 0 }}
-      locales="en-US"
+      locales={getLocale()}
       prefix={prefix}
       suffix={suffix}
       className={cn('figure', className)}

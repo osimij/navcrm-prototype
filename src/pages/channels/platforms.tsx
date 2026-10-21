@@ -1,3 +1,4 @@
+import { text as translate } from '@/i18n'
 import { CopyCheckIcon } from '@hugeicons/core-free-icons'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router'
@@ -48,7 +49,7 @@ function BusinessCard() {
           size="sm"
           icon={copied ? CopyCheckIcon : I.copy}
           onClick={() => {
-            navigator.clipboard?.writeText(CARD_TEXT).catch(() => {})
+            navigator.clipboard?.writeText(translate(CARD_TEXT)).catch(() => {})
             setCopied(true)
           }}
         >

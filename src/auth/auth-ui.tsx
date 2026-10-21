@@ -4,6 +4,7 @@ import { Link } from 'react-router'
 import { I, Icon } from '@/components/icons'
 import { cn } from '@/lib/cn'
 import { NavCRMMark } from '@/shell/sidebar'
+import { useLanguage, setLanguage, type Language } from '@/i18n/language'
 
 /** Signed-out frame: logo left, one link right, content centered. */
 export function AuthFrame({
@@ -16,6 +17,7 @@ export function AuthFrame({
   /** 0..1, shows Mercury's thin progress line under the header during sign-up. */
   progress?: number
 }) {
+  const language = useLanguage()
   return (
     <div className={cn('min-h-dvh', progress != null ? 'bg-bg' : 'bg-[color-mix(in_oklab,var(--fill)_70%,var(--bg))] dark:bg-bg')}>
       <header className="relative flex h-16 items-center justify-between px-5 sm:px-8">
@@ -23,7 +25,13 @@ export function AuthFrame({
           <NavCRMMark className="size-7" />
           <span className="text-lg font-semibold text-fg">NavCRM</span>
         </Link>
-        <div className="text-base text-muted">{aside}</div>
+        <div className="flex flex-wrap items-center justify-end gap-3 text-base text-muted">
+          <select aria-label="Interface language" value={language} onChange={(event) => setLanguage(event.target.value as Language)} className="rounded-lg bg-surface px-2 py-1.5 text-sm text-fg ring-1 ring-border">
+            <option value="ru">Русский</option>
+            <option value="en">English</option>
+          </select>
+          <span>{aside}</span>
+        </div>
         {progress != null && (
           <div className="absolute inset-x-0 bottom-0 h-0.5 bg-border">
             <div

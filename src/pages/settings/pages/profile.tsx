@@ -11,13 +11,14 @@ import { Select } from '@/components/ui/select'
 import { business, currentUser } from '@/data/business'
 import { formatPhone } from '@/lib/format'
 import { EditLink, SettingsRow, SettingsSection } from '../ui'
+import { useLanguage, setLanguage, type Language } from '@/i18n/language'
 
 type Dialog = 'name' | 'password' | 'pin' | 'phone' | 'delete' | null
 
 export default function ProfileSettings() {
   const [first, setFirst] = useState(currentUser.firstName)
   const [last, setLast] = useState('Karimova')
-  const [lang, setLang] = useState('en')
+  const lang = useLanguage()
   const [twoStep, setTwoStep] = useState(true)
   const [telegram, setTelegram] = useState(true)
   const [pinSet, setPinSet] = useState(false)
@@ -64,13 +65,9 @@ export default function ProfileSettings() {
         <SettingsRow label="Interface language" description="Only for you. Clients get messages in their own language.">
           <Select
             value={lang}
-            onChange={(l) => {
-              setLang(l)
-              if (l !== 'en') toast('Translations aren’t part of this prototype yet', { description: 'The product ships in Tajik, Russian and English.' })
-            }}
+            onChange={(l: Language) => setLanguage(l)}
             className="max-w-56"
             options={[
-              { value: 'tg', label: 'Тоҷикӣ' },
               { value: 'ru', label: 'Русский' },
               { value: 'en', label: 'English' },
             ]}

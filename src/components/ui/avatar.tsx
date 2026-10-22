@@ -30,19 +30,24 @@ export function Avatar({
   size = 'md',
   className,
   children,
+  inTable = false,
 }: {
   name: string
   color?: LabelColor
   size?: keyof typeof sizes
   className?: string
   children?: ReactNode
+  /** Tables show text identities; a list that is about people can opt in. */
+  inTable?: boolean
 }) {
   const c = color ?? colorFor(name || '?')
   return (
     <span
       style={{ ['--label' as string]: `var(--c-${c})` }}
       className={cn(
-        'label-soft relative inline-grid shrink-0 place-items-center rounded-full font-semibold text-[color-mix(in_oklab,var(--label)_70%,var(--fg))] select-none in-table:hidden',
+        // Sweatpals-style gradient initials: the person's color, lit from the top left.
+        'avatar relative inline-grid shrink-0 place-items-center rounded-full font-semibold text-white/90 select-none',
+        !inTable && 'in-table:hidden',
         sizes[size],
         className,
       )}

@@ -13,7 +13,7 @@ import { FilterBar, Kpi, KpiRow, LegendItem, ReportLayout, useReportFilters } fr
 
 const CATEGORY_TONE: Record<ClientCategory, string> = {
   new: 'bg-accent',
-  regular: 'bg-fg',
+  regular: 'bg-chart',
   vip: 'bg-[var(--c-violet)]',
   lost: 'bg-fill-active',
 }
@@ -112,7 +112,7 @@ export default function ClientsReport() {
           description={data.weekly ? 'Lighter bars are part of a week' : undefined}
           action={
             <span className="flex gap-4">
-              <LegendItem swatch="bg-fg">Returning</LegendItem>
+              <LegendItem swatch="bg-chart">Returning</LegendItem>
               <LegendItem swatch="bg-[color-mix(in_oklab,var(--accent)_35%,var(--fill))]">New clients</LegendItem>
             </span>
           }

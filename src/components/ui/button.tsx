@@ -4,14 +4,21 @@ import { cn } from '@/lib/cn'
 import { Icon } from '../icons'
 import { Tooltip } from './tooltip'
 
-type Variant = 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'link'
+type Variant = 'primary' | 'secondary' | 'soft' | 'outline' | 'ghost' | 'danger' | 'link'
 type Size = 'sm' | 'md' | 'lg'
 
+/**
+ * Secondary reads per theme: a gray filled pill in light (Revolut) and an
+ * outlined pill in dark (Sweatpals). `soft` is Revolut's lavender action pill,
+ * for quick actions that sit next to the content they act on.
+ */
 const variants: Record<Variant, string> = {
   primary: 'bg-accent text-on-accent hover:bg-accent-hover disabled:opacity-40',
-  secondary: 'bg-fill text-fg hover:bg-fill-hover data-[popup-open]:bg-fill-hover disabled:text-disabled',
+  secondary:
+    'bg-[var(--button-secondary)] text-fg ring-1 ring-inset ring-[var(--button-secondary-ring)] hover:bg-[var(--button-secondary-hover)] data-[popup-open]:bg-[var(--button-secondary-hover)] disabled:text-disabled',
+  soft: 'bg-accent-soft text-accent-fg hover:bg-[color-mix(in_oklab,var(--accent)_15%,var(--surface))] data-[popup-open]:bg-[color-mix(in_oklab,var(--accent)_15%,var(--surface))] disabled:opacity-50',
   outline:
-    'bg-surface text-fg shadow-xs ring-1 ring-inset ring-border hover:bg-fill data-[popup-open]:bg-fill disabled:text-disabled',
+    'bg-transparent text-fg ring-1 ring-inset ring-border-strong hover:bg-fill data-[popup-open]:bg-fill disabled:text-disabled',
   ghost: 'text-fg hover:bg-fill data-[popup-open]:bg-fill disabled:text-disabled',
   danger: 'bg-negative-soft text-negative hover:bg-[color-mix(in_oklab,var(--negative)_16%,var(--surface))] disabled:opacity-50',
   link: 'text-accent-fg hover:underline underline-offset-4 !h-auto !px-0',

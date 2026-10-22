@@ -143,11 +143,10 @@ export function EmptyState({
 }) {
   return (
     <div className={cn('flex flex-col items-center px-6 py-14 text-center', className)}>
-      <div className="mb-4 grid size-12 place-items-center rounded-2xl bg-fill text-muted">
-        <Icon icon={icon} size={22} />
-      </div>
-      <h3 className="text-base font-medium text-fg">{title}</h3>
-      {description && <p className="mt-1 max-w-sm text-base text-muted">{description}</p>}
+      {/* Sweatpals empty states: a single glyph, a plain sentence, one action. */}
+      <Icon icon={icon} size={26} strokeWidth={1.5} className="mb-3 text-fg" />
+      <h3 className="text-md font-semibold text-fg">{title}</h3>
+      {description && <p className="mt-1 max-w-sm text-sm text-muted">{description}</p>}
       {children && <div className="mt-5 flex flex-wrap justify-center gap-2">{children}</div>}
     </div>
   )
@@ -157,16 +156,16 @@ export function EmptyState({
 export function Meter({
   value,
   max = 100,
-  tone = 'fg',
+  tone = 'chart',
   className,
 }: {
   value: number
   max?: number
-  tone?: 'fg' | 'accent' | 'positive' | 'warning' | 'negative'
+  tone?: 'chart' | 'fg' | 'accent' | 'positive' | 'warning' | 'negative'
   className?: string
 }) {
   const pct = Math.max(0, Math.min(100, (value / max) * 100))
-  const color = { fg: 'bg-fg', accent: 'bg-accent', positive: 'bg-positive', warning: 'bg-warning', negative: 'bg-negative' }[tone]
+  const color = { chart: 'bg-chart', fg: 'bg-fg', accent: 'bg-accent', positive: 'bg-positive', warning: 'bg-warning', negative: 'bg-negative' }[tone]
   return (
     <div className={cn('h-1.5 w-full overflow-hidden rounded-full bg-fill-active', className)}>
       <div className={cn('h-full rounded-full', color)} style={{ width: `${pct}%` }} />

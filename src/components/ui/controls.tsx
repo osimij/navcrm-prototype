@@ -157,12 +157,14 @@ export function Chip({
       aria-pressed={active}
       className={cn(
         'press inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3 text-sm font-medium ring-1 ring-inset',
-        active ? 'bg-fg text-bg ring-fg' : 'bg-surface text-fg shadow-xs ring-border hover:bg-fill',
+        active
+          ? 'bg-accent-soft text-accent-fg ring-[color-mix(in_oklab,var(--accent)_32%,transparent)]'
+          : 'bg-[var(--button-secondary)] text-fg ring-[var(--button-secondary-ring)] hover:bg-[var(--button-secondary-hover)]',
       )}
     >
       {icon && <Icon icon={icon} size={15} className={active ? '' : 'text-muted'} />}
       {children}
-      {count != null && <span className={cn('tabular', active ? 'opacity-70' : 'text-faint')}>{count}</span>}
+      {count != null && <span className={cn('tabular', active ? 'opacity-75' : 'text-faint')}>{count}</span>}
     </button>
   )
 }

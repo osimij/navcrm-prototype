@@ -1,6 +1,6 @@
 import { StatCard } from '@/components/ui/stat-card'
 import { useMemo, useState, type ReactNode } from 'react'
-import { useNavigate } from 'react-router'
+import { useAssistant } from '@/pages/assistant/store'
 import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
 import { Avatar } from '@/components/ui/avatar'
@@ -126,7 +126,6 @@ export function ReportLayout({
   primary?: ReactNode
   children: ReactNode
 }) {
-  const navigate = useNavigate()
   const exported = (kind: string) =>
     toast.success(`${title} exported`, { description: `${title.toLowerCase().replace(/[^a-z0-9]+/g, '-')}.${kind} saved to Downloads` })
   return (
@@ -137,8 +136,8 @@ export function ReportLayout({
         subtitle={subtitle}
         actions={
           <>
-            <Button icon={I.assistant} onClick={() => navigate(`/assistant?q=${encodeURIComponent(translate(question))}`)}>
-              Ask assistant
+            <Button variant="soft" icon={I.sparkles} onClick={() => useAssistant.getState().askInDock(translate(question))}>
+              Ask AI
             </Button>
             <Menu
               align="end"

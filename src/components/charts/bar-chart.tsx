@@ -47,7 +47,7 @@ export function BarChart({
               >
                 {h2 > 0 && (
                   <div
-                    className={cn('w-full rounded-t-[4px] bg-[color-mix(in_oklab,var(--accent)_35%,var(--fill))] transition-opacity duration-150', dim && 'opacity-40')}
+                    className={cn('w-full rounded-t-[4px] bg-chart-soft transition-opacity duration-150', dim && 'opacity-40')}
                     style={{ height: h2 }}
                   />
                 )}
@@ -55,7 +55,7 @@ export function BarChart({
                   className={cn(
                     'w-full transition-opacity duration-150',
                     h2 > 0 ? '' : 'rounded-t-[4px]',
-                    b.muted ? 'bg-fill-active' : 'bg-fg',
+                    b.muted ? 'bg-fill-active' : 'bg-chart',
                     dim && 'opacity-30',
                   )}
                   style={{ height: Math.max(h1, b.value > 0 ? 2 : 0) }}

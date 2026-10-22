@@ -4,6 +4,7 @@ import { toast } from 'sonner'
 import { text as translate } from '@/i18n'
 import type { Bar } from '@/components/charts/bar-chart'
 import { I } from '@/components/icons'
+import { Avatar } from '@/components/ui/avatar'
 import { Money } from '@/components/ui/misc'
 import { isVisit, type Appointment, type CalendarEntry } from '@/data/appointments'
 import { business } from '@/data/business'
@@ -47,6 +48,20 @@ const pct = (now: number, prev: number) => (prev ? Math.round(((now - prev) / pr
 const signed = (n: number) => (n > 0 ? `+${n}` : n < 0 ? `−${Math.abs(n)}` : '0')
 const B = ({ children }: { children: ReactNode }) => <span className="font-medium text-fg">{children}</span>
 const M = ({ v, sign }: { v: number; sign?: boolean }) => <Money value={v} sign={sign} className="font-medium text-fg" />
+
+/** A client mentioned in an answer is a chip you can open, like Linear's inline issues. */
+function ClientChip({ client, ctx }: { client: Client; ctx: Ctx }) {
+  return (
+    <button
+      type="button"
+      onClick={() => ctx.openClient(client.id)}
+      className="press inline-flex max-w-full items-center gap-1.5 rounded-full bg-fill py-0.5 pr-2.5 pl-0.5 text-left align-middle text-sm text-fg hover:bg-fill-hover"
+    >
+      <Avatar name={client.name} size="xs" inTable />
+      <span className="truncate">{client.name}</span>
+    </button>
+  )
+}
 
 const salon = (a: Appointment) => !staffById[a.staffId]?.tenant
 
@@ -188,14 +203,7 @@ function lost(ctx: Ctx): Block[] {
     {
       type: 'table',
       columns: [{ label: 'Client' }, { label: 'Last visit', align: 'right' }, { label: 'Visits', align: 'right' }, { label: 'Spent', align: 'right' }],
-      rows: top.map((c) => [
-        <button key={c.id} type="button" onClick={() => ctx.openClient(c.id)} className="text-left hover:underline underline-offset-4">
-          {c.name}
-        </button>,
-        c.lastVisit ? formatDate(c.lastVisit) : '—',
-        c.visits,
-        <Money key="m" value={c.totalSpent} />,
-      ]),
+      rows: top.map((c) => [<ClientChip key={c.id} client={c} ctx={ctx} />, c.lastVisit ? formatDate(c.lastVisit) : '—', c.visits, <Money key="m" value={c.totalSpent} />]),
     },
     {
       type: 'actions',
@@ -360,14 +368,7 @@ function topClients(ctx: Ctx): Block[] {
     {
       type: 'table',
       columns: [{ label: 'Client' }, { label: 'Visits', align: 'right' }, { label: 'Last visit', align: 'right' }, { label: 'Spent', align: 'right' }],
-      rows: top.map((c) => [
-        <button key={c.id} type="button" onClick={() => ctx.openClient(c.id)} className="text-left hover:underline underline-offset-4">
-          {c.name}
-        </button>,
-        c.visits,
-        c.lastVisit ? formatDate(c.lastVisit) : '—',
-        <Money key="m" value={c.totalSpent} />,
-      ]),
+      rows: top.map((c) => [<ClientChip key={c.id} client={c} ctx={ctx} />, c.visits, c.lastVisit ? formatDate(c.lastVisit) : '—', <Money key="m" value={c.totalSpent} />]),
     },
   ]
 }
@@ -406,32 +407,80 @@ function popularServices(q: string, ctx: Ctx): Block[] {
   ]
 }
 
+type Intent = 'post' | 'stock' | 'lost' | 'free' | 'why' | 'week' | 'top' | 'services' | 'today' | 'unknown'
+
 /** Keyword routing for free text. Order matters: the most specific intents first. */
-export function answer(question: string, ctx: Ctx): Block[] {
+function intentOf(question: string): Intent {
   const q = question.toLowerCase()
-  if (/post|instagram|caption|write|пост|инстаграм|подпис|напиш/.test(q)) return post(question, ctx)
-  if (/shampoo|stock|left in|inventory|product|run out|шампун|остат|склад|товар|заканч/.test(q)) return shampoo(ctx)
-  if (/60|hasn|haven|lost|come back|returned|visited|перестал|потерян|вернут|не приход|не был/.test(q)) return lost(ctx)
-  if (/free|idle|empty slot|gap|load|who.*busy|свободн|просто|окн[ао]|загруз|кто.*занят/.test(q)) return freeTime(ctx)
-  if (/why|change|drop|fell|grew|reason|почему|измен|упал|вырос|причин/.test(q)) return whyRevenue(ctx)
-  if (/week|compare|недел|сравн/.test(q)) return compareWeek(ctx)
-  if (/top|best client|vip|loyal|spend the most|лучш.*клиент|десятк|топ|постоян|больше.*потрат/.test(q)) return topClients(ctx)
-  if (/service|sell|popular|saturday|услуг|прода|популяр|суббот/.test(q)) return popularServices(question, ctx)
-  if (/today|revenue|earn|money|made|forecast|сегодня|выруч|заработ|деньг|прогноз/.test(q)) return today(ctx)
-  return [
-    {
-      type: 'text',
-      text: <>I can answer questions about revenue, visits, clients, staff load and stock, using the numbers from your register and calendar. Try one of these:</>,
-    },
-    { type: 'suggestions' },
-  ]
+  if (/post|instagram|caption|write|пост|инстаграм|подпис|напиш/.test(q)) return 'post'
+  if (/shampoo|stock|left in|inventory|product|run out|шампун|остат|склад|товар|заканч/.test(q)) return 'stock'
+  if (/60|hasn|haven|lost|come back|returned|visited|перестал|потерян|вернут|не приход|не был/.test(q)) return 'lost'
+  if (/free|idle|empty slot|gap|load|who.*busy|свободн|просто|окн[ао]|загруз|кто.*занят/.test(q)) return 'free'
+  if (/why|change|drop|fell|grew|reason|почему|измен|упал|вырос|причин/.test(q)) return 'why'
+  if (/week|compare|недел|сравн/.test(q)) return 'week'
+  if (/top|best client|vip|loyal|spend the most|лучш.*клиент|десятк|топ|постоян|больше.*потрат/.test(q)) return 'top'
+  if (/service|sell|popular|saturday|услуг|прода|популяр|суббот/.test(q)) return 'services'
+  if (/today|revenue|earn|money|made|forecast|how is|going|сегодня|выруч|заработ|деньг|прогноз|как дела/.test(q)) return 'today'
+  return 'unknown'
 }
 
-/** Past questions shown in the sidebar on first load. */
+export function answer(question: string, ctx: Ctx): Block[] {
+  switch (intentOf(question)) {
+    case 'post': return post(question, ctx)
+    case 'stock': return shampoo(ctx)
+    case 'lost': return lost(ctx)
+    case 'free': return freeTime(ctx)
+    case 'why': return whyRevenue(ctx)
+    case 'week': return compareWeek(ctx)
+    case 'top': return topClients(ctx)
+    case 'services': return popularServices(question, ctx)
+    case 'today': return today(ctx)
+    case 'unknown':
+      return [
+        {
+          type: 'text',
+          text: <>I can answer questions about revenue, visits, clients, staff load and stock, using the numbers from your register and calendar. Try one of these:</>,
+        },
+        { type: 'suggestions' },
+      ]
+  }
+}
+
+/** What the assistant reads for each kind of question, shown while it works and after. */
+const TRACE: Record<Intent, string[]> = {
+  post: ['Looked up the service, its price and master', 'Added your booking link'],
+  stock: ['Checked stock against minimum levels', 'Estimated daily use from tech cards'],
+  lost: ['Found clients away for 60 days or more', 'Ranked them by total spent'],
+  free: ['Read today’s calendar for every master', 'Found free gaps of 30 minutes or more'],
+  why: ['Compared the last 7 days with the 7 before', 'Split the change into visits and average receipt'],
+  week: ['Totaled revenue and visits for both weeks', 'Found the best day'],
+  top: ['Ranked clients by total spent'],
+  services: ['Counted completed visits by service'],
+  today: ['Read the register and today’s calendar', 'Projected revenue from visits still booked'],
+  unknown: ['Matched your question to the data I can read'],
+}
+export const trace = (question: string) => TRACE[intentOf(question)]
+
+/** Past questions shown in history on first load. */
 export const HISTORY = [
-  { title: 'Which services sell best on Saturdays?', group: 'Today' },
-  { title: 'Who hasn’t visited in 60 days?', group: 'Today' },
-  { title: 'Who are my top 10 clients?', group: 'This week' },
-  { title: 'Write a post about our chemical peel', group: 'This week' },
-  { title: 'How did this week compare to last week?', group: 'This week' },
+  { title: 'Which services sell best on Saturdays?', hoursAgo: 2 },
+  { title: 'Who hasn’t visited in 60 days?', hoursAgo: 5 },
+  { title: 'Who are my top 10 clients?', hoursAgo: 26 },
+  { title: 'Write a post about our chemical peel', hoursAgo: 72 },
+  { title: 'How did this week compare to last week?', hoursAgo: 96 },
 ]
+
+/**
+ * Three questions that fit the page you opened the assistant from, so the
+ * panel starts with something useful instead of a blank box.
+ */
+export function suggestionsFor(pathname: string): { question: string; icon: IconSvgElement }[] {
+  const pick = (...items: [string, IconSvgElement][]) => items.map(([question, icon]) => ({ question, icon }))
+  if (pathname.startsWith('/calendar')) return pick(['Which masters had free time today?', I.calendar], ['How is today going?', I.chart], ['Which services sell best on Saturdays?', I.star])
+  if (pathname.startsWith('/clients') || pathname.startsWith('/inbox')) return pick(['Who hasn’t visited in 60 days?', I.clients], ['Who are my top 10 clients?', I.award], ['Write an Instagram post about lash lamination', I.instagram])
+  if (pathname.startsWith('/inventory')) return pick(['How much shampoo is left?', I.inventory], ['Which services sell best on Saturdays?', I.star], ['How is today going?', I.chart])
+  if (pathname.startsWith('/campaigns') || pathname.startsWith('/channels')) return pick(['Write an Instagram post about lash lamination', I.instagram], ['Who hasn’t visited in 60 days?', I.clients], ['Who are my top 10 clients?', I.award])
+  if (pathname.startsWith('/reports') || pathname.startsWith('/pos') || pathname.startsWith('/payroll'))
+    return pick(['Why did revenue change?', I.chart], ['How did this week compare to last week?', I.reports], ['Which services sell best on Saturdays?', I.star])
+  return pick(['How is today going?', I.chart], ['Why did revenue change?', I.trendUp], ['Which masters had free time today?', I.calendar])
+}

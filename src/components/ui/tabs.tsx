@@ -84,13 +84,14 @@ export function Segmented<V extends string>({
 }) {
   return (
     <T.Root value={value} onValueChange={(v) => onChange(v as V)} className="min-w-0 max-w-full">
-      <T.List className={cn('relative max-w-full flex-wrap rounded-2xl bg-fill p-0.5', fill ? 'flex w-full' : 'inline-flex', className)}>
+      <T.List className={cn('relative max-w-full flex-wrap rounded-[18px] bg-fill p-[3px]', fill ? 'flex w-full' : 'inline-flex', className)}>
         {items.map((it) => (
           <T.Tab
             key={it.value}
             value={it.value}
             className={cn(
-              'relative flex max-w-full items-center justify-center gap-1.5 rounded-full py-1 font-medium text-muted outline-none select-none hover:text-fg data-[active]:bg-surface data-[active]:text-fg data-[active]:shadow-sm data-[active]:ring-1 data-[active]:ring-border dark:data-[active]:bg-fill-active dark:data-[active]:ring-0 focus-visible:outline-2 focus-visible:outline-accent',
+              // Selected is a white pill in both themes: Revolut's tab on gray, Sweatpals' toggle on black.
+              'relative flex max-w-full items-center justify-center gap-1.5 rounded-full py-1 font-medium text-muted outline-none transition-colors duration-150 ease-[ease] select-none hover:text-fg data-[active]:bg-segment-active data-[active]:text-segment-active-fg data-[active]:shadow-[var(--segment-active-shadow)] focus-visible:outline-2 focus-visible:outline-accent motion-reduce:transition-none',
               size === 'sm' ? 'min-h-7 px-3 text-sm' : 'min-h-8 px-3.5 text-sm',
               fill && 'flex-1',
             )}

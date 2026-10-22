@@ -5,7 +5,7 @@ import { I, Icon } from '../icons'
 
 /** Shared look for every text-like control, so inputs, selects and pickers match. */
 export const fieldBase =
-  'min-w-0 w-full rounded-[10px] bg-fill text-base text-fg outline-none ring-1 ring-inset ring-transparent transition-[background-color,box-shadow] duration-150 ' +
+  'min-w-0 w-full rounded-xl bg-fill text-base text-fg outline-none ring-1 ring-inset ring-transparent transition-[background-color,box-shadow] duration-150 ' +
   'hover:ring-border-strong focus:bg-surface focus:ring-accent focus:shadow-[0_0_0_4px_color-mix(in_oklab,var(--accent)_14%,transparent)] ' +
   'disabled:opacity-60 aria-[invalid=true]:ring-negative'
 
@@ -93,7 +93,7 @@ export function SearchInput({
         placeholder={placeholder}
         aria-label={placeholder}
         autoFocus={autoFocus}
-        className={cn(fieldBase, 'h-9 pr-9 pl-9')}
+        className={cn(fieldBase, 'h-9 rounded-full pr-9 pl-9')}
         onKeyDown={(e) => e.key === 'Escape' && value && (e.stopPropagation(), onChange(''))}
       />
       {value && (

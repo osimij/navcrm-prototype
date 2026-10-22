@@ -10,7 +10,8 @@ import type { IconSvgElement } from '@hugeicons/react'
 import { useOverlays } from '@/lib/overlays'
 import { searchClients } from '@/lib/search'
 import { useData } from '@/lib/store'
-import { NAV, SETTINGS_NAV } from './nav'
+import { useAssistant } from '@/pages/assistant/store'
+import { ASSISTANT_ITEM, NAV, SETTINGS_NAV } from './nav'
 
 const itemClass =
   'flex h-11 cursor-default items-center gap-3 rounded-lg px-3 text-base text-fg outline-none select-none data-[selected=true]:bg-fill'
@@ -60,7 +61,7 @@ export function CommandMenu() {
     { label: 'Block time for a master', icon: I.calendarBlock, run: () => openNewVisit({ mode: 'block' }) },
   ]
   const pages = [
-    ...NAV.flatMap((g) => g.items.map((it) => ({ label: it.label, to: it.to, icon: it.icon, keywords: it.keywords ?? '' }))),
+    ...[...NAV.flatMap((g) => g.items), ASSISTANT_ITEM].map((it) => ({ label: it.label, to: it.to, icon: it.icon, keywords: it.keywords ?? '' })),
     { label: 'My earnings', to: '/me', icon: I.earnings, keywords: 'salary clock in' },
     ...SETTINGS_NAV.flatMap((g) => g.items.map((it) => ({ label: `Settings: ${it.label}`, to: it.to, icon: I.settings, keywords: g.label }))),
   ]
@@ -124,10 +125,10 @@ export function CommandMenu() {
                 <Command.Group heading="Assistant" className={groupClass}>
                   <Command.Item
                     value="ask"
-                    onSelect={() => run(() => navigate(`/assistant?q=${encodeURIComponent(q)}`))}
+                    onSelect={() => run(() => useAssistant.getState().askInDock(q))}
                     className={itemClass}
                   >
-                    <Icon icon={I.assistant} size={18} className="text-accent-fg" />
+                    <Icon icon={I.magic} size={18} className="text-accent-fg" />
                     <span className="truncate">
                       Ask the assistant: <span className="text-muted">“{q}”</span>
                     </span>

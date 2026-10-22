@@ -1,5 +1,5 @@
-import { Disclosure } from '@/components/ui/disclosure'
-import { StatCard } from '@/components/ui/stat-card'
+import { SectionCard } from '@/components/ui/disclosure'
+import { StatStrip } from '@/components/ui/stat-card'
 import type { IconSvgElement } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
 import { Link, useNavigate } from 'react-router'
@@ -9,8 +9,10 @@ import { I, Icon } from '@/components/icons'
 import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader } from '@/components/ui/card'
-import { Delta, Figure, Meter, Money, pctChange } from '@/components/ui/misc'
+import { Card } from '@/components/ui/card'
+import { Delta, EmptyState, Figure, Meter, Money, pctChange } from '@/components/ui/misc'
+import { Switch } from '@/components/ui/controls'
+import { Popover } from '@/components/ui/popover'
 import { Page } from '@/components/ui/page'
 import { Segmented } from '@/components/ui/tabs'
 import { STATUS_META, isVisit, serviceNames, type Appointment } from '@/data/appointments'
@@ -22,6 +24,7 @@ import { cn } from '@/lib/cn'
 import { CURRENCY, dayShort, formatDate, formatDateLong, formatMoney, formatTime, plural } from '@/lib/format'
 import { useOverlays } from '@/lib/overlays'
 import { useData, usePrefs } from '@/lib/store'
+import { useWorkspace } from '@/lib/workspace'
 import { NOW, TODAY, addDays, isSameDay } from '@/lib/time'
 import { drawerSummary, useRegister } from '../register/store'
 import { SetupCard } from './setup-card'
@@ -34,7 +37,7 @@ function greeting() {
   return h < 12 ? 'Good morning' : h < 18 ? 'Good afternoon' : 'Good evening'
 }
 
-function RevenueCard({ period }: { period: Period }) {
+function RevenueCard({ period, onPeriod }: { period: Period; onPeriod: (p: Period) => void }) {
   const entries = useData((s) => s.entries)
   const stats = useMemo(() => periodStats(entries, period), [entries, period])
   const series = useMemo(
@@ -67,7 +70,7 @@ function RevenueCard({ period }: { period: Period }) {
 
   return (
     <Card className="flex flex-col p-6">
-      <div className="flex items-start justify-between gap-6">
+      <div className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2 text-base text-muted">
             Revenue
@@ -95,13 +98,17 @@ function RevenueCard({ period }: { period: Period }) {
             )}
           </div>
         </div>
-
+        {/* The period sits on the card it changes, not above the whole page. */}
+        <Segmented size="sm" value={period} onChange={onPeriod} items={[
+          { value: 'today', label: 'Today' }, { value: 'week', label: '7 days' }, { value: 'month', label: '30 days' },
+        ]} />
       </div>
 
       <LineChart
         className="mt-6"
         points={series}
         height={140}
+        area
         zero={period === 'today'}
         onScrub={setScrub}
         ticks={ticks}
@@ -145,15 +152,17 @@ function UpNext() {
   const rest = upcoming.length - shown.length
 
   return (
-    <Card className="flex flex-col">
-      <CardHeader
-        title="Coming up today"
-        action={
-          <Link to="/calendar" className="text-sm font-medium text-muted hover:text-fg">
-            Calendar
-          </Link>
-        }
-      />
+    <SectionCard
+      id="home:upnext"
+      title="Coming up today"
+      count={upcoming.length}
+      action={
+        <Link to="/calendar" className="rounded-full px-2 py-1 text-sm font-medium text-muted hover:text-fg">
+          Calendar
+        </Link>
+      }
+      fill
+    >
       <ul className="flex-1 px-2 pb-2">
         {shown.map((a) => {
           const c = clients.find((x) => x.id === a.clientId)
@@ -185,27 +194,7 @@ function UpNext() {
         {inChair} in progress now
         {rest > 0 && <span className="text-faint">· {plural(rest, 'more visit')} later</span>}
       </Link>
-    </Card>
-  )
-}
-
-function Kpi({
-  label,
-  value,
-  suffix,
-  sub,
-  to,
-  money,
-}: {
-  label: string
-  value: number
-  suffix?: string
-  sub: React.ReactNode
-  to: string
-  money?: boolean
-}) {
-  return (
-    <StatCard label={label} value={<Figure value={value} money={money} />} suffix={suffix} sub={sub} to={to} />
+    </SectionCard>
   )
 }
 
@@ -276,8 +265,7 @@ function NeedsAttention() {
   const open = items.filter((i) => !done.includes(i.id))
 
   return (
-    <Card>
-      <CardHeader title="Needs attention" action={<span className="text-sm text-muted tabular">{open.length}</span>} />
+    <SectionCard id="home:attention" title="Needs attention" count={open.length}>
       {open.length ? (
         <ul className="px-2 pb-2">
           {(expanded ? open : open.slice(0, 3)).map((it) => (
@@ -295,10 +283,10 @@ function NeedsAttention() {
       ) : (
         <p className="px-5 pb-6 text-base text-muted">Nothing unusual. Everything is on track.</p>
       )}
-      {open.length > 3 && <div className="px-5 pb-4"><Button size="sm" variant="ghost" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>
-        {expanded ? 'Show less' : 'Show all tasks'}<Icon icon={I.chevronDown} size={14} className={cn(expanded && 'rotate-180')} />
+      {open.length > 3 && <div className="px-3 pb-3"><Button size="sm" variant="ghost" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>
+        {expanded ? 'Show less' : `Show ${open.length - 3} more`}<Icon icon={I.chevronDown} size={14} className={cn('transition-transform duration-150 ease-[var(--ease-out)] motion-reduce:transition-none', expanded && 'rotate-180')} />
       </Button></div>}
-    </Card>
+    </SectionCard>
   )
 }
 
@@ -313,21 +301,19 @@ function TopList({ period }: { period: Period }) {
   const max = Math.max(...rows.map((r) => r.revenue), 1)
 
   return (
-    <Card>
-      <CardHeader
-        title="Top performers"
-        action={
-          <Segmented
-            size="sm"
-            value={view}
-            onChange={setView}
-            items={[
-              { value: 'services', label: 'Services' },
-              { value: 'staff', label: 'Staff' },
-            ]}
-          />
-        }
-      />
+    <div className="border-t border-border">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-5 pt-4 pb-1">
+        <h3 className="text-sm font-medium text-muted">Top performers</h3>
+        <Segmented
+          size="sm"
+          value={view}
+          onChange={setView}
+          items={[
+            { value: 'services', label: 'Services' },
+            { value: 'staff', label: 'Staff' },
+          ]}
+        />
+      </div>
       <ul className="px-5 pt-1 pb-4">
         {rows.map((r) => (
           <li key={r.id} className="py-2.5">
@@ -346,7 +332,80 @@ function TopList({ period }: { period: Period }) {
         ))}
         {!rows.length && <li className="py-6 text-center text-muted">No completed visits yet.</li>}
       </ul>
-    </Card>
+    </div>
+  )
+}
+
+const SECTIONS = [
+  { id: 'revenue', label: 'Revenue' },
+  { id: 'upnext', label: 'Coming up today' },
+  { id: 'attention', label: 'Needs attention' },
+  { id: 'performance', label: 'Business performance' },
+] as const
+type SectionId = (typeof SECTIONS)[number]['id']
+
+/** Mercury's "Customize": everyone keeps the parts of Home they use and hides the rest. */
+function useHomeSections() {
+  const sections = useWorkspace((s) => s.sections)
+  const setSection = useWorkspace((s) => s.setSection)
+  const shown = (id: SectionId) => sections[`home:show:${id}`] ?? true
+  return { shown, set: (id: SectionId, value: boolean) => setSection(`home:show:${id}`, value) }
+}
+
+function Customize() {
+  const { shown, set } = useHomeSections()
+  return (
+    <Popover
+      align="end"
+      className="w-72 p-4"
+      trigger={
+        <Button size="sm" variant="ghost" icon={I.sliders}>
+          Customize
+        </Button>
+      }
+    >
+      <p className="text-sm font-medium text-fg">Show on Home</p>
+      <p className="mt-0.5 mb-3 text-xs text-muted">Hidden parts stay one click away in this menu.</p>
+      <div className="flex flex-col gap-3">
+        {SECTIONS.map((section) => (
+          <Switch key={section.id} checked={shown(section.id)} onChange={(v) => set(section.id, v)} label={section.label} />
+        ))}
+      </div>
+    </Popover>
+  )
+}
+
+function Performance({ period }: { period: Period }) {
+  const entries = useData((s) => s.entries)
+  const clients = useData((s) => s.clients)
+  const stats = useMemo(() => periodStats(entries, period), [entries, period])
+  const newList = clients.filter((c) => c.createdAt >= addDays(TODAY, -(PERIOD_DAYS[period] - 1)))
+  const bySource = new Map<string, number>()
+  for (const c of newList) bySource.set(c.source, (bySource.get(c.source) ?? 0) + 1)
+  const newSources = [...bySource.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 2)
+    .map(([src, n]) => `${n} from ${src}`)
+    .join(', ')
+  return (
+    <SectionCard id="home:performance" title="Business performance" count={PERIOD_LABEL[period]} defaultOpen={false}>
+      <div className="px-5 pt-1 pb-5">
+        <StatStrip
+          items={[
+            {
+              label: 'Visits',
+              value: <>{stats.visitsDone}{period === 'today' && <span className="text-sm font-normal text-faint"> of {stats.visitsBooked}</span>}</>,
+              sub: period === 'today' ? `${stats.noShows} no-show${stats.noShows === 1 ? '' : 's'} so far` : <Delta value={pctChange(stats.visitsDone, stats.visitsDonePrev)} />,
+              to: '/calendar',
+            },
+            { label: 'Average receipt', value: <Money value={stats.avgReceipt} />, sub: <Delta value={pctChange(stats.avgReceipt, stats.avgReceiptPrev)} />, to: '/reports/revenue' },
+            { label: 'New clients', value: newList.length, sub: newSources || 'No new clients yet', to: '/clients' },
+            { label: 'Staff load', value: `${stats.load}%`, sub: stats.load > 85 ? 'Close to full' : 'Booked vs working hours', to: '/reports/load' },
+          ]}
+        />
+      </div>
+      <TopList period={period} />
+    </SectionCard>
   )
 }
 
@@ -355,77 +414,51 @@ export default function Home() {
   const entries = useData((s) => s.entries)
   const onboarding = usePrefs((s) => s.onboarding)
   const branchId = usePrefs((s) => s.branchId)
-  const { openNewVisit, openNewClient } = useOverlays()
+  const { openNewVisit, openNewClient, openNewTask } = useOverlays()
   const navigate = useNavigate()
+  const { shown } = useHomeSections()
   const stats = useMemo(() => periodStats(entries, period), [entries, period])
-  const clients = useData((s) => s.clients)
-  const newList = clients.filter((c) => c.createdAt >= addDays(TODAY, -(PERIOD_DAYS[period] - 1)))
-  const newClients = newList.length
-  const bySource = new Map<string, number>()
-  for (const c of newList) bySource.set(c.source, (bySource.get(c.source) ?? 0) + 1)
-  const newSources = [...bySource.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 2)
-    .map(([src, n]) => `${n} from ${src}`)
-    .join(', ')
   const branch = branchId === 'all' ? 'All branches' : business.branches.find((b) => b.id === branchId)?.name
+  const top = [shown('revenue'), shown('upnext')]
+  const nothing = SECTIONS.every((section) => !shown(section.id))
 
   return (
     <Page>
       {onboarding && <SetupCard />}
 
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <div className="mb-6 flex flex-wrap items-start justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-normal text-fg">
+          <h1 className="text-2xl font-semibold tracking-[-0.02em] text-fg">
             {greeting()}, {currentUser.firstName}
           </h1>
-          <p className="mt-1 text-base text-muted">
+          <p className="mt-1 text-sm text-muted">
             {formatDateLong(NOW)} · {branch}
           </p>
         </div>
+        <Customize />
+      </div>
+
+      {/* Revolut's action pills: the four things the front desk starts most often. */}
+      <div className="mb-6 flex flex-wrap gap-2">
         <Button variant="primary" icon={I.calendarAdd} onClick={() => openNewVisit()}>New visit</Button>
+        <Button variant="soft" icon={I.register} onClick={() => navigate('/pos')}>New sale</Button>
+        <Button variant="soft" icon={I.userAdd} onClick={() => openNewClient()}>New client</Button>
+        <Button variant="soft" icon={I.tasks} onClick={() => openNewTask()}>New task</Button>
       </div>
 
-      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-        <Segmented value={period} onChange={setPeriod} items={[
-          { value: 'today', label: 'Today' }, { value: 'week', label: '7 days' }, { value: 'month', label: '30 days' },
-        ]} />
-        <div className="flex flex-wrap gap-1">
-          <Button size="sm" variant="ghost" icon={I.register} onClick={() => navigate('/pos')}>New sale</Button>
-          <Button size="sm" variant="ghost" icon={I.userAdd} onClick={() => openNewClient()}>New client</Button>
+      {(top[0] || top[1]) && (
+        <div className={cn('grid items-stretch gap-4', top[0] && top[1] && 'lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]')}>
+          {top[0] && <RevenueCard period={period} onPeriod={setPeriod} />}
+          {top[1] && <UpNext />}
         </div>
-      </div>
+      )}
 
-      <div className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
-        <RevenueCard period={period} />
-        <UpNext />
-      </div>
+      {shown('attention') && <div className="mt-4"><NeedsAttention /></div>}
+      {shown('performance') && <div className="mt-4"><Performance period={period} /></div>}
 
-      <div className="mt-4"><NeedsAttention /></div>
-
-      <Disclosure id="home:performance" title="Business performance" description="Visits, clients, staff load and top services" className="mt-5">
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <Kpi
-          label="Visits"
-          value={stats.visitsDone}
-          suffix={period === 'today' ? `of ${stats.visitsBooked}` : undefined}
-          sub={period === 'today' ? `${stats.noShows} no-show${stats.noShows === 1 ? '' : 's'} so far` : <Delta value={pctChange(stats.visitsDone, stats.visitsDonePrev)} />}
-          to="/calendar"
-        />
-        <Kpi
-          label="Average receipt"
-          value={stats.avgReceipt}
-          suffix={CURRENCY}
-          money
-          sub={<Delta value={pctChange(stats.avgReceipt, stats.avgReceiptPrev)} />}
-          to="/reports/revenue"
-        />
-        <Kpi label="New clients" value={newClients} sub={newSources || 'No new clients yet'} to="/clients" />
-        <Kpi label="Staff load" value={stats.load} suffix="%" sub={stats.load > 85 ? 'Close to full, consider extra hours' : 'Booked time vs working hours'} to="/reports/load" />
-      </div>
-
-      <div className="mt-4"><TopList period={period} /></div>
-      </Disclosure>
+      {nothing && (
+        <EmptyState icon={I.home} title="Home is empty" description="You’ve hidden every part of Home. Turn some back on in Customize." />
+      )}
 
       <p className="mt-8 text-center text-xs text-faint">
         Sublease tenants’ visits aren’t counted in salon revenue. Amounts in {CURRENCY}, updated {formatTime(NOW)}.{' '}

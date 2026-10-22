@@ -32,7 +32,8 @@ export function Badge({
   return (
     <span
       className={cn(
-        'inline-flex h-[22px] shrink-0 items-center gap-1.5 rounded-full border border-current/15 bg-transparent px-2 text-xs font-normal whitespace-nowrap',
+        // Sweatpals status pills: a quiet tint of the status color, no outline.
+        'inline-flex h-[22px] shrink-0 items-center gap-1.5 rounded-full bg-current/10 px-2 text-xs font-medium whitespace-nowrap',
         tones[tone],
         className,
       )}
@@ -51,7 +52,7 @@ export function LabelChip({ color, children, className }: { color: LabelColor; c
   return (
     <span
       style={{ ['--label' as string]: `var(--c-${color})` }}
-      className={cn('inline-flex h-[22px] items-center rounded-full border border-current/15 bg-transparent px-2 text-xs font-normal text-[color:var(--label)]', className)}
+      className={cn('inline-flex h-[22px] items-center rounded-full bg-current/10 px-2 text-xs font-medium text-[color:var(--label)]', className)}
     >
       {children}
     </span>

@@ -39,15 +39,16 @@ export function Modal({ open, onOpenChange, trigger, title, description, childre
               className,
             )}
           >
-            <div className="flex items-start gap-4 px-6 pt-5 pb-1">
+            <div className="flex items-start gap-4 px-6 pt-6 pb-1">
               <div className="min-w-0 flex-1">
-                <D.Title className="text-xl font-medium text-fg">{title}</D.Title>
+                <D.Title className="text-xl font-semibold tracking-[-0.01em] text-fg">{title}</D.Title>
                 {description && <D.Description className="mt-1 text-base text-muted">{description}</D.Description>}
               </div>
-              <D.Close render={<IconButton icon={I.close} label="Close" size="sm" tooltip={false} className="-mt-0.5 -mr-2" />} />
+              <D.Close render={<IconButton icon={I.close} label="Close" size="sm" variant="secondary" tooltip={false} className="-mt-0.5 -mr-1" />} />
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-6 pt-4 pb-6">{children}</div>
-            {footer && <div className="flex flex-wrap items-center justify-end gap-2 rounded-b-3xl bg-fill/50 px-6 py-4">{footer}</div>}
+            {/* Revolut keeps actions on the dialog surface: no gray band, a hairline only when content scrolls. */}
+            {footer && <div className="flex flex-wrap items-center justify-end gap-2 border-t border-border px-6 py-4">{footer}</div>}
           </D.Popup>
         </D.Viewport>
       </D.Portal>
@@ -83,18 +84,18 @@ export function Sheet({ open, onOpenChange, title, eyebrow, actions, children, f
           ref={popup}
           initialFocus={(type) => (type === 'keyboard' ? true : popup.current)}
           className={cn(
-            'sheet fixed top-2 right-2 bottom-2 z-50 flex max-w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-2xl bg-raised shadow-modal outline-none',
+            'sheet fixed top-2 right-2 bottom-2 z-50 flex max-w-[calc(100vw-1rem)] flex-col overflow-hidden rounded-[22px] bg-raised shadow-modal outline-none',
             sheetWidths[width],
           )}
         >
-          <div className="flex items-center gap-2 border-b border-border px-5 py-3">
+          <div className="flex items-center gap-2 border-b border-border px-5 py-3.5">
             <div className="min-w-0 flex-1">
-              {eyebrow && <div className="text-xs font-medium text-faint">{eyebrow}</div>}
-              {title && <D.Title className="break-words text-base font-medium text-fg">{title}</D.Title>}
+              {eyebrow && <div className="text-xs font-medium text-muted">{eyebrow}</div>}
+              {title && <D.Title className="break-words text-base font-semibold text-fg">{title}</D.Title>}
             </div>
             {actions}
             {/* Focus lands here on open, so a tooltip would pop up every time. */}
-            <D.Close render={<IconButton icon={I.close} label="Close" size="sm" tooltip={false} />} />
+            <D.Close render={<IconButton icon={I.close} label="Close" size="sm" variant="secondary" tooltip={false} />} />
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
           {footer && <div className="flex flex-wrap items-center gap-2 border-t border-border px-5 py-3">{footer}</div>}

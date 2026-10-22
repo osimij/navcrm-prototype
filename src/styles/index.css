@@ -7,29 +7,35 @@
 /* ─────────────────────────────────────────────────────────────
    Design tokens. Every color in the app comes from here.
    Names are semantic so they map 1:1 to Figma variables.
+
+   Light follows Revolut's web app: a pale neutral canvas (#F7F7F7),
+   white borderless cards, cool filled inputs and lavender soft pills.
+   Dark follows Sweatpals: a pure black canvas, #111 cards, hairline
+   dividers, outlined pills and white for the selected segment.
+   The accent stays NavCRM blue in both.
    ───────────────────────────────────────────────────────────── */
 :root {
   color-scheme: light;
 
-  --bg: #f7f7f8;
-  --bg-sidebar: #f7f7f8;
+  --bg: #f7f7f7;
+  --bg-sidebar: #f7f7f7;
   --surface: #ffffff;
   --surface-raised: #ffffff;
-  --fill: #f1f1f3;
-  --fill-hover: #e9e9ec;
-  --fill-active: #e4e4e8;
-  --border: rgb(20 20 24 / 0.07);
-  --border-strong: #d9d9df;
+  --fill: #edeef2;
+  --fill-hover: #e6e7ec;
+  --fill-active: #dedfe5;
+  --border: rgb(17 18 24 / 0.07);
+  --border-strong: rgb(17 18 24 / 0.13);
 
-  --fg: #0b0b10;
-  --muted: #5e5e68;
-  --faint: #787883;
-  --disabled: #aeaeb6;
+  --fg: #121316;
+  --muted: #60626b;
+  --faint: #7b7d86;
+  --disabled: #b4b5bc;
 
   --accent: #0011ff;
   --accent-hover: #000ee0;
   --accent-fg: #0011ff;
-  --accent-soft: #eef0ff;
+  --accent-soft: #ecedff;
   --on-accent: #ffffff;
 
   --positive: #0f8a4f;
@@ -39,11 +45,25 @@
   --warning: #b25e09;
   --warning-soft: #fdf3e5;
 
-  --backdrop: rgb(20 20 24 / 0.3);
-  --shadow-xs: 0 1px 2px rgb(16 16 24 / 0.04);
-  --shadow-sm: 0 1px 2px rgb(16 16 24 / 0.05), 0 1px 1px rgb(16 16 24 / 0.03);
-  --shadow-popover: 0 0 0 1px var(--border), 0 12px 32px -6px rgb(16 16 24 / 0.14), 0 2px 6px rgb(16 16 24 / 0.05);
-  --shadow-modal: 0 0 0 1px rgb(16 16 24 / 0.04), 0 24px 64px -12px rgb(16 16 24 / 0.24);
+  /* Component roles that differ by theme rather than by value. */
+  --segment-active: #ffffff;
+  --segment-active-fg: var(--fg);
+  --segment-active-shadow: 0 1px 2px rgb(17 18 24 / 0.08), 0 0 0 0.5px rgb(17 18 24 / 0.04);
+  --button-secondary: var(--fill);
+  --button-secondary-hover: var(--fill-hover);
+  --button-secondary-ring: transparent;
+  --nav-active: #ffffff;
+  --nav-active-shadow: 0 1px 2px rgb(17 18 24 / 0.06);
+  --row-hover: rgb(17 18 24 / 0.025);
+  /* Data marks (bars, lines, meters): the accent hue, softened so a chart never shouts. */
+  --chart: #4c5aff;
+  --chart-soft: #c9cdff;
+
+  --backdrop: rgb(17 18 24 / 0.36);
+  --shadow-xs: 0 1px 2px rgb(17 18 24 / 0.04);
+  --shadow-sm: 0 1px 2px rgb(17 18 24 / 0.05), 0 1px 1px rgb(17 18 24 / 0.03);
+  --shadow-popover: 0 0 0 1px rgb(17 18 24 / 0.06), 0 12px 32px -6px rgb(17 18 24 / 0.16), 0 2px 6px rgb(17 18 24 / 0.05);
+  --shadow-modal: 0 0 0 1px rgb(17 18 24 / 0.04), 0 24px 64px -12px rgb(17 18 24 / 0.26);
 
   /* Calendar / staff label colors. Soft fills are mixed per theme below. */
   --c-indigo: #5b6cff;
@@ -66,20 +86,20 @@
 :root[data-theme='dark'] {
   color-scheme: dark;
 
-  --bg: #080808;
-  --bg-sidebar: #080808;
-  --surface: #121212;
-  --surface-raised: #1b1b1b;
-  --fill: #202020;
-  --fill-hover: #292929;
-  --fill-active: #323232;
-  --border: rgb(255 255 255 / 0.07);
-  --border-strong: #393939;
+  --bg: #000000;
+  --bg-sidebar: #000000;
+  --surface: #111111;
+  --surface-raised: #161616;
+  --fill: #1c1c1c;
+  --fill-hover: #242424;
+  --fill-active: #2c2c2c;
+  --border: rgb(255 255 255 / 0.08);
+  --border-strong: rgb(255 255 255 / 0.14);
 
-  --fg: #f4f4f4;
-  --muted: #a4a4a4;
-  --faint: #858585;
-  --disabled: #555555;
+  --fg: #f5f5f5;
+  --muted: #a3a3a3;
+  --faint: #767676;
+  --disabled: #4d4d4d;
 
   --accent: #4f5dff;
   --accent-hover: #6370ff;
@@ -94,11 +114,23 @@
   --warning: #f5a524;
   --warning-soft: rgb(245 165 36 / 0.13);
 
-  --backdrop: rgb(0 0 0 / 0.56);
-  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.3);
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.35);
-  --shadow-popover: 0 0 0 1px var(--border-strong), 0 16px 40px -8px rgb(0 0 0 / 0.6);
-  --shadow-modal: 0 0 0 1px var(--border-strong), 0 32px 80px -16px rgb(0 0 0 / 0.7);
+  --segment-active: #ffffff;
+  --segment-active-fg: #000000;
+  --segment-active-shadow: none;
+  --button-secondary: transparent;
+  --button-secondary-hover: rgb(255 255 255 / 0.06);
+  --button-secondary-ring: rgb(255 255 255 / 0.14);
+  --nav-active: rgb(255 255 255 / 0.08);
+  --nav-active-shadow: none;
+  --row-hover: rgb(255 255 255 / 0.03);
+  --chart: #5866ff;
+  --chart-soft: rgb(88 102 255 / 0.32);
+
+  --backdrop: rgb(0 0 0 / 0.72);
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.4);
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.45);
+  --shadow-popover: 0 0 0 1px rgb(255 255 255 / 0.1), 0 16px 40px -8px rgb(0 0 0 / 0.8);
+  --shadow-modal: 0 0 0 1px rgb(255 255 255 / 0.1), 0 32px 80px -16px rgb(0 0 0 / 0.9);
 
   --label-mix: 22%;
 }
@@ -183,6 +215,12 @@
   --color-warning: var(--warning);
   --color-warning-soft: var(--warning-soft);
   --color-backdrop: var(--backdrop);
+  --color-segment-active: var(--segment-active);
+  --color-segment-active-fg: var(--segment-active-fg);
+  --color-nav-active: var(--nav-active);
+  --color-row-hover: var(--row-hover);
+  --color-chart: var(--chart);
+  --color-chart-soft: var(--chart-soft);
 
   --shadow-xs: var(--shadow-xs);
   --shadow-sm: var(--shadow-sm);
@@ -388,6 +426,12 @@
   .label-soft {
     background: color-mix(in oklab, var(--label) var(--label-mix), var(--surface));
   }
+
+  /* Gradient initials, lit from the top left like Sweatpals' member avatars. */
+  .avatar {
+    background: linear-gradient(140deg, color-mix(in oklab, var(--label) 58%, #ffffff) 0%, var(--label) 78%);
+    text-shadow: 0 1px 1px rgb(0 0 0 / 0.14);
+  }
 }
 
 /* Theme switches swap every color at once; transitions would make it smear. */
@@ -433,6 +477,62 @@
 
 /* Collapsing workspaces is instant: avoid resizing every chart on every frame. */
 .disclosure-panel[data-closed] { display: none; }
+
+/*
+ * Folding a short list (sidebar sections, a reasoning trace): Emil's accordion
+ * recipe. Height is the one layout property we animate, so it stays short, and
+ * the content rides the bottom edge instead of being clipped from the top.
+ */
+.collapse-panel {
+  display: flex;
+  flex-direction: column;
+  justify-content: end;
+  height: var(--collapsible-panel-height);
+  overflow: hidden;
+  transition:
+    height 180ms var(--ease-out),
+    opacity 180ms var(--ease-out);
+}
+.collapse-panel[hidden]:not([hidden='until-found']) { display: none; }
+.collapse-panel[data-starting-style],
+.collapse-panel[data-ending-style] { height: 0; opacity: 0; }
+.collapse-panel[data-ending-style] { transition-duration: 140ms; }
+
+/* An answer arrives as a short cascade (50ms apart, set inline), never typed out. */
+.answer-in { animation: answer-in 260ms var(--ease-out) both; }
+.answer-static .answer-in { animation: none; }
+@keyframes answer-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+/* "Thinking…": a slow light sweep. Constant motion, so linear. */
+.shimmer-text {
+  background: linear-gradient(90deg, var(--muted) 0%, var(--muted) 38%, var(--fg) 50%, var(--muted) 62%, var(--muted) 100%);
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: shimmer 1.6s linear infinite;
+}
+@keyframes shimmer {
+  from { background-position: 110% 0; }
+  to { background-position: -110% 0; }
+}
+
+/*
+ * Small floating controls (Latest, bulk actions) settle in from below. They
+ * animate `transform`, leaving Tailwind's `translate` free for centering.
+ */
+.latest-pill,
+.float-bar {
+  transition:
+    opacity 180ms var(--ease-out),
+    transform 180ms var(--ease-out);
+  @starting-style {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+}
 .nav-drawer { transition: transform 240ms var(--ease-drawer); }
 .nav-drawer[data-starting-style], .nav-drawer[data-ending-style] { transform: translateX(-100%); }
 
@@ -452,6 +552,10 @@
   .nav-drawer { transition: opacity 150ms ease; }
   .nav-drawer[data-starting-style], .nav-drawer[data-ending-style] { transform: none; opacity: 0; }
   .animate-pulse { animation: none; }
+  .collapse-panel { transition: none; }
+  .answer-in { animation: fade 200ms ease both; }
+  .shimmer-text { animation: none; background: none; color: var(--muted); }
+  .latest-pill, .float-bar { transition: opacity 150ms ease; @starting-style { opacity: 0; transform: none; } }
 }
 
 :root[data-input='keyboard'] * { transition-duration: 0ms !important; }

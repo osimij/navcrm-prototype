@@ -106,7 +106,7 @@ export function LineChart({
             ))}
             <g key={dataKey} className="chart-fade">
               {area && areaPath && <path d={areaPath} fill="url(#lc-area)" />}
-              <path d={solid} fill="none" stroke="var(--fg)" strokeWidth={1.75} strokeLinejoin="round" strokeLinecap="round" />
+              <path d={solid} fill="none" stroke="var(--chart)" strokeWidth={1.75} strokeLinejoin="round" strokeLinecap="round" />
               {projected && (
                 <path
                   d={projected}
@@ -123,8 +123,8 @@ export function LineChart({
             </g>
             <defs>
               <linearGradient id="lc-area" x1="0" x2="0" y1="0" y2="1">
-                <stop offset="0" stopColor="var(--fg)" stopOpacity="0.06" />
-                <stop offset="1" stopColor="var(--fg)" stopOpacity="0" />
+                <stop offset="0" stopColor="var(--chart)" stopOpacity="0.14" />
+                <stop offset="1" stopColor="var(--chart)" stopOpacity="0" />
               </linearGradient>
             </defs>
             {active != null && (
@@ -135,7 +135,7 @@ export function LineChart({
                   cy={ys[active]}
                   r={4.5}
                   fill="var(--surface)"
-                  stroke={points[active].projected ? 'var(--faint)' : 'var(--fg)'}
+                  stroke={points[active].projected ? 'var(--faint)' : 'var(--chart)'}
                   strokeWidth={2}
                 />
               </g>

@@ -1,12 +1,10 @@
 import { useState } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router'
-import { NAV, SETTINGS_NAV } from './nav'
-import { useWorkspace } from '@/lib/workspace'
+import { useNavigate } from 'react-router'
 import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
 import { Avatar } from '@/components/ui/avatar'
-import { Button, IconButton } from '@/components/ui/button'
-import { Kbd } from '@/components/ui/misc'
+import { Button } from '@/components/ui/button'
+import { Switch } from '@/components/ui/controls'
 import { Popover } from '@/components/ui/popover'
 import { Segmented } from '@/components/ui/tabs'
 import { Tooltip } from '@/components/ui/tooltip'
@@ -14,14 +12,14 @@ import { business, currentUser } from '@/data/business'
 import { cn } from '@/lib/cn'
 import { useOverlays } from '@/lib/overlays'
 import { usePrefs, type ThemePref } from '@/lib/store'
+import { setLanguage, useLanguage, type Language } from '@/i18n/language'
 import { unreadCount } from './notifications'
-import { useLanguage, setLanguage, type Language } from '@/i18n/language'
 
 /**
  * NavCRM works offline and syncs later, so people need to trust that their data
  * is saved. A quiet icon when all is well; details on click.
  */
-function SyncStatus() {
+export function SyncStatus({ side = 'top' }: { side?: 'top' | 'bottom' | 'right' }) {
   const [syncing, setSyncing] = useState(false)
   const [last, setLast] = useState('14:18')
   function syncNow() {
@@ -34,21 +32,22 @@ function SyncStatus() {
   }
   return (
     <Popover
-      align="end"
+      align="start"
+      side={side}
       className="w-80 p-4"
       trigger={
         <button
           type="button"
           aria-label="Sync status"
-          className="press flex h-8 items-center gap-1.5 rounded-full pr-3 pl-2.5 text-sm text-muted hover:bg-fill hover:text-fg data-[popup-open]:bg-fill"
+          className="press grid size-8 shrink-0 place-items-center rounded-full text-muted hover:bg-fill hover:text-fg data-[popup-open]:bg-fill"
         >
-          <Icon icon={syncing ? I.syncing : I.synced} size={18} className={syncing ? 'animate-pulse text-accent-fg' : 'text-positive'} />
+          <Icon icon={syncing ? I.syncing : I.synced} size={17} className={syncing ? 'animate-pulse text-accent-fg' : 'text-positive'} />
           <span className="sr-only">{syncing ? 'Syncing…' : 'Synced'}</span>
         </button>
       }
     >
       <div className="flex items-start gap-3">
-        <span className="grid size-9 place-items-center rounded-full bg-positive-soft text-positive">
+        <span className="grid size-9 shrink-0 place-items-center rounded-full bg-positive-soft text-positive">
           <Icon icon={I.synced} size={18} />
         </span>
         <div>
@@ -78,15 +77,57 @@ function SyncStatus() {
   )
 }
 
+/** Front-desk screens face clients, so hiding amounts is one click away. */
+export function HideAmountsButton() {
+  const hide = usePrefs((s) => s.hideAmounts)
+  const toggleAmounts = usePrefs((s) => s.toggleAmounts)
+  return (
+    <Tooltip content={hide ? 'Show amounts' : 'Hide amounts'} side="top">
+      <button
+        type="button"
+        aria-label={hide ? 'Show amounts' : 'Hide amounts'}
+        aria-pressed={hide}
+        onClick={toggleAmounts}
+        className={cn('press grid size-8 shrink-0 place-items-center rounded-full hover:bg-fill', hide ? 'bg-fill text-fg' : 'text-muted hover:text-fg')}
+      >
+        <Icon icon={hide ? I.viewOff : I.view} size={18} />
+      </button>
+    </Tooltip>
+  )
+}
+
+export function NotificationsButton({ side = 'bottom' }: { side?: 'bottom' | 'right' }) {
+  const setNotifications = useOverlays((s) => s.setNotifications)
+  return (
+    <Tooltip content="Notifications" side={side}>
+      <button
+        type="button"
+        aria-label="Notifications"
+        onClick={() => setNotifications(true)}
+        className="press relative grid size-8 shrink-0 place-items-center rounded-full text-muted hover:bg-fill hover:text-fg"
+      >
+        <Icon icon={I.bell} size={18} />
+        {unreadCount > 0 && <span className="absolute top-1.5 right-1.5 size-2 rounded-full bg-negative ring-2 ring-[var(--bg-sidebar)]" />}
+      </button>
+    </Tooltip>
+  )
+}
+
 const LANGS = [
   { value: 'ru', label: 'Русский' },
   { value: 'en', label: 'English' },
 ] as const
 
-function ProfileMenu() {
+/**
+ * Who you are and how the app looks for you. Lives at the bottom of the
+ * sidebar, where people expect their account, and opens upward.
+ */
+export function ProfileMenu({ compact = false }: { compact?: boolean }) {
   const theme = usePrefs((s) => s.theme)
   const setTheme = usePrefs((s) => s.setTheme)
   const signOut = usePrefs((s) => s.signOut)
+  const hide = usePrefs((s) => s.hideAmounts)
+  const toggleAmounts = usePrefs((s) => s.toggleAmounts)
   const navigate = useNavigate()
   const [open, setOpen] = useState(false)
   const lang = useLanguage()
@@ -101,12 +142,27 @@ function ProfileMenu() {
     <Popover
       open={open}
       onOpenChange={setOpen}
-      align="end"
+      side={compact ? 'right' : 'top'}
+      align={compact ? 'end' : 'start'}
       className="w-72 p-1.5"
       trigger={
-        <button type="button" aria-label="Profile" className="press ml-1 rounded-full">
-          <Avatar name={currentUser.name} color="slate" size="md" />
-        </button>
+        compact ? (
+          <button type="button" aria-label="Profile" className="press mx-auto grid size-10 place-items-center rounded-xl hover:bg-fill data-[popup-open]:bg-fill">
+            <Avatar name={currentUser.name} color="slate" size="md" />
+          </button>
+        ) : (
+          <button
+            type="button"
+            aria-label="Profile"
+            className="press flex min-w-0 flex-1 items-center gap-2.5 rounded-xl px-2 py-1.5 text-left hover:bg-fill data-[popup-open]:bg-fill"
+          >
+            <Avatar name={currentUser.name} color="slate" size="md" />
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-sm font-medium text-fg">{currentUser.name}</span>
+              <span className="block truncate text-xs text-muted">{currentUser.role}</span>
+            </span>
+          </button>
+        )
       }
     >
       <div className="flex items-center gap-3 px-2.5 pt-2 pb-3">
@@ -135,8 +191,9 @@ function ProfileMenu() {
       </div>
       <div className="h-px bg-border" />
       <div className="flex flex-col gap-3 px-2.5 py-3">
+        <Switch checked={hide} onChange={toggleAmounts} label="Hide amounts" description="For screens clients can see" />
         <div className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium text-faint">Theme</span>
+          <span className="text-xs font-medium text-muted">Theme</span>
           <Segmented
             size="sm"
             value={theme}
@@ -150,14 +207,8 @@ function ProfileMenu() {
           />
         </div>
         <div className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium text-faint">Language</span>
-          <Segmented
-            size="sm"
-            value={lang}
-            fill
-            onChange={(l: Language) => setLanguage(l)}
-            items={LANGS.map((l) => ({ value: l.value, label: l.label }))}
-          />
+          <span className="text-xs font-medium text-muted">Language</span>
+          <Segmented size="sm" value={lang} fill onChange={(l: Language) => setLanguage(l)} items={LANGS.map((l) => ({ value: l.value, label: l.label }))} />
         </div>
       </div>
       <div className="h-px bg-border" />
@@ -168,7 +219,7 @@ function ProfileMenu() {
         </button>
         <button
           type="button"
-          className={cn(row, 'text-fg')}
+          className={row}
           onClick={() => {
             setOpen(false)
             signOut()
@@ -180,58 +231,5 @@ function ProfileMenu() {
         </button>
       </div>
     </Popover>
-  )
-}
-
-export function Topbar({ onMenu }: { onMenu: () => void }) {
-  const collapsed = useWorkspace((s) => s.sidebarCollapsed)
-  const toggleSidebar = useWorkspace((s) => s.toggleSidebar)
-  const { pathname } = useLocation()
-  const setting = SETTINGS_NAV.flatMap((g) => g.items).find((it) => pathname === it.to)
-  const current = NAV.flatMap((g) => g.items).find((it) => it.to === '/' ? pathname === '/' : pathname === it.to || pathname.startsWith(it.to + '/'))
-  const setCommand = useOverlays((s) => s.setCommand)
-  const setNotifications = useOverlays((s) => s.setNotifications)
-  const hide = usePrefs((s) => s.hideAmounts)
-  const toggleAmounts = usePrefs((s) => s.toggleAmounts)
-
-  return (
-    <div className="flex h-16 shrink-0 items-center gap-2 border-b border-border bg-bg px-3 sm:px-5 lg:px-7">
-      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:rounded-lg focus:bg-raised focus:p-3">Skip to content</a>
-      <IconButton icon={I.menu} label="Menu" className="lg:hidden" onClick={onMenu} />
-      <IconButton icon={I.sidebar} label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-expanded={!collapsed} className="hidden lg:inline-flex" onClick={toggleSidebar} />
-      <nav aria-label="Current location" className="mr-auto flex min-w-0 items-center gap-2 text-sm">
-        {setting && <><Link to="/settings/business" className="hidden text-muted hover:text-fg sm:inline">Settings</Link><Icon icon={I.chevronRight} size={13} className="hidden shrink-0 text-faint sm:block" /></>}
-        <span className="truncate font-medium text-fg" aria-current="page">{setting?.label ?? current?.label ?? 'Workspace'}</span>
-      </nav>
-      <button
-        type="button"
-        onClick={() => setCommand(true)}
-        aria-label="Search"
-        className="flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-xl text-sm text-muted hover:bg-fill xl:w-56 xl:justify-start xl:bg-surface xl:px-3"
-      >
-        <Icon icon={I.search} size={17} />
-        <span className="hidden flex-1 truncate text-left xl:block">Search anything</span>
-        <span className="hidden gap-1 xl:flex">
-          <Kbd>⌘</Kbd>
-          <Kbd>K</Kbd>
-        </span>
-      </button>
-      <div className="flex shrink-0 items-center gap-0.5">
-        <SyncStatus />
-        <Tooltip content={hide ? 'Show amounts' : 'Hide amounts'}>
-          <button
-            type="button"
-            aria-label={hide ? 'Show amounts' : 'Hide amounts'}
-            aria-pressed={hide}
-            onClick={toggleAmounts}
-            className={cn('press grid size-9 place-items-center rounded-full hover:bg-fill', hide ? 'text-fg' : 'text-muted hover:text-fg')}
-          >
-            <Icon icon={hide ? I.viewOff : I.view} size={20} />
-          </button>
-        </Tooltip>
-        <IconButton icon={I.bell} label="Notifications" badge={unreadCount > 0} onClick={() => setNotifications(true)} />
-        <ProfileMenu />
-      </div>
-    </div>
   )
 }

@@ -7,6 +7,8 @@ export type NavGroup = { label?: string; items: NavItem[] }
 /**
  * Main navigation. Compared with the current product:
  * - "Work" loses its label: these are the daily screens and need no heading.
+ * - Other sections keep visible labels and can be folded away (Linear).
+ * - The assistant is not a place but a panel you can open from anywhere (⌘J).
  * - "My earnings" moves to the profile menu; it's personal, not company money.
  * - Settings stays pinned at the bottom instead of falling below the fold.
  */
@@ -33,7 +35,6 @@ export const NAV: NavGroup[] = [
     items: [
       { to: '/campaigns', label: 'Campaigns', icon: I.campaigns, keywords: 'marketing mailing discounts bonuses loyalty' },
       { to: '/channels', label: 'Instagram & maps', icon: I.channels, keywords: 'channels reviews 2gis yandex google' },
-      { to: '/assistant', label: 'Assistant', icon: I.assistant, keywords: 'ai ask' },
     ],
   },
   {
@@ -115,3 +116,32 @@ export const SETTINGS_NAV: SettingsGroup[] = [
     ],
   },
 ]
+
+/**
+ * Names for the parent pages that full-page forms return to, so a nested page
+ * can say where "back" goes ("‹ Segments") instead of a bare arrow.
+ */
+const PARENT_LABELS: Record<string, string> = {
+  '/clients/segments': 'Segments',
+  '/inventory/documents': 'Documents',
+  '/payroll/schemes': 'Schemes',
+  '/payroll': 'Payroll',
+}
+
+export const ASSISTANT_ITEM: NavItem = { to: '/assistant', label: 'Assistant', icon: I.magic, keywords: 'ai ask chat' }
+
+export function labelForRoute(path: string): string {
+  if (PARENT_LABELS[path]) return PARENT_LABELS[path]
+  const item = NAV.flatMap((g) => g.items).find((it) => it.to === path)
+  return item?.label ?? 'Back'
+}
+
+/** The page a path belongs to, for the phone header and the browser title. */
+export function currentPage(pathname: string): string {
+  const setting = SETTINGS_NAV.flatMap((g) => g.items).find((it) => it.to === pathname)
+  if (setting) return setting.label
+  if (pathname.startsWith('/assistant')) return ASSISTANT_ITEM.label
+  if (pathname.startsWith('/me')) return 'My earnings'
+  const item = NAV.flatMap((g) => g.items).find((it) => (it.to === '/' ? pathname === '/' : pathname === it.to || pathname.startsWith(it.to + '/')))
+  return item?.label ?? 'Workspace'
+}

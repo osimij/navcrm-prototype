@@ -44,7 +44,7 @@ export function TH({
   return (
     <th
       className={cn(
-        'border-b border-border px-3 text-left text-xs font-medium whitespace-nowrap text-faint first:pl-5 last:pr-5',
+        'border-b border-border px-3 text-left text-xs font-medium whitespace-nowrap text-muted first:pl-5 last:pr-5',
         align === 'right' && 'text-right',
         align === 'center' && 'text-center',
         className,
@@ -77,8 +77,9 @@ export function TR({
       onClick={onClick}
       data-selected={selected || undefined}
       className={cn(
-        'group/row transition-colors duration-100',
-        onClick && 'cursor-pointer hover:bg-fill/60 data-[selected]:bg-fill',
+        'group/row',
+        onClick && 'cursor-pointer hover:bg-row-hover',
+        'data-[selected]:bg-[color-mix(in_oklab,var(--accent)_7%,transparent)]',
         className,
       )}
     >

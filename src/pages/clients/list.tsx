@@ -6,7 +6,7 @@ import { Avatar } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button, IconButton } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { Checkbox, Chip } from '@/components/ui/controls'
+import { Checkbox } from '@/components/ui/controls'
 import { SearchInput } from '@/components/ui/input'
 import { Menu, MenuItem } from '@/components/ui/menu'
 import { EmptyState, Money } from '@/components/ui/misc'
@@ -130,22 +130,22 @@ export function ClientsList() {
           placeholder="Name or last 4 digits of phone"
           className="w-full sm:w-80"
         />
-        <div className="flex flex-1 flex-wrap items-center gap-2">
-          {FILTERS.map((f) => (
-            <Chip
-              key={f.id}
-              active={filter === f.id}
-              count={clients.filter(f.test).length}
-              onClick={() => {
-                setFilter(filter === f.id ? 'all' : f.id)
-                setLimit(PAGE)
-                setSelected(new Set())
-              }}
-            >
-              {f.label}
-            </Chip>
-          ))}
-        </div>
+        <Select<Filter>
+          look="pill"
+          value={filter}
+          prefix="Filter:"
+          className={filter !== 'all' ? 'bg-accent-soft ring-accent/20' : undefined}
+          onChange={(value) => {
+            setFilter(value)
+            setLimit(PAGE)
+            setSelected(new Set())
+          }}
+          options={[
+            { value: 'all', label: 'All clients', hint: plural(active.length, 'client') },
+            ...FILTERS.map((f) => ({ value: f.id, label: f.label, hint: plural(clients.filter(f.test).length, 'client') })),
+          ]}
+        />
+        <span className="flex-1" />
         <Select look="pill" value={sort} onChange={setSort} options={SORTS} prefix="Sort:" align="end" />
       </Toolbar>
 
@@ -156,12 +156,13 @@ export function ClientsList() {
               <THead>
                 <TH className="w-10 !pr-0">
                   <Checkbox
+                    aria-label="Select all visible clients"
                     checked={allShownSelected}
                     onChange={(v) => setSelected(v ? new Set(shown.map((c) => c.id)) : new Set())}
                   />
                 </TH>
                 <TH className="text-left">Client</TH>
-                <TH className="text-left">Category</TH>
+                <TH className="hidden text-left sm:table-cell">Category</TH>
                 <TH align="right" className="hidden md:table-cell">
                   Visits
                 </TH>
@@ -171,7 +172,7 @@ export function ClientsList() {
                 <TH align="right" className="hidden lg:table-cell">
                   Bonuses
                 </TH>
-                <TH align="right">Debt, TJS</TH>
+                <TH align="right" className="hidden sm:table-cell">Debt, TJS</TH>
               </THead>
               <tbody>
                 {shown.map((c) => {
@@ -179,25 +180,27 @@ export function ClientsList() {
                   return (
                     <TR key={c.id} onClick={() => openClient(c.id)} selected={selected.has(c.id)}>
                       <TD className="w-10 !pr-0">
-                        <Checkbox checked={selected.has(c.id)} onChange={() => toggle(c.id)} />
+                        <Checkbox aria-label={`Select ${c.name}`} checked={selected.has(c.id)} onChange={() => toggle(c.id)} />
                       </TD>
-                      <TD>
+                      <TD className="max-sm:py-3">
                         <div className="flex min-w-0 items-center gap-3">
                           <Avatar name={c.name} />
                           <div className="min-w-0">
-                            <div className="truncate text-fg">{c.name}</div>
+                            <button type="button" className="block max-w-[11rem] truncate text-left text-fg hover:underline sm:max-w-none" onClick={(e) => { e.stopPropagation(); openClient(c.id) }}>{c.name}</button>
                             <div className="truncate text-sm text-muted tabular">{formatPhone(c.phone)}</div>
+                            <div className="mt-1 sm:hidden"><Badge tone={CATEGORY_TONE[c.category]}>{CATEGORY_LABEL[c.category]}</Badge></div>
                           </div>
                         </div>
                       </TD>
-                      <TD>
+                      <TD className="hidden sm:table-cell">
                         <Badge tone={CATEGORY_TONE[c.category]}>{CATEGORY_LABEL[c.category]}</Badge>
                       </TD>
                       <TD align="right" className="hidden md:table-cell">
                         {c.visits}
                       </TD>
-                      <TD align="right">
+                      <TD align="right" className="py-3 max-sm:pr-5">
                         <Money value={c.totalSpent} currency={false} />
+                        {c.debt > 0 && <div className="mt-1 text-xs text-negative sm:hidden">Debt: <Money value={c.debt} currency={false} /></div>}
                       </TD>
                       <TD muted className="hidden whitespace-nowrap lg:table-cell">
                         {c.lastVisit ? daysAgo(c.lastVisit) : 'No visits yet'}
@@ -208,7 +211,7 @@ export function ClientsList() {
                       <TD align="right" className="hidden lg:table-cell">
                         {c.bonuses ? <Money value={c.bonuses} currency={false} className="text-muted" /> : <span className="text-faint">—</span>}
                       </TD>
-                      <TD align="right">
+                      <TD align="right" className="hidden sm:table-cell">
                         {c.debt > 0 ? <Money value={c.debt} currency={false} className="text-negative" /> : <span className="text-faint">—</span>}
                       </TD>
                     </TR>
@@ -244,7 +247,7 @@ export function ClientsList() {
       </Card>
 
       {selected.size > 0 && (
-        <div className="rise fixed bottom-6 left-1/2 z-30 flex -translate-x-1/2 items-center gap-1 rounded-full bg-raised py-1.5 pr-1.5 pl-5 shadow-popover lg:left-[calc(50%+124px)]">
+        <div className="rise fixed right-4 bottom-6 left-4 z-30 flex flex-wrap items-center gap-1 rounded-2xl bg-raised p-2 shadow-popover sm:right-8 sm:left-auto sm:max-w-[calc(100%-4rem)] sm:rounded-full sm:pl-5">
           <span className="mr-2 text-sm font-medium text-fg tabular">{selected.size} selected</span>
           <Button
             size="sm"

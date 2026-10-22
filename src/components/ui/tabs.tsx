@@ -13,7 +13,7 @@ function Count({ n }: { n: number }) {
 }
 
 const indicator =
-  'absolute bottom-[-1px] left-0 h-0.5 w-(--active-tab-width) translate-x-(--active-tab-left) rounded-full bg-fg transition-[translate,width] duration-200 ease-[var(--ease-out)]'
+  'absolute bottom-[-1px] left-0 h-0.5 w-(--active-tab-width) translate-x-(--active-tab-left) rounded-full bg-fg'
 
 /** Underlined tabs for switching views within a page. */
 export function Tabs<V extends string>({
@@ -29,7 +29,7 @@ export function Tabs<V extends string>({
 }) {
   return (
     <T.Root value={value} onValueChange={(v) => onChange(v as V)}>
-      <T.List className={cn('relative flex gap-6 border-b border-border', className)}>
+      <T.List className={cn('relative flex gap-6 overflow-x-auto border-b border-border [scrollbar-width:none]', className)}>
         {items.map((it) => (
           <T.Tab key={it.value} value={it.value} className={tabClass}>
             {it.label}
@@ -83,22 +83,21 @@ export function Segmented<V extends string>({
   className?: string
 }) {
   return (
-    <T.Root value={value} onValueChange={(v) => onChange(v as V)}>
-      <T.List className={cn('relative rounded-full bg-fill p-0.5', fill ? 'flex w-full' : 'inline-flex', className)}>
+    <T.Root value={value} onValueChange={(v) => onChange(v as V)} className="min-w-0 max-w-full">
+      <T.List className={cn('relative max-w-full flex-wrap rounded-2xl bg-fill p-0.5', fill ? 'flex w-full' : 'inline-flex', className)}>
         {items.map((it) => (
           <T.Tab
             key={it.value}
             value={it.value}
             className={cn(
-              'relative z-[1] flex items-center justify-center gap-1.5 rounded-full font-medium whitespace-nowrap text-muted outline-none select-none transition-colors duration-150 hover:text-fg data-[active]:text-fg focus-visible:outline-2 focus-visible:outline-accent',
-              size === 'sm' ? 'h-7 px-3 text-sm' : 'h-8 px-3.5 text-sm',
+              'relative flex max-w-full items-center justify-center gap-1.5 rounded-full py-1 font-medium text-muted outline-none select-none hover:text-fg data-[active]:bg-surface data-[active]:text-fg data-[active]:shadow-sm data-[active]:ring-1 data-[active]:ring-border dark:data-[active]:bg-fill-active dark:data-[active]:ring-0 focus-visible:outline-2 focus-visible:outline-accent',
+              size === 'sm' ? 'min-h-7 px-3 text-sm' : 'min-h-8 px-3.5 text-sm',
               fill && 'flex-1',
             )}
           >
             {it.label}
           </T.Tab>
         ))}
-        <T.Indicator className="absolute top-0.5 left-0 h-[calc(100%-4px)] w-(--active-tab-width) translate-x-(--active-tab-left) rounded-full bg-surface shadow-sm ring-1 ring-border transition-[translate,width] duration-200 ease-[var(--ease-out)] dark:bg-fill-active dark:ring-0" />
       </T.List>
     </T.Root>
   )

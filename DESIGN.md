@@ -2,8 +2,9 @@
 
 A working prototype of the NavCRM web app (signed-out and signed-in), built to be
 shown in a presentation and then iterated in Figma. Visual direction: Mercury's
-web app, plus the wallet card from the reference shot (gray action tiles, big
-numbers that count between values, a chart you can scrub).
+web app as the foundation, Sweatpals for neutral dark surfaces, Revolut for light
+surfaces, and Linear for focused navigation and conversations. Reference decisions
+and verification are recorded in `docs/redesign.md`.
 
 ## Run it
 
@@ -25,16 +26,16 @@ progress, whatever day you present.
 | Signed out | `/signin`, `/signup` | Phone + password or Telegram code, password reset, one-question-per-screen sign-up with business spheres (max 4) and team invites |
 | Home | `/` | Scrubbable revenue chart where the number counts to each point, forecast from bookings, arrivals list, KPI tiles, actionable "Needs attention" |
 | Calendar | `/calendar` | Day (masters as columns), Week, List, Rooms; drag to reschedule with rule checks; visit sheet with one next step through to checkout; waiting list |
-| Clients | `/clients`, `/segments`, `/import` | Search by name or last 4 digits, filter chips, bulk actions, client profile sheet, segment builder with live count, import with migration guides |
+| Clients | `/clients`, `/segments`, `/import` | Search by name or last 4 digits, one filter menu with category counts, bulk actions, client profile sheet, segment builder with live count, import with migration guides |
 | Register | `/pos/*` | Sale with gray item tiles and animated total, promo codes, bonuses, split payment; receipts and refunds; shift close by banknote count; debts, memberships, certificates, expenses, printer |
-| Inbox | `/inbox` | Telegram / WhatsApp / Instagram in one list, assistant hand-off, client context panel |
+| Inbox | `/inbox` | Telegram / WhatsApp / Instagram in one list, assistant hand-off, client context drawer on demand |
 | Tasks | `/tasks` | Grouped by due date, auto-created tasks labelled by source |
 | Inventory | `/inventory/*` | Products, stock, documents (receipt, write-off, transfer, stocktake), tech cards, supplier orders |
 | Laboratory | `/lab/*` | Orders with result entry and range flags, new order page, test catalog, templates, partner labs, reports |
 | Campaigns | `/campaigns/*` | List judged by "came back within 14 days", 4-step builder with live Telegram preview, discount offers and cards |
 | Instagram & maps | `/channels/*` | Where bookings come from, platform setup, review replies, portfolio |
-| Assistant | `/assistant` | Answers from live data with actions that do something |
-| Reports | `/reports/*` | Hub, revenue, cash & profit, receivables, load heatmap, clients, report builder |
+| Assistant | `/assistant` | Centered starting composer, conversation history drawer, per-chat drafts, answers from live demo data with working actions |
+| Reports | `/reports/*` | Expandable hub topics, revenue, cash & profit, receivables, load heatmap, clients, report builder |
 | Payroll, Sublease | `/payroll/*`, `/sublease` | Periods with locked approval, rule-based schemes, timesheet; tenant rent and money held for tenants |
 | My earnings | `/me` | Time clock, preliminary accruals, payslips |
 | Settings | `/settings/*` | 29 pages in Mercury's settings layout |
@@ -42,9 +43,10 @@ progress, whatever day you present.
 Global: ⌘K search (clients by name or phone digits, pages, actions, ask the
 assistant), notifications, sync status, hide amounts, light/dark/system theme.
 
-**Prototype limits:** UI copy is English (the language switch is there; Tajik and
-Russian aren't wired). Data lives in memory and resets on reload (theme, sign-in
-and "hide amounts" persist). A few outward actions (printing, sending, exports)
+**Prototype limits:** English and Russian are supported, including live switching;
+Tajik is not yet available. Demo business data, conversations, and drafts live in
+memory and reset on reload. Theme, sign-in, hide amounts, sidebar size, and manually
+chosen disclosure states persist. A few outward actions (printing, sending, exports)
 confirm with a toast instead of doing it.
 
 ## Principles
@@ -62,7 +64,7 @@ confirm with a toast instead of doing it.
 
 | Current product | Prototype | Why |
 | --- | --- | --- |
-| 16 sidebar items in 5 groups, Settings below the fold | Daily screens unlabeled at the top; Operations, Growth, Money groups; Settings pinned at the bottom | Shorter scan, nothing important hidden |
+| 16 sidebar items in 5 groups, Settings below the fold | Daily screens at the top; expandable Operations, Growth, Money groups; Settings pinned at the bottom; optional icon rail | Shorter scan, with secondary destinations available on demand |
 | Settings is a second sidebar inside the page | Settings **replaces** the sidebar (Mercury) with "‹ Settings" to go back | Full content width, no two-level sidebar |
 | "My earnings" among company money tools | Moved to the profile menu | It's personal, not company money |
 | Ask AI as a dashboard modal, a page, and a button on every report | One Assistant page; ⌘K and reports hand it the question | One mental model |
@@ -91,16 +93,16 @@ All colors are CSS variables in `src/styles/index.css` (`:root` for light,
 
 | Token | Light | Dark | Use |
 | --- | --- | --- | --- |
-| `--bg` | #FFFFFF | #0F0F12 | Page |
-| `--bg-sidebar` | #FAFAFB | #0B0B0E | Sidebar |
-| `--surface` | #FFFFFF | #16161A | Cards |
-| `--surface-raised` | #FFFFFF | #1C1C21 | Popovers, modals, sheets |
-| `--fill` | #F4F4F6 | #1E1E23 | Tiles, inputs, secondary buttons |
-| `--fill-hover` / `--fill-active` | #EDEDF0 / #E6E6EA | #26262C / #2D2D34 | States |
-| `--border` / `--border-strong` | #EAEAEE / #D9D9DF | #25252B / #34343C | Hairlines |
-| `--fg` | #0B0B10 | #F3F3F5 | Primary text |
-| `--muted` | #5E5E68 | #A2A2AC | Secondary text |
-| `--faint` | #787883 | #7C7C87 | Tertiary text, placeholders |
+| `--bg` | #F7F7F8 | #080808 | Page |
+| `--bg-sidebar` | #F7F7F8 | #080808 | Sidebar |
+| `--surface` | #FFFFFF | #121212 | Cards |
+| `--surface-raised` | #FFFFFF | #1B1B1B | Popovers, modals, sheets |
+| `--fill` | #F1F1F3 | #202020 | Tiles, inputs, secondary buttons |
+| `--fill-hover` / `--fill-active` | #E9E9EC / #E4E4E8 | #292929 / #323232 | States |
+| `--border` / `--border-strong` | black 7% / #D9D9DF | white 7% / #393939 | Hairlines |
+| `--fg` | #0B0B10 | #F4F4F4 | Primary text |
+| `--muted` | #5E5E68 | #A4A4A4 | Secondary text |
+| `--faint` | #787883 | #858585 | Tertiary text, placeholders |
 | `--accent` | **#0011FF** | **#4F5DFF** | Primary buttons, focus, selection |
 | `--accent-fg` | #0011FF | #808BFF | Accent text and icons |
 | `--accent-soft` | #EEF0FF | accent 16% | Selected backgrounds |
@@ -138,11 +140,13 @@ except initials.
 - **Tables:** hairline rows, quiet header with balanced top and bottom spacing, whole row opens the record's Sheet. Shared `thead th` styles set the header height and vertical padding, including custom tables.
 - **People in tables:** names and supporting text, without profile avatars. Avatar stacks show names in tables; profile views and pickers retain avatars.
 - **Badges and label chips:** transparent background, regular-weight colored text and a matching outline at 15% opacity, without a status dot. This is the shared style across pages, tables, and record details.
-- **Stat cards:** shared `StatCard` keeps the label at the top and groups the value with its subtitle at the bottom. Standard cards use compact padding and a minimum height of 36 spacing units; small summaries use the same structure without a minimum height. Cards grow when text wraps, and keep their links, filters, charts, and actions.
+- **Stat cards:** shared `StatCard` keeps the label at the top and groups the value with its subtitle at the bottom. Standard cards use compact padding and a minimum height of 112px; small summaries use the same structure without a minimum height. Cards grow when text wraps, and keep their links, filters, charts, and actions.
 - **Supporting cards and controls:** actions align at the bottom of matching cards. Cards and form controls can shrink in narrow grids; tables scroll within their cards. Standalone switches have descriptive accessible names. Assistant cues use the chat icon consistently.
 - **Sheet:** right panel inset 8px from the edges, eyebrow + title, actions, details as label/value rows.
-- **Settings:** label and description on the left, value on the right, "Edit ›";
+- **Settings:** searchable, expandable navigation groups; rounded section cards with label and description on the left, value on the right, "Edit ›";
   a save bar appears only when something changed.
+- **Disclosures:** supporting Home metrics and report topics are optional and remember manual choices. A navigation group opens for its active route without saving that automatic change.
+- **Small screens:** mobile navigation drawer, wrapping actions and segmented controls, stacked client details, contained table scrolling, and bounded modal/sheet widths.
 - **Empty states:** say what will appear and offer the one action that fills it.
 
 ## Motion
@@ -155,7 +159,7 @@ Following Emil Kowalski's design-engineering rules:
   `--ease-in-out: cubic-bezier(0.77, 0, 0.175, 1)` for on-screen movement,
   `--ease-drawer: cubic-bezier(0.32, 0.72, 0, 1)` for sheets. Never `ease-in`.
 - Durations: press 160ms, tooltips 125ms, popovers 180ms, modals 220ms, sheets
-  420ms in / 240ms out. Exits faster than entrances.
+  260ms in / 240ms out. Exits faster than entrances.
 - Press feedback `scale(0.97)` on everything pressable (`.press`).
 - Popovers grow from their trigger (`transform-origin: var(--transform-origin)`);
   modals scale from center from 0.96, never from 0.
@@ -163,7 +167,7 @@ Following Emil Kowalski's design-engineering rules:
 - Numbers that change in place use NumberFlow (Home revenue scrub, totals).
 - Charts don't animate in; a new dataset fades (200ms).
 - Delight only for rare moments: sign-up steps slide in, the success check draws once.
-- `prefers-reduced-motion`: movement removed, fades kept.
+- `prefers-reduced-motion`: movement removed, fades kept; busy pulses stop. Keyboard-triggered navigation and overlays are instant. No animated sidebar width or collapsing panel height.
 
 ## Stack
 

@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "typecheck": "tsc -b --noEmit",
     "check:i18n": "node scripts/i18n-catalog.mjs --check",
-    "test:i18n": "node --test scripts/i18n.test.mjs"
+    "test:i18n": "node --test scripts/i18n.test.mjs",
+    "test:workspace": "node --test scripts/workspace.test.mjs"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

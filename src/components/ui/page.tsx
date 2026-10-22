@@ -61,7 +61,7 @@ export function PageHeader({
             {subtitle && <p className="mt-1 text-base text-muted">{subtitle}</p>}
           </div>
         </div>
-        {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
+        {actions && <div className="flex min-w-0 max-w-full shrink-0 flex-wrap items-center gap-2">{actions}</div>}
       </div>
       {tabs && <div className="mt-5">{tabs}</div>}
     </header>

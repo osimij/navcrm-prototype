@@ -33,10 +33,10 @@ export function StatCard({
 }) {
   const clickable = !!to || !!onClick
   const classes = cn(
-    'flex min-w-0 flex-col justify-between rounded-2xl bg-surface text-left ring-1 ring-border',
-    size === 'sm' ? 'gap-2 px-4 py-3' : 'min-h-36 gap-3 p-4',
-    clickable && 'press group hover:bg-fill/50',
-    active && 'ring-fg',
+    'flex min-w-0 flex-col justify-between rounded-2xl bg-surface text-left',
+    size === 'sm' ? 'gap-2 px-4 py-3' : 'min-h-28 gap-4 p-5',
+    clickable && 'press group hover:bg-fill-hover',
+    active && 'ring-1 ring-accent bg-accent-soft',
     className,
   )
   const content = (

@@ -2,6 +2,10 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState, type Keyboar
 import { Route, Routes, useNavigate, useSearchParams } from 'react-router'
 import { BarChart } from '@/components/charts/bar-chart'
 import { I, Icon } from '@/components/icons'
+import { Sheet } from '@/components/ui/dialog'
+import { Popover } from '@/components/ui/popover'
+import { SearchInput } from '@/components/ui/input'
+import { text as translate } from '@/i18n'
 import { Button, IconButton } from '@/components/ui/button'
 import { cn } from '@/lib/cn'
 import { useOverlays } from '@/lib/overlays'
@@ -34,7 +38,7 @@ function Blocks({ blocks, ask }: { blocks: Block[]; ask: (q: string) => void }) 
         switch (b.type) {
           case 'text':
             return (
-              <p key={i} className="text-base leading-6 text-fg">
+              <p key={i} className="text-base leading-6 text-fg [overflow-wrap:anywhere]">
                 {b.text}
               </p>
             )
@@ -74,7 +78,7 @@ function Blocks({ blocks, ask }: { blocks: Block[]; ask: (q: string) => void }) 
             )
           case 'post':
             return (
-              <div key={i} className="rounded-xl bg-fill px-4 py-3.5 text-base leading-6 whitespace-pre-wrap text-fg">
+              <div key={i} className="rounded-xl bg-fill px-4 py-3.5 text-base leading-6 whitespace-pre-wrap text-fg [overflow-wrap:anywhere]">
                 {b.text}
               </div>
             )
@@ -92,7 +96,7 @@ function Blocks({ blocks, ask }: { blocks: Block[]; ask: (q: string) => void }) 
             return (
               <div key={i} className="flex flex-wrap gap-2">
                 {SUGGESTIONS.slice(0, 4).map((s) => (
-                  <Button key={s} size="sm" variant="secondary" onClick={() => ask(s)}>
+                  <Button key={s} size="sm" variant="secondary" onClick={() => ask(translate(s))}>
                     {s}
                   </Button>
                 ))}
@@ -108,24 +112,28 @@ function Message({ m, ask }: { m: ChatMessage; ask: (q: string) => void }) {
   if (m.role === 'user') {
     return (
       <div data-role="user" className="flex justify-end">
-        <div className="max-w-[80%] rounded-2xl rounded-br-md bg-fill px-4 py-2.5 text-base leading-6 text-fg">{m.text}</div>
+        <div translate="no" className="min-w-0 max-w-[90%] rounded-2xl rounded-br-md bg-fill px-4 py-2.5 text-base leading-6 whitespace-pre-wrap text-fg [overflow-wrap:anywhere] sm:max-w-[80%]">{m.text}</div>
       </div>
     )
   }
   return (
     <div className="flex gap-3">
       <AssistantMark />
-      <div className={cn('min-w-0 flex-1 pt-1', !m.pending && 'rise')}>{m.pending ? <Thinking /> : <Blocks blocks={m.blocks ?? []} ask={ask} />}</div>
+      <div className="min-w-0 flex-1 pt-1">{m.pending ? <Thinking /> : <Blocks blocks={m.blocks ?? []} ask={ask} />}</div>
     </div>
   )
 }
 
 function AssistantView() {
-  const { chats, activeId, setActive, newChat, addMessage, resolve, ensureChat } = useAssistant()
+  const { chats, activeId, setActive, newChat, addMessage, resolve, ensureChat, drafts, setDraft } = useAssistant()
   const navigate = useNavigate()
   const { openNewVisit, openClient } = useOverlays()
   const [params, setParams] = useSearchParams()
-  const [text, setText] = useState('')
+  const text = drafts[activeId ?? 'new'] ?? ''
+  const setText = (value: string) => setDraft(activeId, value)
+  const [historyOpen, setHistoryOpen] = useState(false)
+  const [historyQuery, setHistoryQuery] = useState('')
+  const [moreSuggestions, setMoreSuggestions] = useState(false)
   const scroller = useRef<HTMLDivElement>(null)
   const area = useRef<HTMLTextAreaElement>(null)
   const handledQ = useRef<string | null>(null)
@@ -144,7 +152,7 @@ function AssistantView() {
       // A short beat while numbers are gathered; the answer then appears whole, not typed out.
       setTimeout(() => {
         const { entries, clients } = useData.getState()
-        resolve(chatId, pendingId, answer(q, { entries, clients, navigate, openNewVisit, openClient, ask: (x) => askRef.current(x) }))
+        resolve(chatId, pendingId, answer(q, { entries, clients, navigate, openNewVisit, openClient, ask: (x) => askRef.current(translate(x)) }))
       }, 650 + Math.min(q.length * 4, 250))
     },
     [ensureChat, addMessage, resolve, navigate, openNewVisit, openClient],
@@ -177,7 +185,7 @@ function AssistantView() {
     }
     const users = el.querySelectorAll<HTMLElement>('[data-role="user"]')
     const q = users[users.length - 1]
-    if (q && el.scrollHeight > el.clientHeight) el.scrollTo({ top: q.offsetTop - 24, behavior: 'smooth' })
+    if (q && el.scrollHeight > el.clientHeight) el.scrollTo({ top: el.scrollTop + q.getBoundingClientRect().top - el.getBoundingClientRect().top - 24 })
   }, [last?.id, last?.pending, last])
 
   useLayoutEffect(() => {
@@ -191,6 +199,7 @@ function AssistantView() {
     if (!text.trim() || busy) return
     ask(text)
     setText('')
+    requestAnimationFrame(() => area.current?.focus())
   }
 
   function onKey(e: KeyboardEvent<HTMLTextAreaElement>) {
@@ -200,96 +209,77 @@ function AssistantView() {
     }
   }
 
-  const groups = (['Today', 'This week'] as const).map((g) => ({ g, items: chats.filter((c) => c.group === g) })).filter((x) => x.items.length)
+  const groups = (['Today', 'This week'] as const).map((g) => ({ g, items: chats.filter((c) => c.group === g && `${c.title} ${translate(c.title)}`.toLowerCase().includes(historyQuery.toLowerCase())) })).filter((x) => x.items.length)
+
+  const hasMessages = !!chat?.messages.length
+  const chatTitle = chat ? (chat.titleIsUserText ? chat.title : translate(chat.title)) : translate('Assistant')
+  const composer = (
+    <div className="w-full rounded-2xl bg-surface p-3 shadow-xs ring-1 ring-border focus-within:ring-border-strong">
+      <textarea ref={area} rows={2} value={text} onChange={(e) => setText(e.target.value)} onKeyDown={onKey}
+        placeholder={hasMessages ? 'Ask a follow-up question' : 'What would you like to know?'} aria-label="Question"
+        className="block max-h-40 min-h-16 w-full resize-none bg-transparent px-1 py-2 text-md leading-6 text-fg outline-none placeholder:text-faint" />
+      <div className="mt-2 flex items-center justify-between gap-3">
+        <Popover className="w-72 p-4" trigger={<button type="button" className="flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs text-muted hover:bg-fill"><Icon icon={I.lock} size={13} />Business data<Icon icon={I.chevronDown} size={12} /></button>}>
+          <p className="text-sm text-fg">Answers come from your data, within your permissions</p>
+          <p className="mt-2 text-xs text-muted">Uses the register and calendar, updated within a minute. Check important numbers in Reports.</p>
+        </Popover>
+        <IconButton icon={I.send} label="Ask (Enter)" variant="primary" size="sm" disabled={!text.trim() || busy} onClick={submit} />
+      </div>
+    </div>
+  )
 
   return (
-    <div className="flex h-full min-h-0 lg:border-t lg:border-border">
-      <aside className="hidden w-[280px] shrink-0 flex-col border-r border-border md:flex">
-        <div className="p-3">
-          <Button icon={I.add} className="w-full" onClick={newChat}>
-            New chat
-          </Button>
+    <div className="flex h-full min-h-0 flex-col">
+      <div className="flex min-h-14 shrink-0 items-center justify-between gap-3 px-4 sm:px-8">
+        <h1 translate="no" className="min-w-0 truncate text-base font-medium text-fg" title={chatTitle}>{chatTitle}</h1>
+        <div className="flex shrink-0 items-center gap-1">
+          <Button size="sm" variant="ghost" icon={I.history} onClick={() => setHistoryOpen(true)}>History</Button>
+          <IconButton icon={I.add} label="New chat" size="sm" onClick={() => { newChat(); requestAnimationFrame(() => area.current?.focus()) }} />
         </div>
-        <nav className="min-h-0 flex-1 overflow-y-auto px-2 pb-4">
-          {groups.map(({ g, items }) => (
-            <div key={g} className="mb-4">
-              <div className="px-2.5 pb-1 text-xs font-medium text-faint">{g}</div>
-              {items.map((c) => (
-                <button
-                  key={c.id}
-                  type="button"
-                  onClick={() => {
-                    setActive(c.id)
-                    if (!c.messages.length) ask(c.title)
-                  }}
-                  className={cn(
-                    'block w-full truncate rounded-lg px-2.5 py-2 text-left text-base',
-                    c.id === activeId ? 'bg-fill-active text-fg' : 'text-muted hover:bg-fill hover:text-fg',
-                  )}
-                >
-                  {c.title}
-                </button>
-              ))}
-            </div>
-          ))}
-        </nav>
-      </aside>
+      </div>
 
-      <section className="flex min-w-0 flex-1 flex-col">
-        <div className="flex h-14 shrink-0 items-center justify-between gap-4 border-b border-border px-6">
-          <h1 className="truncate text-lg font-normal text-fg">{chat ? chat.title : 'Assistant'}</h1>
-          <span className="hidden shrink-0 items-center gap-1.5 text-sm text-faint sm:flex">
-            <Icon icon={I.lock} size={14} />
-            Answers come from your data, within your permissions
-          </span>
-        </div>
-
-        <div ref={scroller} className="min-h-0 flex-1 overflow-y-auto">
-          {chat && chat.messages.length ? (
-            <div className="mx-auto flex max-w-[760px] flex-col gap-6 px-6 pt-8 pb-10">
-              {chat.messages.map((m) => (
-                <Message key={m.id} m={m} ask={ask} />
-              ))}
-            </div>
-          ) : (
-            <div className="mx-auto flex min-h-full max-w-[640px] flex-col justify-center px-6 py-10">
-              <h2 className="text-2xl font-normal text-fg">Ask about your business</h2>
-              <p className="mt-1.5 text-base text-muted">Revenue, visits, clients, staff load and stock, answered in plain words with the numbers behind them.</p>
-              <div className="mt-7 grid gap-2 sm:grid-cols-2">
-                {SUGGESTIONS.map((s) => (
-                  <button
-                    key={s}
-                    type="button"
-                    onClick={() => ask(s)}
-                    className="press rounded-xl px-4 py-3 text-left text-base text-fg ring-1 ring-border hover:bg-fill"
-                  >
-                    {s}
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="shrink-0 px-6 pb-5">
-          <div className="mx-auto max-w-[760px]">
-            <div className="flex items-end gap-2 rounded-2xl bg-surface p-2 pl-4 ring-1 ring-border transition-[box-shadow] duration-150 focus-within:ring-accent focus-within:shadow-[0_0_0_4px_color-mix(in_oklab,var(--accent)_12%,transparent)]">
-              <textarea
-                ref={area}
-                rows={1}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                onKeyDown={onKey}
-                placeholder="Ask about revenue, clients, staff or stock"
-                aria-label="Question"
-                className="block max-h-40 min-h-8 flex-1 resize-none bg-transparent py-1.5 text-base leading-[21px] text-fg outline-none placeholder:text-faint"
-              />
-              <IconButton icon={I.send} label="Ask (Enter)" variant="primary" size="sm" disabled={!text.trim() || busy} onClick={submit} className="disabled:opacity-40" />
-            </div>
-            <p className="mt-2 text-center text-xs text-faint">Uses the register and calendar, updated within a minute. Check important numbers in Reports.</p>
+      <div ref={scroller} className="relative min-h-0 flex-1 overflow-y-auto">
+        {hasMessages ? <div role="log" aria-label="Conversation" aria-live="polite" aria-busy={busy} className="mx-auto flex max-w-[800px] flex-col gap-8 px-4 pt-8 pb-10 sm:px-8">
+          {chat!.messages.map((m) => <Message key={m.id} m={m} ask={ask} />)}
+        </div> : <div className="mx-auto flex min-h-full max-w-[720px] flex-col justify-center px-5 pt-10 pb-20 sm:px-8">
+          <div className="mb-7">
+            <AssistantMark />
+            <h2 className="mt-5 text-3xl font-normal tracking-tight text-fg">A little clarity for your day</h2>
+            <p className="mt-2 text-base text-muted">Ask a question. Find the numbers. Decide what comes next.</p>
           </div>
+          {composer}
+          <div className="mt-5 grid gap-2 sm:grid-cols-3">
+            {[
+              { title: 'Understand revenue', description: 'See what changed today', icon: I.chart, question: SUGGESTIONS[0] },
+              { title: 'Plan the day', description: 'Find time in the schedule', icon: I.calendar, question: 'Who has free time today?' },
+              { title: 'Bring clients back', description: 'Find who needs a follow-up', icon: I.clients, question: 'Who hasn’t visited in 60 days?' },
+            ].map((s) => <button key={s.title} type="button" onClick={() => ask(translate(s.question))} className="press rounded-xl border border-border p-4 text-left hover:bg-surface">
+              <Icon icon={s.icon} size={18} className="mb-4 text-muted" />
+              <span className="block text-sm font-medium text-fg">{s.title}</span>
+              <span className="mt-1 block text-xs leading-5 text-muted">{s.description}</span>
+            </button>)}
+          </div>
+          <div className="mt-3">
+            <Button variant="ghost" size="sm" onClick={() => setMoreSuggestions(!moreSuggestions)} aria-expanded={moreSuggestions}>{moreSuggestions ? 'Fewer ideas' : 'More ideas'}</Button>
+            {moreSuggestions && <div className="mt-2 flex flex-wrap gap-2">{SUGGESTIONS.slice(1).map((q) => <Button key={q} variant="outline" size="sm" onClick={() => ask(translate(q))} className="h-auto min-h-8 whitespace-normal py-2 text-left">{q}</Button>)}</div>}
+          </div>
+        </div>}
+      </div>
+      {hasMessages && <div className="shrink-0 px-4 pt-2 pb-4 sm:px-8"><div className="mx-auto max-w-[736px]">{composer}<p className="mt-2 text-center text-xs text-faint">Check important numbers in Reports.</p></div></div>}
+
+      <Sheet open={historyOpen} onOpenChange={setHistoryOpen} title="Chat history" width="md">
+        <div className="p-4">
+          <div className="mb-4 flex gap-2"><SearchInput value={historyQuery} onChange={setHistoryQuery} placeholder="Search conversations" /><IconButton icon={I.add} label="New chat" onClick={() => { newChat(); setHistoryOpen(false) }} /></div>
+          {groups.map(({ g, items }) => <div key={g} className="mb-5">
+            <h2 className="px-3 py-2 text-xs font-medium text-muted">{g}</h2>
+            {items.map((c) => <button key={c.id} type="button" aria-current={c.id === activeId ? 'true' : undefined} onClick={() => { setActive(c.id); if (!c.messages.length) ask(translate(c.title)); setHistoryOpen(false) }}
+              className={cn('flex w-full items-start gap-3 rounded-xl px-3 py-3 text-left text-sm', c.id === activeId ? 'bg-fill text-fg' : 'text-muted hover:bg-fill hover:text-fg')}>
+              <Icon icon={I.assistant} size={16} className="mt-0.5 shrink-0" /><span translate="no" className="line-clamp-2 min-w-0 [overflow-wrap:anywhere]">{c.titleIsUserText ? c.title : translate(c.title)}</span>
+            </button>)}
+          </div>)}
+          {!groups.length && <p className="px-3 py-6 text-sm text-muted">No conversations found</p>}
         </div>
-      </section>
+      </Sheet>
     </div>
   )
 }

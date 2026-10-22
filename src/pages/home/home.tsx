@@ -1,3 +1,4 @@
+import { Disclosure } from '@/components/ui/disclosure'
 import { StatCard } from '@/components/ui/stat-card'
 import type { IconSvgElement } from '@hugeicons/react'
 import { useMemo, useState } from 'react'
@@ -74,7 +75,7 @@ function RevenueCard({ period }: { period: Period }) {
             <span className="tabular">{caption}</span>
           </div>
           <div className="mt-2 flex items-baseline gap-2.5">
-            <Figure value={point ? point.value : stats.revenue} money className="text-5xl font-normal text-fg sm:text-6xl" />
+            <Figure value={point ? point.value : stats.revenue} money className="text-4xl font-normal text-fg sm:text-5xl" />
             <span className="text-base text-faint">{CURRENCY}</span>
           </div>
           <div className="mt-2 h-5">
@@ -94,27 +95,22 @@ function RevenueCard({ period }: { period: Period }) {
             )}
           </div>
         </div>
-        {period === 'today' && (
-          <div className="hidden shrink-0 text-right sm:block">
-            <div className="text-sm text-muted">Expected by close</div>
-            <div className="mt-1 text-xl text-fg">
-              <Money value={stats.forecast} />
-            </div>
-            <div className="mt-0.5 text-sm text-faint">{plural(stats.remainingCount, 'visit')} still booked</div>
-          </div>
-        )}
+
       </div>
 
       <LineChart
         className="mt-6"
         points={series}
-        height={168}
+        height={140}
         zero={period === 'today'}
         onScrub={setScrub}
         ticks={ticks}
         dataKey={period}
       />
 
+      {period === 'today' && <div className="mt-4 flex flex-wrap items-center justify-between gap-2 text-sm">
+        <span className="text-muted">Expected by close</span><Money value={stats.forecast} className="text-fg" />
+      </div>}
       <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-border pt-4 text-sm">
         {shift.open ? (
           <span className="flex items-center gap-2 text-muted">
@@ -145,7 +141,7 @@ function UpNext() {
     .filter((a) => a.status === 'arrived' || a.status === 'booked' || a.status === 'confirmed')
     .sort((a, b) => (a.status === 'arrived' ? -1 : 0) - (b.status === 'arrived' ? -1 : 0) || +a.start - +b.start)
   const inChair = today.filter((a) => a.status === 'in_progress').length
-  const shown = upcoming.slice(0, 6)
+  const shown = upcoming.slice(0, 4)
   const rest = upcoming.length - shown.length
 
   return (
@@ -220,6 +216,7 @@ function NeedsAttention() {
   const clients = useData((s) => s.clients)
   const entries = useData((s) => s.entries)
   const [done, setDone] = useState<string[]>([])
+  const [expanded, setExpanded] = useState(false)
   const debtors = clients.filter((c) => c.debt > 0)
   const debt = debtors.reduce((m, c) => m + c.debt, 0)
   const tomorrow = addDays(NOW, 1)
@@ -280,10 +277,10 @@ function NeedsAttention() {
 
   return (
     <Card>
-      <CardHeader title="Needs attention" description="Found automatically from today’s data" />
+      <CardHeader title="Needs attention" action={<span className="text-sm text-muted tabular">{open.length}</span>} />
       {open.length ? (
         <ul className="px-2 pb-2">
-          {open.map((it) => (
+          {(expanded ? open : open.slice(0, 3)).map((it) => (
             <li key={it.id} className="flex items-center gap-3 rounded-xl px-3 py-2.5">
               <span className={cn('grid size-8 shrink-0 place-items-center rounded-full', it.tone)}>
                 <Icon icon={it.icon} size={16} />
@@ -298,6 +295,9 @@ function NeedsAttention() {
       ) : (
         <p className="px-5 pb-6 text-base text-muted">Nothing unusual. Everything is on track.</p>
       )}
+      {open.length > 3 && <div className="px-5 pb-4"><Button size="sm" variant="ghost" onClick={() => setExpanded(!expanded)} aria-expanded={expanded}>
+        {expanded ? 'Show less' : 'Show all tasks'}<Icon icon={I.chevronDown} size={14} className={cn(expanded && 'rotate-180')} />
+      </Button></div>}
     </Card>
   )
 }
@@ -383,35 +383,28 @@ export default function Home() {
             {formatDateLong(NOW)} · {branch}
           </p>
         </div>
-        <Segmented
-          value={period}
-          onChange={setPeriod}
-          items={[
-            { value: 'today', label: 'Today' },
-            { value: 'week', label: '7 days' },
-            { value: 'month', label: '30 days' },
-          ]}
-        />
+        <Button variant="primary" icon={I.calendarAdd} onClick={() => openNewVisit()}>New visit</Button>
       </div>
 
-      <div className="mb-6 flex flex-wrap gap-2">
-        <Button variant="primary" icon={I.calendarAdd} onClick={() => openNewVisit()}>
-          New visit
-        </Button>
-        <Button icon={I.register} onClick={() => navigate('/pos')}>
-          New sale
-        </Button>
-        <Button icon={I.userAdd} onClick={() => openNewClient()}>
-          New client
-        </Button>
+      <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
+        <Segmented value={period} onChange={setPeriod} items={[
+          { value: 'today', label: 'Today' }, { value: 'week', label: '7 days' }, { value: 'month', label: '30 days' },
+        ]} />
+        <div className="flex flex-wrap gap-1">
+          <Button size="sm" variant="ghost" icon={I.register} onClick={() => navigate('/pos')}>New sale</Button>
+          <Button size="sm" variant="ghost" icon={I.userAdd} onClick={() => openNewClient()}>New client</Button>
+        </div>
       </div>
 
-      <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="grid items-stretch gap-4 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,1fr)]">
         <RevenueCard period={period} />
         <UpNext />
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-5 lg:grid-cols-4">
+      <div className="mt-4"><NeedsAttention /></div>
+
+      <Disclosure id="home:performance" title="Business performance" description="Visits, clients, staff load and top services" className="mt-5">
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Kpi
           label="Visits"
           value={stats.visitsDone}
@@ -431,10 +424,8 @@ export default function Home() {
         <Kpi label="Staff load" value={stats.load} suffix="%" sub={stats.load > 85 ? 'Close to full, consider extra hours' : 'Booked time vs working hours'} to="/reports/load" />
       </div>
 
-      <div className="mt-5 grid gap-5 xl:grid-cols-2">
-        <NeedsAttention />
-        <TopList period={period} />
-      </div>
+      <div className="mt-4"><TopList period={period} /></div>
+      </Disclosure>
 
       <p className="mt-8 text-center text-xs text-faint">
         Sublease tenants’ visits aren’t counted in salon revenue. Amounts in {CURRENCY}, updated {formatTime(NOW)}.{' '}

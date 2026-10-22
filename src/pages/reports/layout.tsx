@@ -14,6 +14,7 @@ import { Select } from '@/components/ui/select'
 import { bookableStaff } from '@/data/staff'
 import { cn } from '@/lib/cn'
 import { formatDate } from '@/lib/format'
+import { text as translate } from '@/i18n'
 import { TODAY, addDays } from '@/lib/time'
 import { RANGE_OPTIONS, rangeFor, rangeText, type Filters, type RangeKey, type Segment } from './data'
 
@@ -106,7 +107,7 @@ export function FilterBar({
       )}
       {segment && <Select look="pill" value={f.segment} onChange={f.setSegment} options={SEGMENT_OPTIONS} />}
       {f.rangeKey !== 'custom' && <span className="text-sm text-faint tabular">{rangeText(f.range)}</span>}
-      {children && <div className="ml-auto">{children}</div>}
+      {children && <div className="ml-auto min-w-0 max-w-full">{children}</div>}
     </Toolbar>
   )
 }
@@ -136,7 +137,7 @@ export function ReportLayout({
         subtitle={subtitle}
         actions={
           <>
-            <Button icon={I.assistant} onClick={() => navigate(`/assistant?q=${encodeURIComponent(question)}`)}>
+            <Button icon={I.assistant} onClick={() => navigate(`/assistant?q=${encodeURIComponent(translate(question))}`)}>
               Ask assistant
             </Button>
             <Menu

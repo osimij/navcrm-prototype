@@ -55,8 +55,8 @@ export function Button({
         icon && variant !== 'link' && (size === 'sm' ? 'pl-2.5' : 'pl-3.5'),
         className,
       )}
-      disabled={props.disabled || loading}
       {...props}
+      disabled={props.disabled || loading}
     >
       {loading ? <Spinner size={s} /> : icon ? <Icon icon={icon} size={s} /> : null}
       {children}

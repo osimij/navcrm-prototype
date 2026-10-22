@@ -24,7 +24,7 @@ const ASSIGNABLE = ['s0', 's7', 's1', 's2', 's3', 's4', 's5'].map((id) => staffB
 function enter(el: HTMLElement | null) {
   if (!el || el.dataset.entered) return
   el.dataset.entered = '1'
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  if (document.documentElement.dataset.input === 'keyboard' || matchMedia('(prefers-reduced-motion: reduce)').matches) return
   el.animate(
     [
       { opacity: 0, transform: 'translateY(4px)' },
@@ -257,7 +257,7 @@ function Composer({ conv }: { conv: Conversation }) {
   )
 }
 
-export function Thread({ conv }: { conv: Conversation }) {
+export function Thread({ conv, onContext }: { conv: Conversation; onContext: () => void }) {
   const client = useClient(conv.clientId)
   const assign = useInbox((s) => s.assign)
   const setStatus = useInbox((s) => s.setStatus)
@@ -281,7 +281,7 @@ export function Thread({ conv }: { conv: Conversation }) {
 
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
-      <PaneHeader className="gap-3 px-5">
+      <PaneHeader className="gap-2 px-4 sm:gap-3 sm:px-5">
         <IconButton icon={I.chevronLeft} label="Back to conversations" tooltip={false} onClick={() => navigate('/inbox')} className="-ml-2 md:hidden" />
         <ChannelAvatar name={client.name} channel={conv.channel} size="md" />
         <button type="button" onClick={() => openClient(client.id)} className="min-w-0 text-left">
@@ -290,7 +290,8 @@ export function Thread({ conv }: { conv: Conversation }) {
             {CHANNEL_LABEL[conv.channel]} · {conv.handle ?? formatPhone(client.phone)}
           </span>
         </button>
-        <div className="ml-auto flex items-center gap-2">
+        <div className="ml-auto flex shrink-0 items-center gap-1">
+          <IconButton icon={I.user} label="Client details" size="sm" onClick={onContext} />
           <Select
             look="pill"
             align="end"
@@ -306,7 +307,8 @@ export function Thread({ conv }: { conv: Conversation }) {
             ]}
             className="hidden max-w-48 lg:flex"
           />
-          <Button size="sm" variant="secondary" icon={conv.status === 'open' ? I.check : I.refresh} onClick={() => setStatus(conv.id, conv.status === 'open' ? 'closed' : 'open')}>
+          <IconButton className="sm:hidden" size="sm" variant="secondary" icon={conv.status === 'open' ? I.check : I.refresh} label={conv.status === 'open' ? 'Close' : 'Reopen'} onClick={() => setStatus(conv.id, conv.status === 'open' ? 'closed' : 'open')} />
+          <Button className="hidden sm:flex" size="sm" variant="secondary" icon={conv.status === 'open' ? I.check : I.refresh} onClick={() => setStatus(conv.id, conv.status === 'open' ? 'closed' : 'open')}>
             {conv.status === 'open' ? 'Close' : 'Reopen'}
           </Button>
           <Menu align="end" trigger={<IconButton icon={I.more} label="More" size="sm" tooltip={false} />}>

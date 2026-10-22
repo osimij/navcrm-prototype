@@ -1,5 +1,7 @@
 import { useState } from 'react'
-import { useNavigate } from 'react-router'
+import { Link, useLocation, useNavigate } from 'react-router'
+import { NAV, SETTINGS_NAV } from './nav'
+import { useWorkspace } from '@/lib/workspace'
 import { toast } from 'sonner'
 import { I, Icon } from '@/components/icons'
 import { Avatar } from '@/components/ui/avatar'
@@ -41,7 +43,7 @@ function SyncStatus() {
           className="press flex h-8 items-center gap-1.5 rounded-full pr-3 pl-2.5 text-sm text-muted hover:bg-fill hover:text-fg data-[popup-open]:bg-fill"
         >
           <Icon icon={syncing ? I.syncing : I.synced} size={18} className={syncing ? 'animate-pulse text-accent-fg' : 'text-positive'} />
-          <span className="hidden xl:inline">{syncing ? 'Syncing…' : 'Synced'}</span>
+          <span className="sr-only">{syncing ? 'Syncing…' : 'Synced'}</span>
         </button>
       }
     >
@@ -182,28 +184,39 @@ function ProfileMenu() {
 }
 
 export function Topbar({ onMenu }: { onMenu: () => void }) {
+  const collapsed = useWorkspace((s) => s.sidebarCollapsed)
+  const toggleSidebar = useWorkspace((s) => s.toggleSidebar)
+  const { pathname } = useLocation()
+  const setting = SETTINGS_NAV.flatMap((g) => g.items).find((it) => pathname === it.to)
+  const current = NAV.flatMap((g) => g.items).find((it) => it.to === '/' ? pathname === '/' : pathname === it.to || pathname.startsWith(it.to + '/'))
   const setCommand = useOverlays((s) => s.setCommand)
   const setNotifications = useOverlays((s) => s.setNotifications)
   const hide = usePrefs((s) => s.hideAmounts)
   const toggleAmounts = usePrefs((s) => s.toggleAmounts)
 
   return (
-    <div className="flex h-14 shrink-0 items-center gap-2 border-b border-border bg-bg px-3 sm:px-5 lg:border-b-0 lg:px-8">
+    <div className="flex h-16 shrink-0 items-center gap-2 border-b border-border bg-bg px-3 sm:px-5 lg:px-7">
+      <a href="#main-content" className="sr-only focus:not-sr-only focus:absolute focus:z-50 focus:rounded-lg focus:bg-raised focus:p-3">Skip to content</a>
       <IconButton icon={I.menu} label="Menu" className="lg:hidden" onClick={onMenu} />
+      <IconButton icon={I.sidebar} label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'} aria-expanded={!collapsed} className="hidden lg:inline-flex" onClick={toggleSidebar} />
+      <nav aria-label="Current location" className="mr-auto flex min-w-0 items-center gap-2 text-sm">
+        {setting && <><Link to="/settings/business" className="hidden text-muted hover:text-fg sm:inline">Settings</Link><Icon icon={I.chevronRight} size={13} className="hidden shrink-0 text-faint sm:block" /></>}
+        <span className="truncate font-medium text-fg" aria-current="page">{setting?.label ?? current?.label ?? 'Workspace'}</span>
+      </nav>
       <button
         type="button"
         onClick={() => setCommand(true)}
         aria-label="Search"
-        className="flex h-9 w-9 shrink-0 items-center justify-center gap-2.5 rounded-full bg-fill text-base text-faint ring-1 ring-inset ring-transparent transition-[box-shadow,background-color] duration-150 hover:ring-border-strong sm:w-full sm:max-w-[440px] sm:shrink sm:justify-start sm:px-3.5"
+        className="flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-xl text-sm text-muted hover:bg-fill xl:w-56 xl:justify-start xl:bg-surface xl:px-3"
       >
         <Icon icon={I.search} size={17} />
-        <span className="hidden flex-1 truncate text-left sm:block">Search clients, visits, pages</span>
-        <span className="hidden gap-1 sm:flex">
+        <span className="hidden flex-1 truncate text-left xl:block">Search anything</span>
+        <span className="hidden gap-1 xl:flex">
           <Kbd>⌘</Kbd>
           <Kbd>K</Kbd>
         </span>
       </button>
-      <div className="ml-auto flex items-center gap-1">
+      <div className="flex shrink-0 items-center gap-0.5">
         <SyncStatus />
         <Tooltip content={hide ? 'Show amounts' : 'Hide amounts'}>
           <button

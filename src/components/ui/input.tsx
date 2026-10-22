@@ -91,6 +91,7 @@ export function SearchInput({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         placeholder={placeholder}
+        aria-label={placeholder}
         autoFocus={autoFocus}
         className={cn(fieldBase, 'h-9 pr-9 pl-9')}
         onKeyDown={(e) => e.key === 'Escape' && value && (e.stopPropagation(), onChange(''))}

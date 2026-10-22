@@ -76,14 +76,15 @@ export function Figure({
   return (
     <NumberFlow
       value={value}
+      animated={typeof document === 'undefined' || document.documentElement.dataset.input !== 'keyboard'}
       format={format ?? { maximumFractionDigits: 0 }}
       locales={getLocale()}
       prefix={prefix}
       suffix={suffix}
       className={cn('figure', className)}
-      transformTiming={{ duration: 520, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
-      spinTiming={{ duration: 520, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
-      opacityTiming={{ duration: 260, easing: 'ease-out' }}
+      transformTiming={{ duration: 240, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
+      spinTiming={{ duration: 240, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
+      opacityTiming={{ duration: 160, easing: 'cubic-bezier(0.23, 1, 0.32, 1)' }}
     />
   )
 }

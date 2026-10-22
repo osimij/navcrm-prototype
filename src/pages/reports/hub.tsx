@@ -1,10 +1,11 @@
+import { Disclosure } from '@/components/ui/disclosure'
 import { StatCard } from '@/components/ui/stat-card'
 import { useMemo, useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { toast } from 'sonner'
 import { Sparkline } from '@/components/charts/bar-chart'
 import { I, Icon } from '@/components/icons'
-import { Card, CardHeader, SectionTitle } from '@/components/ui/card'
+import { Card, CardHeader } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Switch } from '@/components/ui/controls'
 import { Delta, Meter, Money, pctChange } from '@/components/ui/misc'
@@ -151,7 +152,77 @@ export default function ReportsHub() {
     <Page>
       <PageHeader title="Reports" subtitle="From the register and the calendar, updated within a minute" />
 
-      <div className="mb-10 grid gap-5 lg:grid-cols-2">
+      <Disclosure id="reports:money" title="Money" description="Revenue, profit and receivables" defaultOpen>
+      <div className="mb-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ReportCard
+          to="revenue"
+          title="Revenue"
+          value={<Money value={d.month.revenue} />}
+          caption={
+            <span className="flex items-center gap-2">
+              <Delta value={pctChange(d.month.revenue, d.month.revenuePrev)} /> last 30 days
+            </span>
+          }
+          spark={d.revenueSpark}
+        />
+        <ReportCard to="cash" title="Cash & profit" value={<Money value={d.profit.profit} />} caption={`Profit this month · ${margin}% margin`} />
+        <ReportCard
+          to="debtors"
+          title="Receivables"
+          value={<Money value={d.debt} />}
+          caption={<>{plural(d.debtors, 'client')}{d.overdue > 0 && <> · {d.overdue} overdue</>}</>}
+        />
+      </div>
+
+      </Disclosure>
+      <Disclosure id="reports:clients" title="Clients & bookings" description="Retention, staff load and online bookings">
+      <div className="mb-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ReportCard
+          to="clients"
+          title="Clients & retention"
+          value={`${formatNumber(d.unique)} clients`}
+          caption={`Served in 30 days, of ${formatNumber(d.base)} in your base`}
+        />
+        <ReportCard to="load" title="Staff load" value={`${d.month.load}%`} caption="Booked time vs working hours" spark={d.loadPerDay} />
+        <ReportCard to="online" title="Online booking" value={`${d.onlineShare}%`} caption="Of bookings made by clients themselves" spark={d.onlinePerDay} />
+      </div>
+
+      </Disclosure>
+      <Disclosure id="reports:operations" title="Team, stock & marketing" description="Payroll, stock levels and campaign results">
+      <div className="mb-2 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ReportCard to="payroll" title="Payroll" value={<Money value={d.accrued} />} caption="Accrued this month, preliminary" />
+        <ReportCard
+          to="stock"
+          title="Inventory"
+          value={d.low.length ? `${d.low.length} below minimum` : 'All stocked'}
+          caption={d.low.length ? `${d.low[0].name} runs out first` : 'Nothing to reorder'}
+        />
+        <ReportCard to="marketing" title="Marketing" value={<Money value={d.returns} />} caption="From clients who came back after a campaign" />
+      </div>
+
+      </Disclosure>
+      <Disclosure id="reports:branches" title="Branches" description="Compare revenue across locations">
+      <Link to="network" className="press group block rounded-2xl bg-surface p-5 ring-1 ring-border hover:bg-fill/50">
+        <div className="mb-4 flex items-center justify-between">
+          <span className="text-base text-muted">Revenue by branch, last 30 days</span>
+          <Icon icon={I.arrowUpRight} size={16} className="text-faint transition-colors group-hover:text-fg" />
+        </div>
+        <div className="grid gap-5 sm:grid-cols-2">
+          {d.branches.map((b) => (
+            <div key={b.id}>
+              <div className="flex items-baseline justify-between gap-3">
+                <span className="text-base text-fg">{b.name}</span>
+                <Money value={b.revenue} className="text-lg" />
+              </div>
+              <Meter value={b.revenue} max={maxBranch} className="mt-2" />
+              <div className="mt-1.5 text-sm text-muted">{b.address}</div>
+            </div>
+          ))}
+        </div>
+      </Link>
+      </Disclosure>
+      <Disclosure id="reports:tools" title="Reporting tools" description="Build your own report or set up a daily summary">
+      <div className="mb-2 grid gap-5 lg:grid-cols-2">
         <TelegramDigest today={d.month.forecast} debt={d.debt} debtors={d.debtors} />
         <Link to="builder" className="press group flex flex-col rounded-2xl bg-surface p-5 ring-1 ring-border hover:bg-fill/50">
           <div className="flex items-start justify-between gap-4">
@@ -174,71 +245,7 @@ export default function ReportsHub() {
         </Link>
       </div>
 
-      <SectionTitle>Money</SectionTitle>
-      <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <ReportCard
-          to="revenue"
-          title="Revenue"
-          value={<Money value={d.month.revenue} />}
-          caption={
-            <span className="flex items-center gap-2">
-              <Delta value={pctChange(d.month.revenue, d.month.revenuePrev)} /> last 30 days
-            </span>
-          }
-          spark={d.revenueSpark}
-        />
-        <ReportCard to="cash" title="Cash & profit" value={<Money value={d.profit.profit} />} caption={`Profit this month · ${margin}% margin`} />
-        <ReportCard
-          to="debtors"
-          title="Receivables"
-          value={<Money value={d.debt} />}
-          caption={`${plural(d.debtors, 'client')} owe${d.debtors === 1 ? 's' : ''}${d.overdue ? `, ${d.overdue} overdue` : ''}`}
-        />
-      </div>
-
-      <SectionTitle>Clients & bookings</SectionTitle>
-      <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <ReportCard
-          to="clients"
-          title="Clients & retention"
-          value={`${formatNumber(d.unique)} clients`}
-          caption={`Served in 30 days, of ${formatNumber(d.base)} in your base`}
-        />
-        <ReportCard to="load" title="Staff load" value={`${d.month.load}%`} caption="Booked time vs working hours" spark={d.loadPerDay} />
-        <ReportCard to="online" title="Online booking" value={`${d.onlineShare}%`} caption="Of bookings made by clients themselves" spark={d.onlinePerDay} />
-      </div>
-
-      <SectionTitle>Team, stock & marketing</SectionTitle>
-      <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        <ReportCard to="payroll" title="Payroll" value={<Money value={d.accrued} />} caption="Accrued this month, preliminary" />
-        <ReportCard
-          to="stock"
-          title="Inventory"
-          value={d.low.length ? `${d.low.length} below minimum` : 'All stocked'}
-          caption={d.low.length ? `${d.low[0].name} runs out first` : 'Nothing to reorder'}
-        />
-        <ReportCard to="marketing" title="Marketing" value={<Money value={d.returns} />} caption="From clients who came back after a campaign" />
-      </div>
-
-      <SectionTitle>Branches</SectionTitle>
-      <Link to="network" className="press group block rounded-2xl bg-surface p-5 ring-1 ring-border hover:bg-fill/50">
-        <div className="mb-4 flex items-center justify-between">
-          <span className="text-base text-muted">Revenue by branch, last 30 days</span>
-          <Icon icon={I.arrowUpRight} size={16} className="text-faint transition-colors group-hover:text-fg" />
-        </div>
-        <div className="grid gap-5 sm:grid-cols-2">
-          {d.branches.map((b) => (
-            <div key={b.id}>
-              <div className="flex items-baseline justify-between gap-3">
-                <span className="text-base text-fg">{b.name}</span>
-                <Money value={b.revenue} className="text-lg" />
-              </div>
-              <Meter value={b.revenue} max={maxBranch} className="mt-2" />
-              <div className="mt-1.5 text-sm text-muted">{b.address}</div>
-            </div>
-          ))}
-        </div>
-      </Link>
+      </Disclosure>
     </Page>
   )
 }

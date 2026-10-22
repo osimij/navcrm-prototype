@@ -6,6 +6,7 @@ import { App } from './App'
 import { TooltipProvider } from './components/ui/tooltip'
 import { usePrefs } from './lib/store'
 import './styles/index.css'
+import './lib/input-modality'
 import { useLanguage } from './i18n/language'
 
 function Toasts() {

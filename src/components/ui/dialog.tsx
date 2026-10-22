@@ -31,23 +31,23 @@ export function Modal({ open, onOpenChange, trigger, title, description, childre
       {trigger && <D.Trigger render={trigger} />}
       <D.Portal>
         <D.Backdrop className="backdrop fixed inset-0 z-50 bg-backdrop" />
-        <D.Viewport className="fixed inset-0 z-50 grid place-items-center overflow-y-auto p-4 sm:p-8">
+        <D.Viewport className="fixed inset-0 z-50 grid grid-cols-1 place-items-center overflow-y-auto p-4 sm:p-8">
           <D.Popup
             className={cn(
-              'modal relative flex max-h-[calc(100dvh-4rem)] max-w-full flex-col rounded-3xl bg-raised shadow-modal outline-none',
+              'modal relative flex max-h-[calc(100dvh-4rem)] min-w-0 max-w-full flex-col rounded-3xl bg-raised shadow-modal outline-none',
               modalWidths[size],
               className,
             )}
           >
             <div className="flex items-start gap-4 px-6 pt-5 pb-1">
               <div className="min-w-0 flex-1">
-                <D.Title className="text-lg font-medium text-fg">{title}</D.Title>
+                <D.Title className="text-xl font-medium text-fg">{title}</D.Title>
                 {description && <D.Description className="mt-1 text-base text-muted">{description}</D.Description>}
               </div>
               <D.Close render={<IconButton icon={I.close} label="Close" size="sm" tooltip={false} className="-mt-0.5 -mr-2" />} />
             </div>
             <div className="min-h-0 flex-1 overflow-y-auto px-6 pt-4 pb-6">{children}</div>
-            {footer && <div className="flex items-center justify-end gap-2 border-t border-border px-6 py-4">{footer}</div>}
+            {footer && <div className="flex flex-wrap items-center justify-end gap-2 rounded-b-3xl bg-fill/50 px-6 py-4">{footer}</div>}
           </D.Popup>
         </D.Viewport>
       </D.Portal>
@@ -90,14 +90,14 @@ export function Sheet({ open, onOpenChange, title, eyebrow, actions, children, f
           <div className="flex items-center gap-2 border-b border-border px-5 py-3">
             <div className="min-w-0 flex-1">
               {eyebrow && <div className="text-xs font-medium text-faint">{eyebrow}</div>}
-              {title && <D.Title className="truncate text-base font-medium text-fg">{title}</D.Title>}
+              {title && <D.Title className="break-words text-base font-medium text-fg">{title}</D.Title>}
             </div>
             {actions}
             {/* Focus lands here on open, so a tooltip would pop up every time. */}
             <D.Close render={<IconButton icon={I.close} label="Close" size="sm" tooltip={false} />} />
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
-          {footer && <div className="flex items-center gap-2 border-t border-border px-5 py-3">{footer}</div>}
+          {footer && <div className="flex flex-wrap items-center gap-2 border-t border-border px-5 py-3">{footer}</div>}
         </D.Popup>
       </D.Portal>
     </D.Root>

@@ -1,3 +1,5 @@
+import { useState } from 'react'
+import { Sheet } from '@/components/ui/dialog'
 import { Route, Routes, useParams } from 'react-router'
 import { I } from '@/components/icons'
 import { EmptyState } from '@/components/ui/misc'
@@ -8,20 +10,23 @@ import { useInbox } from './store'
 import { Thread } from './thread'
 
 /**
- * Three panes: conversations, the thread, and the client it belongs to.
+ * Two focused panes, with client context available on demand.
  * Fills the main area edge to edge, like a messenger, instead of a padded page.
  */
 function InboxView() {
   const { id } = useParams()
+  const [contextOpen, setContextOpen] = useState(false)
   const conv = useInbox((s) => s.conversations.find((c) => c.id === id))
 
   return (
-    <div className="flex h-full min-h-0 lg:border-t lg:border-border">
-      <ConversationList activeId={conv?.id} className={cn('w-full shrink-0 border-r border-border md:w-[340px]', conv ? 'hidden md:flex' : 'flex')} />
+    <div className="flex h-full min-h-0 bg-surface">
+      <ConversationList activeId={conv?.id} className={cn('w-full shrink-0 border-r border-border bg-bg md:w-[300px]', conv ? 'hidden md:flex' : 'flex')} />
       {conv ? (
         <>
-          <Thread key={conv.id} conv={conv} />
-          <ClientContext clientId={conv.clientId} />
+          <Thread key={conv.id} conv={conv} onContext={() => setContextOpen(true)} />
+          <Sheet open={contextOpen} onOpenChange={setContextOpen} title="Client details" width="md">
+            <ClientContext clientId={conv.clientId} />
+          </Sheet>
         </>
       ) : (
         <div className="hidden flex-1 items-center justify-center md:flex">

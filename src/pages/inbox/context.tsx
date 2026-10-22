@@ -29,7 +29,7 @@ export function ClientContext({ clientId }: { clientId: string }) {
     .slice(0, Math.min(3, client.visits))
 
   return (
-    <aside className="hidden w-[300px] shrink-0 flex-col overflow-y-auto border-l border-border xl:flex">
+    <aside className="flex w-full flex-col">
       <div className="flex flex-col items-center px-5 pt-6 pb-5 text-center">
         <Avatar name={client.name} size="xl" />
         <button type="button" onClick={() => openClient(client.id)} className="mt-3 text-base font-medium text-fg hover:underline underline-offset-4">

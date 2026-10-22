@@ -286,7 +286,7 @@ export function NewVisitModal() {
             <Field label="Services">
               <ServicePicker value={serviceIds} onChange={setServiceIds} staffId={staffId} />
             </Field>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid gap-3 sm:grid-cols-2">
               <Field label="Master">
                 <Select value={staffId} onChange={setStaffId} options={masterOptions} />
               </Field>

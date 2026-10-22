@@ -37,7 +37,7 @@ export function Select<V extends string>({
     <S.Root items={items} value={value} onValueChange={(v) => v != null && onChange(v as V)} disabled={disabled}>
       <S.Trigger
         className={cn(
-          'flex items-center justify-between gap-2 text-left select-none',
+          'flex min-w-0 max-w-full items-center justify-between gap-2 text-left select-none',
           look === 'field'
             ? cn(fieldBase, 'h-9 px-3 data-[popup-open]:bg-surface data-[popup-open]:ring-accent')
             : 'press h-8 rounded-full bg-surface pr-2.5 pl-3 text-sm font-medium text-fg shadow-xs ring-1 ring-inset ring-border hover:bg-fill data-[popup-open]:bg-fill',

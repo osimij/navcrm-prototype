@@ -45,9 +45,9 @@ export function SettingsSection({
   className?: string
 }) {
   return (
-    <section className={cn('mb-10', className)}>
+    <section className={cn('mb-6 rounded-2xl bg-surface px-5 py-4 sm:px-6', className)}>
       {(title || action) && (
-        <div className="mb-1 flex items-end justify-between gap-4 border-b border-border pb-3">
+        <div className="mb-1 flex flex-wrap items-end justify-between gap-4 border-b border-border pb-4">
           <div>
             {title && <h2 className="text-lg font-medium text-fg">{title}</h2>}
             {description && <p className="mt-0.5 text-base text-muted">{description}</p>}
@@ -97,7 +97,7 @@ export function EditLink({ children = 'Edit', onClick }: { children?: ReactNode;
 export function SaveBar({ dirty, onSave, onDiscard }: { dirty: boolean; onSave: () => void; onDiscard: () => void }) {
   if (!dirty) return null
   return (
-    <div className="rise sticky bottom-4 z-20 mx-auto mt-6 flex w-fit items-center gap-3 rounded-full bg-raised py-1.5 pr-1.5 pl-5 shadow-popover">
+    <div className="rise sticky bottom-4 z-20 mx-auto mt-6 flex w-fit max-w-full flex-wrap items-center gap-3 rounded-2xl bg-raised py-1.5 pr-1.5 pl-5 shadow-popover sm:rounded-full">
       <span className="text-sm text-muted">Unsaved changes</span>
       <Button size="sm" variant="ghost" onClick={onDiscard}>
         Discard

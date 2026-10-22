@@ -37,7 +37,7 @@ function ReceiptPreview({ width, footer }: { width: '58' | '80'; footer: string 
   return (
     <div
       className={cn(
-        'mx-auto bg-white px-4 py-5 font-mono text-[11px] leading-[16px] text-[#111] shadow-[0_1px_3px_rgb(0_0_0/0.12),0_8px_24px_-8px_rgb(0_0_0/0.2)] transition-[width] duration-200 ease-[var(--ease-out)]',
+        'mx-auto bg-white px-4 py-5 font-mono text-[11px] leading-[16px] text-[#111] shadow-[0_1px_3px_rgb(0_0_0/0.12),0_8px_24px_-8px_rgb(0_0_0/0.2)]',
         width === '58' ? 'w-[220px]' : 'w-[300px]',
       )}
     >

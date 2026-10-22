@@ -162,7 +162,7 @@ export function ImportClients() {
                       className="flex w-full items-center gap-3 px-5 py-4 text-left hover:bg-fill/60"
                     >
                       <span className="flex-1 text-base text-fg">{g.name}</span>
-                      <Icon icon={I.chevronDown} size={16} className={cn('text-faint transition-transform duration-200 ease-[var(--ease-out)]', open && 'rotate-180')} />
+                      <Icon icon={I.chevronDown} size={16} className={cn('text-faint transition-transform duration-200 ease-[var(--ease-out)] motion-reduce:transition-none', open && 'rotate-180')} />
                     </button>
                     {open && (
                       <ol className="flex flex-col gap-2 px-5 pb-5">

@@ -51,18 +51,18 @@ export function FilterTabs<V extends string>({
 }) {
   return (
     <T.Root value={value} onValueChange={(v) => onChange(v as V)}>
-      <T.List className="relative flex gap-4 border-b border-border px-4">
+      <T.List className="relative flex gap-4 overflow-x-auto border-b border-border px-4 [scrollbar-width:none]">
         {items.map((it) => (
           <T.Tab
             key={it.value}
             value={it.value}
-            className="flex h-10 items-center gap-1.5 text-sm whitespace-nowrap text-muted outline-none select-none transition-colors duration-150 hover:text-fg data-[active]:font-medium data-[active]:text-fg focus-visible:outline-2 focus-visible:outline-accent"
+            className="flex h-10 shrink-0 items-center gap-1.5 text-sm whitespace-nowrap text-muted outline-none select-none hover:text-fg data-[active]:font-medium data-[active]:text-fg focus-visible:outline-2 focus-visible:outline-accent"
           >
             {it.label}
             {it.count ? <span className="text-xs text-faint tabular">{it.count}</span> : null}
           </T.Tab>
         ))}
-        <T.Indicator className="absolute bottom-[-1px] left-0 h-0.5 w-(--active-tab-width) translate-x-(--active-tab-left) rounded-full bg-fg transition-[translate,width] duration-200 ease-[var(--ease-out)]" />
+        <T.Indicator className="absolute bottom-[-1px] left-0 h-0.5 w-(--active-tab-width) translate-x-(--active-tab-left) rounded-full bg-fg" />
       </T.List>
     </T.Root>
   )

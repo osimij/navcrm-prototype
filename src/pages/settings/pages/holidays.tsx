@@ -120,7 +120,7 @@ export default function HolidaysSettings() {
             className="mb-3 flex items-center gap-1.5 text-base text-muted hover:text-fg"
             aria-expanded={showPast}
           >
-            <Icon icon={I.chevronRight} size={16} className={cn('transition-transform duration-200 ease-[var(--ease-out)]', showPast && 'rotate-90')} />
+            <Icon icon={I.chevronRight} size={16} className={cn('transition-transform duration-200 ease-[var(--ease-out)] motion-reduce:transition-none', showPast && 'rotate-90')} />
             Earlier in {year} · {past.length} holidays
           </button>
           {showPast && (

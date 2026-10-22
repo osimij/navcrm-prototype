@@ -119,7 +119,7 @@ export function Partners() {
                   <KeyValue label="Price list" value={p.priceList} />
                 </div>
               )}
-              <div className="mt-5 flex items-center gap-2 border-t border-border pt-4">
+              <div className="mt-5 flex flex-wrap items-center gap-2 border-t border-border pt-4">
                 {p.status === 'off' ? (
                   <Button size="sm" icon={I.plug} onClick={() => setConnecting(p)}>
                     Connect

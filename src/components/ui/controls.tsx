@@ -11,6 +11,7 @@ export function Checkbox({
   label,
   className,
   round,
+  'aria-label': ariaLabel,
 }: {
   checked: boolean
   onChange: (v: boolean) => void
@@ -18,10 +19,12 @@ export function Checkbox({
   className?: string
   /** Round checkboxes are used for completing tasks. */
   round?: boolean
+  'aria-label'?: string
 }) {
   const box = (
     <C.Root
       checked={checked}
+      aria-label={ariaLabel}
       onCheckedChange={onChange}
       onClick={(e) => e.stopPropagation()}
       className={cn(
@@ -32,7 +35,7 @@ export function Checkbox({
     >
       <C.Indicator
         keepMounted
-        className="flex transition-[opacity,transform] duration-150 ease-[var(--ease-out)] data-[unchecked]:scale-50 data-[unchecked]:opacity-0"
+        className="flex transition-[opacity,transform] duration-150 ease-[var(--ease-out)] data-[unchecked]:scale-50 data-[unchecked]:opacity-0 motion-reduce:transition-none"
       >
         <Icon icon={I.check} size={13} strokeWidth={2.4} />
       </C.Indicator>
@@ -123,7 +126,7 @@ export function ChoiceCard({
       </span>
       <span
         className={cn(
-          'absolute top-3 right-3 grid size-[18px] place-items-center rounded-full transition-[opacity,transform] duration-150 ease-[var(--ease-out)]',
+          'absolute top-3 right-3 grid size-[18px] place-items-center rounded-full transition-[opacity,transform] duration-150 ease-[var(--ease-out)] motion-reduce:transition-none',
           selected ? 'scale-100 bg-accent text-on-accent opacity-100' : 'scale-75 opacity-0',
         )}
       >

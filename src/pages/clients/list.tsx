@@ -155,9 +155,18 @@ export function ClientsList() {
         }
       />
 
-      <div className="mb-5 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-5">
+      {/* One row on phones too: the counts scroll sideways instead of pushing the list down. */}
+      <div className="-mx-5 mb-5 flex gap-2 overflow-x-auto px-5 pb-0.5 [scrollbar-width:none] sm:mx-0 sm:grid sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-5">
         {CATEGORIES.map((c) => (
-          <StatCard key={c.id} size="sm" label={c.label} value={formatNumber(count(c.id))} active={category === c.id} onClick={() => pick(c.id)} />
+          <StatCard
+            key={c.id}
+            size="sm"
+            label={c.label}
+            value={formatNumber(count(c.id))}
+            active={category === c.id}
+            onClick={() => pick(c.id)}
+            className="min-w-[8.5rem] shrink-0 sm:min-w-0"
+          />
         ))}
       </div>
 

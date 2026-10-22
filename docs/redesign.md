@@ -106,3 +106,107 @@ Fresh browser checks: a 240-digit reference and multiline Russian question at de
 Fresh command checks: production build, 4 workspace tests, 16 localization tests, 4,598 translated keys, and diff whitespace validation passed. The pre-existing bundle-size warning remains.
 
 Additional screenshots: [light with compact navigation](screenshots/home-light-compact.png), [dark with compact navigation](screenshots/home-dark-compact.png).
+
+
+## Redesign round 2 — Sweatpals, Revolut, Linear — 22 October 2026
+
+### Requested outcome
+
+The interface still felt heavy and directionless: too much on screen at once, no
+clear sense of where you are or where to go. This round takes Sweatpals' dark
+mode (canvas, cards, pills) and Revolut's light mode (canvas, cards, modals) as
+the visual system, keeps the NavCRM accent, and takes Linear as the model for
+structure and for the AI assistant. Mercury stays in mind for figures. Motion
+follows Emil Kowalski's skills ([repository](https://github.com/emilkowalski/skills)).
+Onboarding and marketing screens are out of scope.
+
+### What the references contributed
+
+| Reference | Taken | Where it shows |
+| --- | --- | --- |
+| Sweatpals ([overview](https://mobbin.com/screens/50fbe150-69d2-422f-8a9c-c2ce539afc4f), [date picker](https://mobbin.com/screens/1be58c08-c534-4160-b488-56f22983d027), [create menu](https://mobbin.com/screens/42de3d5a-e6f2-4b4c-91dd-10e01b5dd1ae), the member screens you sent) | Sampled colors: #000 canvas and sidebar with a hairline, #111 cards, #1C–#23 pills and inputs, white for the selected toggle; outlined secondary pills; tinted status pills; gradient initials; count cards that filter; figures split by hairlines; a round handle on the sidebar edge | Dark theme tokens, buttons, badges, avatars, Clients count cards, `StatStrip`, sidebar handle |
+| Revolut ([home](https://mobbin.com/screens/1a949e12-a0cc-489e-b194-ca0a0787978f), [transaction sheet](https://mobbin.com/screens/cc6213e1-c3bd-4197-b8ab-b6686ff9c553), [note modal](https://mobbin.com/screens/b71f73a6-0a06-4e4e-9390-5aef7cd8f3e7), [confirm dialog](https://mobbin.com/screens/eaf49a08-f55d-46a5-835a-f19beac2e6d9)) | Sampled colors: #F7F7F7 canvas shared by the sidebar, white borderless cards, #EBECF2-family filled inputs, lavender soft pills, white pill for the current nav item and tab | Light theme tokens, `soft` buttons, Home action pills, modal surfaces |
+| Linear ([chat start](https://mobbin.com/screens/d53cf5b8-48f8-4e02-a278-ca45b2d9124a), [floating chat](https://mobbin.com/screens/51c2bd60-f22d-4879-8c28-c5800ac1f4b6), [thinking](https://mobbin.com/screens/b56b197d-7ef0-41b7-9e56-cc23460ffdc8), [history](https://mobbin.com/screens/d97ce080-3de7-49f3-aaff-44120e6f5620), [grouped list](https://mobbin.com/screens/be6c4ee4-aa93-42b4-89b3-dcfc8386f022), [display options](https://mobbin.com/screens/94bb4d3b-a8e3-41e8-b8f1-b82d1f904b03)) | Labelled sidebar sections that fold; search and the assistant at the top of the sidebar; a chat you can open anywhere and expand; "Thinking…" with the current step, then "Worked for N seconds"; history grouped by day with ages; dismissible examples; groups that fold to a title and count; a Display menu; a centered selection bar | Sidebar, assistant panel and page, Tasks groups, Home sections, Clients Display menu |
+| Mercury ([dashboard](https://mobbin.com/screens/dbbf7fd1-24e8-4494-9c0c-27007652c7e5), [conversation panel](https://mobbin.com/screens/44e81214-fd5e-4ac0-acfa-17ac94a9455c)) | Regular-weight big figures, a soft area under the balance chart, Customize on the dashboard, the AI as a bottom-right panel | Home revenue figure and chart, Customize |
+
+### Information architecture
+
+- **No top bar.** It repeated the page name and held five icons. Search (⌘K),
+  Ask AI (⌘J) and notifications moved to the top of the sidebar; your account,
+  sync status and hide amounts moved to its bottom. Phones get a slim bar.
+- **Every destination is visible.** Operations, Growth and Money are labelled
+  sections that start open; fold any of them and it stays folded. The icon rail
+  (64px, via the edge handle or `[`) lists every destination with separators
+  instead of hiding groups behind flyouts.
+- **Where am I.** Compact semibold page titles, "‹ Parent" above nested pages,
+  the current item as a white pill (light) or a tint (dark), and the page name in
+  the browser tab.
+- **The assistant is a panel, not a destination.** It opens over any page,
+  keeps the conversation as you move (answer actions that open a report keep the
+  panel), and expands to `/assistant`. ⌘K and the report "Ask AI" buttons ask in
+  the panel instead of navigating away.
+- **Show less by default.** Home: actions first, period switch on the revenue
+  card, Needs attention and Coming up fold, Business performance starts folded,
+  Customize hides parts. Clients: five columns by default, the rest in Display.
+  Tasks: due-date groups fold.
+
+### Motion review
+
+Reviewed against Emil Kowalski's [review standards](https://github.com/emilkowalski/skills/blob/main/skills/review-animations/STANDARDS.md)
+and [recipes](https://github.com/emilkowalski/skills/blob/main/skills/animate/RECIPES.md).
+
+| Before | After | Why |
+| --- | --- | --- |
+| Folding panels snapped (`display: none`) | Height + opacity 180ms in / 140ms out, `--ease-out`, content riding the bottom edge (`src/styles/index.css:486`) | Accordion recipe: state indication for short lists; height is the one sanctioned layout property and stays short. Heavy report disclosures keep the instant snap. |
+| Assistant page only, no panel | Panel enters 220ms / exits 150ms from `translateY(10px) scale(0.97)`, full transform string, origin at the launcher (`src/pages/assistant/dock.tsx:104`, `:142`) | Occasional overlay, origin-aware, hardware-accelerated in Motion, exit faster than entry. |
+| Exit animation decided at open time | `AnimatePresence custom` passes the current input to the exit (`src/pages/assistant/dock.tsx:130`) | ⌘J opens and Escape closes instantly: keyboard actions never animate. |
+| Answers appeared all at once | 6px rise + fade, 260ms, 50ms apart, capped at four steps (`src/styles/index.css:502`) | Stagger 30–80ms for an occasional group entrance; never blocks interaction. |
+| Every reopened conversation replayed the cascade | Only answers that arrived in the last 1.5s animate (`src/pages/assistant/chat.tsx:124`, `:292`) | Browsing history is frequent; old content should not move. |
+| Three pulsing dots while waiting | "Thinking…" with a 1.6s linear light sweep and the current step (`src/styles/index.css:509`) | Constant motion uses `linear`; the step text explains the wait. |
+| Selected segment changed color instantly with a shadow ring | 150ms `ease` color change, no movement (`src/components/ui/tabs.tsx:94`) | Hover/color changes use `ease`; frequent controls get near-imperceptible motion only. |
+| — | Caret rotation 150ms `--ease-out` in sync with the panel it controls (`src/shell/sidebar.tsx:202`) | Same curve as the height change, so the two read as one motion. |
+| Bulk bar used the shared `rise` keyframe | `@starting-style` transition on `transform`, leaving Tailwind's `translate` free for centering (`src/styles/index.css:526`) | Transitions retarget when the bar re-renders; keyframes restart. |
+| — | Sidebar width changes instantly (`src/shell/app-shell.tsx:71`) | Animating width would re-lay out the whole page every frame. |
+| — | Reduced motion: no height animation, shimmer stops, entries fade only (`src/styles/index.css:555`) | Fewer and gentler, not zero. |
+
+Performance notes: the dock and answer entrances animate `transform` and `opacity`
+only. The shimmer animates `background-position` on one short line of text (a
+small paint per frame). Collapsing animates `height` on short lists. No real-device
+frame recording was made, so no 60/120fps claim is made.
+
+**Approve — the new motion is justified by state change, origin or feedback, stays
+under 300ms for UI, respects keyboard and reduced-motion preferences, and avoids
+animating frequent navigation.**
+
+### Verification
+
+- `npm run build` passed (the existing large-chunk warning remains);
+  `npm run typecheck` passed.
+- `npm run test:workspace` 4/4 and `npm run test:i18n` 16/16 passed;
+  `npm run check:i18n` covers 4,648/4,648 keys (72 new Russian strings, plus a
+  Russian plural for "second").
+- Route audits on the production build (`vite preview`), 87 routes each,
+  measuring page overflow and header/section/stat-card overflow outside
+  intentional horizontal scrollers, with screenshots: dark/English 1440px,
+  light/English 1440px, dark/Russian 390px, light/English 390px. Remaining layout
+  issues: 0 in each. No console errors.
+- Browser interaction checks (19/19): folding a sidebar section survives reload;
+  `[` collapses to a 64px rail that still lists Laboratory and expands back; Ctrl+J
+  opens the panel with focus in the composer and Escape closes it; Escape inside
+  the history popover closes only the popover; closing the panel returns focus to
+  the launcher; Customize hides the revenue card; Display hides the Next visit
+  column; the VIP count card filters and shows as selected; selecting a row shows
+  the selection bar centered on the content area.
+- Accessibility fixes found in review: the history delete button is reachable from
+  the keyboard (revealed by opacity, not `display: none`); shortcut hints are hidden
+  from button names; focus returns to where it was when the panel closes.
+- Assistant: asked from the Reports page, saw the reasoning step, the answer with
+  a table and actions, expanded to the full page, and opened grouped history.
+
+Screenshots (Russian interface) were replaced with this round's design:
+[Home, dark](screenshots/home-dark.png), [Home, light](screenshots/home-light.png),
+[compact sidebar, dark](screenshots/home-dark-compact.png),
+[compact sidebar, light](screenshots/home-light-compact.png),
+[Clients, dark](screenshots/clients-dark.png), [Clients, light](screenshots/clients-light.png),
+[Tasks, light](screenshots/tasks-light.png), [Assistant page](screenshots/assistant-dark.png),
+[Assistant panel over Reports](screenshots/assistant-panel-dark.png).

@@ -133,5 +133,42 @@
     "russian_suggested_questions": "passed",
     "reduced_motion_chevrons": "source-reviewed",
     "route_audits": "not repeated; previous results retained"
+  },
+  "round_2": {
+    "date": "2026-10-22",
+    "build": "production build served by vite preview",
+    "route_audits": {
+      "dark_en_desktop": {
+        "viewport_width": 1440,
+        "routes": 87,
+        "issues": 0
+      },
+      "light_en_desktop": {
+        "viewport_width": 1440,
+        "routes": 87,
+        "issues": 0
+      },
+      "dark_ru_phone": {
+        "viewport_width": 390,
+        "routes": 87,
+        "issues": 0
+      },
+      "light_en_phone": {
+        "viewport_width": 390,
+        "routes": 87,
+        "issues": 0
+      }
+    },
+    "audit_rule_change": "Elements inside an intentional horizontal scroller (for example the Clients count strip on phones) are not counted as overflow; page overflow is still checked.",
+    "interaction_checks": "19/19",
+    "checks": {
+      "production_build": "passed",
+      "typecheck": "passed",
+      "workspace_tests": "4/4",
+      "localization_tests": "16/16",
+      "translation_coverage": "4648/4648",
+      "accent_tokens": "unchanged (#0011FF light, #4F5DFF dark)"
+    },
+    "note": "No physical-device or assistive-technology session was run; motion was reviewed from code and in the browser."
   }
 }

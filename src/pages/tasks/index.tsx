@@ -10,6 +10,7 @@ import { Checkbox, Chip } from '@/components/ui/controls'
 import { DatePicker } from '@/components/ui/date-picker'
 import { DetailRow, Sheet } from '@/components/ui/dialog'
 import { Textarea } from '@/components/ui/input'
+import { SectionCard } from '@/components/ui/disclosure'
 import { EmptyState } from '@/components/ui/misc'
 import { Page, PageHeader, Toolbar } from '@/components/ui/page'
 import { Select } from '@/components/ui/select'
@@ -49,7 +50,7 @@ function TaskRow({ task, leaving, onToggle, onOpen }: { task: Task; leaving: boo
       onClick={onOpen}
       onKeyDown={(e) => e.key === 'Enter' && onOpen()}
       className={cn(
-        'flex cursor-pointer items-center gap-3.5 px-5 py-3.5 transition-[background-color,opacity] duration-200 hover:bg-fill/60',
+        'flex cursor-pointer items-center gap-3.5 px-5 py-3.5 transition-[background-color,opacity] duration-200 hover:bg-row-hover',
         leaving && 'opacity-50',
       )}
     >
@@ -311,19 +312,22 @@ export default function Tasks() {
       </Toolbar>
 
       {nonEmpty.length ? (
-        <div className="flex flex-col gap-6">
+        // Linear's grouped list: each due-date group folds to its title and count.
+        <div className="flex flex-col gap-3">
           {nonEmpty.map((g) => (
-            <section key={g.title}>
-              <h2 className={cn('mb-2 flex items-center gap-2 text-sm font-medium', g.title === 'Overdue' ? 'text-negative' : 'text-muted')}>
-                {g.title}
-                <span className="font-normal text-faint tabular">{g.items.length}</span>
-              </h2>
-              <Card className="divide-y divide-border overflow-hidden">
+            <SectionCard
+              key={g.title}
+              id={'tasks:' + g.title}
+              title={<span className={g.title === 'Overdue' ? 'text-negative' : undefined}>{g.title}</span>}
+              count={g.items.length}
+              className="overflow-hidden"
+            >
+              <div className="divide-y divide-border border-t border-border">
                 {g.items.map((t) => (
                   <TaskRow key={t.id} task={t} leaving={leaving.has(t.id)} onToggle={() => toggle(t)} onOpen={() => setOpenId(t.id)} />
                 ))}
-              </Card>
-            </section>
+              </div>
+            </SectionCard>
           ))}
         </div>
       ) : (

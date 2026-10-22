@@ -94,7 +94,9 @@ function ActionRow({ icon, label, keys, onClick, compact }: { icon: typeof I.sea
     <button type="button" onClick={onClick} className={rowClass()}>
       <Icon icon={icon} size={17} className="shrink-0 text-muted group-hover:text-fg" />
       <span className="min-w-0 flex-1 truncate text-left">{label}</span>
-      <span className="flex gap-0.5 opacity-0 transition-opacity duration-150 group-hover:opacity-80 group-focus-visible:opacity-80">{keys}</span>
+      <span aria-hidden className="flex gap-0.5 opacity-0 transition-opacity duration-150 ease-[ease] group-hover:opacity-80 group-focus-visible:opacity-80">
+        {keys}
+      </span>
     </button>
   )
 }

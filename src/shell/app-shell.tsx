@@ -68,7 +68,7 @@ export function AppShell() {
         Skip to content
       </a>
       {/* Revolut lets the light sidebar share the canvas; Sweatpals draws a hairline in the dark. */}
-      <aside className={cn('relative hidden shrink-0 lg:block dark:border-r dark:border-border', collapsed ? 'w-16' : 'w-60')}>
+      <aside className={cn('relative hidden shrink-0 lg:block dark:border-r dark:border-border', collapsed ? 'w-[64px]' : 'w-[240px]')}>
         <Sidebar compact={collapsed} />
         {/* Sweatpals keeps a round handle on the sidebar edge: always findable, never in the way. */}
         <Tooltip

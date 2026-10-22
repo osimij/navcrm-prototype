@@ -79,7 +79,8 @@ export function HistoryList({ onPick }: { onPick: () => void }) {
                   type="button"
                   aria-label="Delete conversation"
                   onClick={() => deleteChat(c.id)}
-                  className="absolute top-1.5 right-1 hidden size-7 place-items-center rounded-md text-faint group-hover/row:grid hover:bg-fill-hover hover:text-fg focus-visible:grid"
+                  // Revealed on hover, but always reachable from the keyboard.
+                  className="absolute top-1.5 right-1 grid size-7 place-items-center rounded-md text-faint opacity-0 group-hover/row:opacity-100 hover:bg-fill-hover hover:text-fg focus-visible:opacity-100"
                 >
                   <Icon icon={I.close} size={14} />
                 </button>
@@ -93,7 +94,7 @@ export function HistoryList({ onPick }: { onPick: () => void }) {
   )
 }
 
-export function HistoryButton({ variant = 'button' }: { variant?: 'button' | 'icon' }) {
+export function HistoryButton() {
   const [open, setOpen] = useState(false)
   return (
     <Popover
@@ -102,13 +103,9 @@ export function HistoryButton({ variant = 'button' }: { variant?: 'button' | 'ic
       align="end"
       className="w-[340px] max-w-[calc(100vw-1.5rem)] p-0"
       trigger={
-        variant === 'icon' ? (
-          <IconButton icon={I.history} label="Chat history" size="sm" />
-        ) : (
-          <Button size="sm" variant="ghost" icon={I.history}>
-            History
-          </Button>
-        )
+        <Button size="sm" variant="ghost" icon={I.history}>
+          History
+        </Button>
       }
     >
       <HistoryList onPick={() => setOpen(false)} />
@@ -148,7 +145,8 @@ function Blocks({ blocks, ask, fresh }: { blocks: Block[]; ask: (q: string) => v
                     {b.rows.map((r, j) => (
                       <tr key={j} className="border-t border-border">
                         {r.map((cell, k) => (
-                          <td key={k} className={cn('h-10 px-3 text-fg', b.columns[k]?.align === 'right' ? 'text-right tabular whitespace-nowrap' : 'text-left')}>
+                          // One line per row: a narrow panel scrolls the table sideways instead of wrapping names.
+                          <td key={k} className={cn('h-10 px-3 whitespace-nowrap text-fg', b.columns[k]?.align === 'right' ? 'text-right tabular' : 'text-left')}>
                             {cell}
                           </td>
                         ))}
@@ -397,7 +395,7 @@ export function Composer({ chat, compact = false, autoFocus = false }: { chat: C
   }
 
   return (
-    <div className="w-full rounded-2xl bg-surface p-2.5 shadow-[var(--shadow-xs)] ring-1 ring-border transition-shadow duration-150 focus-within:ring-border-strong dark:bg-fill/60">
+    <div className="w-full rounded-2xl bg-surface p-2.5 shadow-[var(--shadow-xs)] ring-1 ring-border transition-shadow duration-150 ease-[ease] focus-within:ring-border-strong dark:bg-fill/60">
       <textarea
         ref={area}
         rows={1}

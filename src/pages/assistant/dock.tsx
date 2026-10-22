@@ -1,11 +1,12 @@
 import { AnimatePresence, motion, useReducedMotion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router'
 import { I, Icon } from '@/components/icons'
 import { IconButton } from '@/components/ui/button'
 import { Popover } from '@/components/ui/popover'
 import { Tooltip } from '@/components/ui/tooltip'
 import { currentUser } from '@/data/business'
+import { cn } from '@/lib/cn'
 import { suggestionsFor } from './answers'
 import { Composer, HistoryList, SuggestionRows, Thread, chatTitle } from './chat'
 import { bindAssistant, useAssistant } from './store'
@@ -88,6 +89,32 @@ export function AssistantDock() {
 
   useEffect(() => bindAssistant(navigate), [navigate])
 
+  const panel = useRef<HTMLElement>(null)
+  const launcher = useRef<HTMLButtonElement>(null)
+  // Closing returns focus to where you were (or the launcher), never to the page body.
+  // The last focus outside the panel is tracked continuously: the composer takes
+  // focus before this component's effects run, so it can't be read at open time.
+  const outside = useRef<HTMLElement | null>(null)
+  const wasOpen = useRef(false)
+  useEffect(() => {
+    const onFocus = (e: FocusEvent) => {
+      if (!panel.current?.contains(e.target as Node)) outside.current = e.target as HTMLElement
+    }
+    document.addEventListener('focusin', onFocus)
+    return () => document.removeEventListener('focusin', onFocus)
+  }, [])
+  useEffect(() => {
+    if (open) {
+      wasOpen.current = true
+      return
+    }
+    if (!wasOpen.current) return
+    wasOpen.current = false
+    const target = outside.current
+    if (target?.isConnected && target !== document.body) target.focus()
+    else launcher.current?.focus()
+  }, [open])
+
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && !e.shiftKey && e.key.toLowerCase() === 'j') {
@@ -108,7 +135,8 @@ export function AssistantDock() {
 
   return (
     <>
-      {!open && !onPage && (
+      {/* The launcher stays mounted under the open panel, so closing can hand focus back to it. */}
+      {!onPage && (
         <Tooltip
           side="left"
           content={
@@ -118,10 +146,16 @@ export function AssistantDock() {
           }
         >
           <button
+            ref={launcher}
             type="button"
             aria-label="Ask AI"
+            aria-hidden={open || undefined}
+            tabIndex={open ? -1 : undefined}
             onClick={openDock}
-            className="press fixed right-4 bottom-4 z-30 grid size-11 place-items-center rounded-full bg-fg text-bg shadow-popover sm:right-5 sm:bottom-5"
+            className={cn(
+              'press fixed right-4 bottom-4 z-30 grid size-11 place-items-center rounded-full bg-fg text-bg shadow-popover sm:right-5 sm:bottom-5',
+              open && 'pointer-events-none opacity-0',
+            )}
           >
             <Icon icon={I.sparkles} size={20} />
           </button>
@@ -140,8 +174,10 @@ export function AssistantDock() {
             exit="hidden"
             // Anchored to the launcher it grows from.
             style={{ transformOrigin: 'bottom right' }}
+            ref={panel}
             onKeyDown={(e) => {
-              if (e.key === 'Escape' && !e.defaultPrevented) closeDock()
+              // Escape inside a menu or the history popover closes that first, not the panel.
+              if (e.key === 'Escape' && !e.defaultPrevented && panel.current?.contains(e.target as Node)) closeDock()
             }}
             className="fixed right-4 bottom-4 z-40 flex h-[min(640px,calc(100dvh-2rem))] w-[400px] max-w-[calc(100vw-2rem)] flex-col overflow-hidden rounded-[22px] bg-raised shadow-modal max-sm:inset-x-2 max-sm:top-16 max-sm:bottom-2 max-sm:h-auto max-sm:w-auto max-sm:max-w-none"
           >

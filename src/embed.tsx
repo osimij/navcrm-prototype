@@ -1,6 +1,6 @@
-import { StrictMode } from 'react'
+import { StrictMode, useEffect } from 'react'
 import { createRoot } from 'react-dom/client'
-import { MemoryRouter } from 'react-router'
+import { MemoryRouter, useLocation } from 'react-router'
 import { Toaster } from 'sonner'
 import { App } from './App'
 import { TooltipProvider } from './components/ui/tooltip'
@@ -20,9 +20,23 @@ applyTheme('light')
 
 const start = location.hash.slice(1) || '/'
 
+/**
+ * The home page fills most of the landing's first screen, so it must not scroll: a wheel over
+ * it then scrolls the landing page instead of the app. Every other page scrolls as usual.
+ * embed.html locks the main pane while <html> has data-locked.
+ */
+function LockHome() {
+  const { pathname } = useLocation()
+  useEffect(() => {
+    document.documentElement.toggleAttribute('data-locked', pathname === '/')
+  }, [pathname])
+  return null
+}
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <MemoryRouter initialEntries={[start]}>
+      <LockHome />
       <TooltipProvider>
         <App />
         {/* Same look as the full prototype's toasts (main.tsx) */}

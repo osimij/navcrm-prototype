@@ -1,13 +1,16 @@
-import { StrictMode } from 'react'
+import { lazy, StrictMode, Suspense } from 'react'
 import { createRoot } from 'react-dom/client'
-import { BrowserRouter } from 'react-router'
+import { BrowserRouter, Route, Routes } from 'react-router'
 import { Toaster } from 'sonner'
-import { App } from './App'
 import { TooltipProvider } from './components/ui/tooltip'
 import { usePrefs } from './lib/store'
 import './styles/index.css'
 import './lib/input-modality'
 import { useLanguage } from './i18n/language'
+
+// Visitors can read the landing page before loading the full CRM prototype.
+const Landing = lazy(() => import('./pages/landing'))
+const App = lazy(() => import('./App').then((module) => ({ default: module.App })))
 
 function Toasts() {
   const language = useLanguage()
@@ -44,7 +47,12 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
       <TooltipProvider>
-        <App />
+        <Suspense fallback={<div role="status" aria-label="Загрузка" style={{ minHeight: '100dvh' }} />}>
+          <Routes>
+            <Route path="/landing" element={<Landing />} />
+            <Route path="/*" element={<App />} />
+          </Routes>
+        </Suspense>
         <Toasts />
       </TooltipProvider>
     </BrowserRouter>

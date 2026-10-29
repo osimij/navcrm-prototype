@@ -20,7 +20,7 @@ function jsxText(text) {
 const call = (name, args) => f.createCallExpression(f.createIdentifier(name), undefined, args)
 export function transformLocalization(source, filename) {
   const sf = ts.createSourceFile(filename, source, ts.ScriptTarget.Latest, true, filename.endsWith('x') ? ts.ScriptKind.TSX : ts.ScriptKind.TS)
-  if (!/\.[tj]sx?$/.test(filename) || filename.includes('/i18n/')) return null
+  if (!/\.[tj]sx?$/.test(filename) || filename.includes('/i18n/') || filename.includes('/pages/landing/')) return null
   let used = false
   const result = ts.transform(sf, [(ctx) => {
     const visit = (node) => {

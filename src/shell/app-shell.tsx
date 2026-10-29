@@ -29,7 +29,9 @@ export function AppShell() {
   if (!signedIn) return <Navigate to="/signin" replace />
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-bg">
+    // relative: absolutely positioned descendants (sr-only text) stay inside the shell and main
+    // rather than stretching the document past the viewport, which let the whole app scroll.
+    <div className="relative flex h-dvh overflow-hidden bg-bg">
       <aside className={cn('hidden shrink-0 border-r border-border lg:block', collapsed ? 'w-[72px]' : 'w-[248px]')}>
         <Sidebar compact={collapsed} />
       </aside>
@@ -46,7 +48,7 @@ export function AppShell() {
 
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar onMenu={() => setDrawer(true)} />
-        <main id="main-content" ref={main} tabIndex={-1} className="min-h-0 flex-1 overflow-x-hidden overflow-y-auto outline-none">
+        <main id="main-content" ref={main} tabIndex={-1} className="relative min-h-0 flex-1 overflow-x-hidden overflow-y-auto outline-none">
           <Outlet />
         </main>
       </div>

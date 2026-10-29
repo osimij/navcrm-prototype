@@ -26,7 +26,8 @@ function codeLike(s) {
 function walk(dir) {
   for (const name of fs.readdirSync(dir)) {
     const p = path.join(dir, name)
-    if (p.startsWith('src/i18n')) continue
+    // The marketing page is authored directly in Russian and has its own locale.
+    if (p.startsWith('src/i18n') || p.startsWith('src/pages/landing')) continue
     if (fs.statSync(p).isDirectory()) { walk(p); continue }
     if (!/\.[tj]sx?$/.test(p)) continue
     const source = fs.readFileSync(p, 'utf8')

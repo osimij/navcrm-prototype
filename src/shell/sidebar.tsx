@@ -104,7 +104,7 @@ function BusinessSwitcher({ compact = false }: { compact?: boolean }) {
       <button
         type="button"
         onClick={() => navigate('/settings/branches')}
-        className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-base text-fg hover:bg-fill"
+        className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-base text-fg hover:bg-fill"
       >
         <Icon icon={I.settings} size={16} className="text-muted" />
         Manage branches
@@ -112,7 +112,7 @@ function BusinessSwitcher({ compact = false }: { compact?: boolean }) {
       <button
         type="button"
         onClick={() => navigate('/signup')}
-        className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-base text-fg hover:bg-fill"
+        className="flex w-full items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-base text-fg hover:bg-fill"
       >
         <Icon icon={I.add} size={16} className="text-muted" />
         Create another business
